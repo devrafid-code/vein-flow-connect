@@ -292,7 +292,7 @@ const Dashboard = () => {
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
                           <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-full p-2">
-                            <Heart className="h-4 w-4 text-white" />
+                            <Droplets className="h-4 w-4 text-white" />
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">{donor.name}</h3>
@@ -304,21 +304,21 @@ const Dashboard = () => {
                       </div>
 
                       {/* Phone Column */}
-                      <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                        <Phone className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-700">{donor.phone}</span>
+                      <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                        <Phone className="h-4 w-4 text-primary" />
+                        <span className="text-sm text-primary font-medium">{donor.phone}</span>
                       </div>
 
                       {/* Address Column */}
-                      <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                        <MapPin className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-700 truncate">{donor.address}</span>
+                      <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                        <MapPin className="h-4 w-4 text-primary" />
+                        <span className="text-sm text-primary font-medium truncate">{donor.address}</span>
                       </div>
 
                       {/* Registration Date Column */}
-                      <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                        <Calendar className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-700">{formatDate(donor.registeredAt)}</span>
+                      <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        <span className="text-sm text-primary font-medium">{formatDate(donor.registeredAt)}</span>
                       </div>
 
                       {/* Actions Column */}
