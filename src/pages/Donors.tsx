@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 interface Donor {
   id: string;
@@ -173,15 +172,13 @@ const Donors = () => {
                   {/* Header section with gradient */}
                   <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
                     <div className="flex items-start space-x-4">
-                      <Avatar className="h-14 w-14 ring-4 ring-white shadow-lg group-hover:scale-105 transition-transform duration-300">
-                        <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-600 text-white font-bold text-lg">
-                          {getInitials(donor.name)}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
+                        {donor.bloodType}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
                         <Badge variant="secondary" className="bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-200 font-semibold px-3 py-1 text-sm">
-                          {donor.bloodType}
+                          Donor
                         </Badge>
                       </div>
                     </div>
