@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -376,7 +375,7 @@ const Donors = () => {
                 key={donor.id} 
                 className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${
                   hoveredCard && hoveredCard !== donor.id 
-                    ? 'blur-sm scale-95 opacity-50' 
+                    ? 'scale-95 opacity-75' 
                     : hoveredCard === donor.id 
                       ? 'shadow-2xl scale-105 z-50' 
                       : 'hover:shadow-2xl hover:-translate-y-2'
