@@ -154,7 +154,7 @@ const Index = () => {
                 
                 <CardContent className="p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-8">
-                    {/* Updated 3-Column Grid Layout */}
+                    {/* 3-Column Grid Layout - First Row */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {/* Column 1 - Name */}
                       <div className="w-full">
@@ -216,10 +216,10 @@ const Index = () => {
                       </div>
                     </div>
 
-                    {/* Address and Button Row */}
+                    {/* Second Row - Address, Register Button, and Disclaimer */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      {/* Address spans 2 columns */}
-                      <div className="md:col-span-2 w-full">
+                      {/* Address - 1 column */}
+                      <div className="w-full">
                         <div className="space-y-3">
                           <Label htmlFor="address" className="text-gray-700 font-semibold flex items-center gap-2">
                             <MapPin className="h-4 w-4 text-red-600" />
@@ -237,7 +237,7 @@ const Index = () => {
                         </div>
                       </div>
 
-                      {/* Button spans 1 column */}
+                      {/* Register Button - 1 full column */}
                       <div className="w-full flex flex-col justify-end">
                         <Button 
                           type="submit" 
@@ -247,6 +247,14 @@ const Index = () => {
                           Register
                           <ArrowRight className="h-5 w-5 ml-2" />
                         </Button>
+                      </div>
+
+                      {/* Disclaimer - 1 column */}
+                      <div className="w-full flex flex-col justify-end">
+                        <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-md border">
+                          <p className="font-semibold text-gray-700 mb-1">Quick Registration</p>
+                          <p>Join our community of heroes and help save lives with just one donation.</p>
+                        </div>
                       </div>
                     </div>
                   </form>
