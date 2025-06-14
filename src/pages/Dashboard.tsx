@@ -151,6 +151,11 @@ const Dashboard = () => {
     );
   }
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
       {/* Navigation */}
