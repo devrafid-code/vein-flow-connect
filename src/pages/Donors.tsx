@@ -362,7 +362,7 @@ const Donors = () => {
             />
           </div>
           
-          {/* Blood Type Chips and View Toggle */}
+          {/* Blood Type Chips and View Toggle with vertical separators */}
           <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
             {/* Blood Type Chips */}
             <div className="flex flex-wrap gap-2">
@@ -390,6 +390,9 @@ const Donors = () => {
                 </button>
               ))}
             </div>
+            
+            {/* Vertical separator */}
+            <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
             
             {/* View Toggle */}
             <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
