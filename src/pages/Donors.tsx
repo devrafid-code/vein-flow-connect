@@ -1,10 +1,12 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+
 interface Donor {
   id: string;
   name: string;
@@ -13,21 +15,26 @@ interface Donor {
   address: string;
   registeredAt: string;
 }
+
 const Donors = () => {
   const navigate = useNavigate();
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBloodType, setFilterBloodType] = useState('');
+
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
   useEffect(() => {
     const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
     setDonors(savedDonors);
   }, []);
+
   const filteredDonors = donors.filter(donor => {
     const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || donor.bloodType.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesBloodType = !filterBloodType || donor.bloodType === filterBloodType;
     return matchesSearch && matchesBloodType;
   });
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -35,10 +42,13 @@ const Donors = () => {
       day: 'numeric'
     });
   };
+
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
-  return <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30">
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30">
       {/* Navigation */}
       <nav className="bg-white/95 backdrop-blur-md border-b border-red-100/50 sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
@@ -71,47 +81,88 @@ const Donors = () => {
           <p className="text-xl text-gray-600">Our community of heroes who help save lives</p>
         </div>
 
-        {/* Stats Cards - Moved to top */}
-        {donors.length > 0 && <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="text-center border-0 shadow-lg bg-gradient-to-br from-white to-red-50/30">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent mb-2">{donors.length}</div>
-                <div className="text-sm text-gray-600 font-medium">Total Donors</div>
-              </CardContent>
-            </Card>
-            <Card className="text-center border-0 shadow-lg bg-gradient-to-br from-white to-blue-50/30">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-2">
-                  {new Set(donors.map(d => d.bloodType)).size}
+        {/* Stats Cards - Redesigned */}
+        {donors.length > 0 && (
+          <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Total Donors Card */}
+            <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-red-500 to-red-600 text-white transform hover:scale-105 transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-4xl font-bold mb-2">{donors.length}</div>
+                    <div className="text-red-100 font-medium">Total Donors</div>
+                  </div>
+                  <div className="bg-white/20 rounded-full p-4">
+                    <Users className="h-8 w-8 text-white" />
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600 font-medium">Blood Types Available</div>
+                <div className="absolute -bottom-2 -right-2 bg-white/10 rounded-full w-20 h-20"></div>
               </CardContent>
             </Card>
-            <Card className="text-center border-0 shadow-lg bg-gradient-to-br from-white to-green-50/30">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent mb-2">
-                  {filteredDonors.length}
+
+            {/* Blood Types Card */}
+            <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white transform hover:scale-105 transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-4xl font-bold mb-2">
+                      {new Set(donors.map(d => d.bloodType)).size}
+                    </div>
+                    <div className="text-blue-100 font-medium">Blood Types</div>
+                  </div>
+                  <div className="bg-white/20 rounded-full p-4">
+                    <Droplets className="h-8 w-8 text-white" />
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600 font-medium">Showing Results</div>
+                <div className="absolute -bottom-2 -right-2 bg-white/10 rounded-full w-20 h-20"></div>
               </CardContent>
             </Card>
-          </div>}
+
+            {/* Active Results Card */}
+            <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-green-500 to-green-600 text-white transform hover:scale-105 transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-4xl font-bold mb-2">{filteredDonors.length}</div>
+                    <div className="text-green-100 font-medium">Active Results</div>
+                  </div>
+                  <div className="bg-white/20 rounded-full p-4">
+                    <Activity className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <div className="absolute -bottom-2 -right-2 bg-white/10 rounded-full w-20 h-20"></div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="flex-1">
-            <Input placeholder="Search by name or blood type..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" />
+            <Input 
+              placeholder="Search by name or blood type..." 
+              value={searchTerm} 
+              onChange={e => setSearchTerm(e.target.value)} 
+              className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
+            />
           </div>
           <div className="md:w-48">
-            <select value={filterBloodType} onChange={e => setFilterBloodType(e.target.value)} className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-background focus:border-red-300 focus:ring-2 focus:ring-red-100 focus-visible:outline-none transition-all duration-200">
+            <select 
+              value={filterBloodType} 
+              onChange={e => setFilterBloodType(e.target.value)} 
+              className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-background focus:border-red-300 focus:ring-2 focus:ring-red-100 focus-visible:outline-none transition-all duration-200"
+            >
               <option value="">All Blood Types</option>
-              {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
+              {bloodTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
             </select>
           </div>
         </div>
 
         {/* Donors Grid */}
-        {filteredDonors.length === 0 ? <Card className="text-center py-16 border-0 shadow-xl bg-gradient-to-br from-white to-gray-50/50">
+        {filteredDonors.length === 0 ? (
+          <Card className="text-center py-16 border-0 shadow-xl bg-gradient-to-br from-white to-gray-50/50">
             <CardContent>
               <div className="bg-gradient-to-br from-red-100 to-red-200 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-lg">
                 <Heart className="h-10 w-10 text-red-600" />
@@ -125,17 +176,20 @@ const Donors = () => {
                 Register as Donor
               </Button>
             </CardContent>
-          </Card> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredDonors.map(donor => <Card key={donor.id} className="group hover:shadow-2xl transition-all duration-500 border-0 shadow-lg hover:-translate-y-2 bg-gradient-to-br from-white via-white to-gray-50/30 backdrop-blur-sm overflow-hidden">
+          </Card>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredDonors.map(donor => (
+              <Card key={donor.id} className="group hover:shadow-2xl transition-all duration-500 border-0 shadow-lg hover:-translate-y-2 bg-gradient-to-br from-white via-white to-gray-50/30 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-0">
                   {/* Header section with gradient */}
                   <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
-                    <div className="flex items-center justify-center space-x-4">
+                    <div className="flex items-center space-x-4">
                       <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
                         {donor.bloodType}
                       </div>
-                      <div className="flex-1 min-w-0 text-center">
-                        <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200 text-left">{donor.name}</h3>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
                       </div>
                     </div>
                   </div>
@@ -164,9 +218,13 @@ const Donors = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>)}
-          </div>}
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Donors;
