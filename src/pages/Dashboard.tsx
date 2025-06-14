@@ -189,53 +189,6 @@ const Dashboard = () => {
           <p className="text-xl text-gray-600">Manage and monitor your blood donor database</p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-gray-600">Total Donors</CardTitle>
-                <Users className="h-4 w-4 text-red-600" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-900">{totalDonors}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-gray-600">Blood Types</CardTitle>
-                <Activity className="h-4 w-4 text-red-600" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-900">{bloodTypeStats.filter(stat => stat.count > 0).length}</div>
-              <p className="text-sm text-gray-500">Different types available</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-gray-600">Recent Registrations</CardTitle>
-                <Heart className="h-4 w-4 text-red-600" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-900">
-                {donors.filter(donor => {
-                  const weekAgo = new Date();
-                  weekAgo.setDate(weekAgo.getDate() - 7);
-                  return new Date(donor.registeredAt) > weekAgo;
-                }).length}
-              </div>
-              <p className="text-sm text-gray-500">This week</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Filters */}
         <Card className="mb-8">
           <CardContent className="p-6">
