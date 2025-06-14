@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Donor {
   id: string;
@@ -161,16 +161,17 @@ const Donors = () => {
             />
           </div>
           <div className="md:w-48">
-            <select 
-              value={filterBloodType} 
-              onChange={e => setFilterBloodType(e.target.value)} 
-              className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-background focus:border-red-300 focus:ring-2 focus:ring-red-100 focus-visible:outline-none transition-all duration-200"
-            >
-              <option value="">All Blood Types</option>
-              {bloodTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
+            <Select value={filterBloodType} onValueChange={setFilterBloodType}>
+              <SelectTrigger className="border-gray-200 focus:border-red-300 focus:ring-red-100">
+                <SelectValue placeholder="All Blood Types" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Blood Types</SelectItem>
+                {bloodTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
