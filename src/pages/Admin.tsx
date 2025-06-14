@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit, Trash2, Search, Users, Shield, UserPlus } from 'lucide-react';
@@ -10,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface User {
   id: string;
@@ -23,6 +23,8 @@ interface User {
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentUser, logout, isAdmin, isAuthenticated } = useAuth();
+  
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -213,6 +215,31 @@ const Admin = () => {
     });
   };
 
+  // Redirect if not authenticated or not admin
+  if (!isAuthenticated()) {
+    navigate('/dashboard');
+    return null;
+  }
+
+  if (!isAdmin()) {
+    toast({
+      title: "Access Denied",
+      description: "You don't have permission to access this page",
+      variant: "destructive",
+    });
+    navigate('/dashboard');
+    return null;
+  }
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully",
+    });
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
       {/* Navigation */}
@@ -227,6 +254,10 @@ const Admin = () => {
             </div>
             
             <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                Welcome, {currentUser?.name}
+              </span>
+              
               <Button 
                 variant="outline" 
                 onClick={() => navigate('/dashboard')}
@@ -234,6 +265,14 @@ const Admin = () => {
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="border-red-200 text-red-600 hover:bg-red-50"
+              >
+                Logout
               </Button>
             </div>
           </div>

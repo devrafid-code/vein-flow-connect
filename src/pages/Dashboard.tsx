@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar, Shield } from 'lucide-react';
@@ -11,6 +10,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useAuth } from '@/contexts/AuthContext';
+import LoginForm from '@/components/LoginForm';
 
 interface Donor {
   id: string;
@@ -24,6 +25,8 @@ interface Donor {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentUser, logout, isAdmin, isAuthenticated } = useAuth();
+  
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBloodType, setFilterBloodType] = useState('all');
@@ -139,6 +142,15 @@ const Dashboard = () => {
     });
   };
 
+  // Show login form if not authenticated
+  if (!isAuthenticated()) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center">
+        <LoginForm />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
       {/* Navigation */}
@@ -147,20 +159,27 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-red-600 rounded-full p-2">
-                <Droplets className="h-6 w-6 text-white" />
+                <Heart className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-gray-900">LifeFlow Dashboard</span>
+              <span className="text-2xl font-bold text-gray-900">LifeFlow</span>
             </div>
             
             <div className="flex items-center space-x-4">
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/admin')}
-                className="border-gray-200 text-gray-600 hover:bg-gray-50"
-              >
-                <Shield className="h-4 w-4 mr-2" />
-                Admin Panel
-              </Button>
+              <span className="text-sm text-gray-600">
+                Welcome, {currentUser?.name} ({currentUser?.role})
+              </span>
+              
+              {isAdmin() && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/admin')}
+                  className="border-gray-200 text-gray-600 hover:bg-gray-50"
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Admin Panel
+                </Button>
+              )}
+              
               <Button 
                 variant="outline" 
                 onClick={() => navigate('/')}
@@ -168,6 +187,14 @@ const Dashboard = () => {
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Home
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="border-red-200 text-red-600 hover:bg-red-50"
+              >
+                Logout
               </Button>
             </div>
           </div>
