@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Heart, Droplets, Calendar, ArrowRight, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -36,7 +35,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex flex-col">
       {/* Animated Blood Vein Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800">
@@ -107,80 +106,103 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative z-10 container mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-                Give Life,
-                <span className="text-red-600 block">Save Lives</span>
-              </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Every donation can save up to three lives. Join our community of heroes 
-                and make a difference that lasts a lifetime.
-              </p>
+      {/* Main Content */}
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative z-10 container mx-auto px-6 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
+                  Give Life,
+                  <span className="text-red-600 block">Save Lives</span>
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  Every donation can save up to three lives. Join our community of heroes 
+                  and make a difference that lasts a lifetime.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  size="lg" 
+                  className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6"
+                  onClick={() => navigate('/register')}
+                >
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Register as Donor
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-red-600 text-red-600 hover:bg-red-50 text-lg px-8 py-6"
+                  onClick={() => navigate('/donors')}
+                >
+                  <Users className="h-5 w-5 mr-2" />
+                  View Donors
+                </Button>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-8 pt-8 border-t border-gray-200">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-red-600">{donorCount.toLocaleString()}+</div>
+                  <div className="text-sm text-gray-600">Active Donors</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-red-600">{livesCount.toLocaleString()}+</div>
+                  <div className="text-sm text-gray-600">Lives Saved</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-red-600">{unitsCount.toLocaleString()}+</div>
+                  <div className="text-sm text-gray-600">Units Collected</div>
+                </div>
+              </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6"
-                onClick={() => navigate('/register')}
-              >
-                <Calendar className="h-5 w-5 mr-2" />
-                Register as Donor
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-red-600 text-red-600 hover:bg-red-50 text-lg px-8 py-6"
-                onClick={() => navigate('/donors')}
-              >
-                <Users className="h-5 w-5 mr-2" />
-                View Donors
-              </Button>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-gray-200">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-red-600">{donorCount.toLocaleString()}+</div>
-                <div className="text-sm text-gray-600">Active Donors</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-red-600">{livesCount.toLocaleString()}+</div>
-                <div className="text-sm text-gray-600">Lives Saved</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-red-600">{unitsCount.toLocaleString()}+</div>
-                <div className="text-sm text-gray-600">Units Collected</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="relative">
-            <div className="bg-gradient-to-br from-red-100 to-red-200 rounded-3xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
-              <div className="bg-white rounded-2xl p-8 shadow-xl transform -rotate-3">
-                <div className="text-center space-y-6">
-                  <div className="bg-red-600 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
-                    <Heart className="h-12 w-12 text-white animate-pulse" />
+            <div className="relative">
+              <div className="bg-gradient-to-br from-red-100 to-red-200 rounded-3xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                <div className="bg-white rounded-2xl p-8 shadow-xl transform -rotate-3">
+                  <div className="text-center space-y-6">
+                    <div className="bg-red-600 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
+                      <Heart className="h-12 w-12 text-white animate-pulse" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Ready to Donate?</h3>
+                    <p className="text-gray-600">Join our community of heroes and save lives today.</p>
+                    <Button 
+                      className="w-full bg-red-600 hover:bg-red-700"
+                      onClick={() => navigate('/register')}
+                    >
+                      Register Now
+                    </Button>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Ready to Donate?</h3>
-                  <p className="text-gray-600">Join our community of heroes and save lives today.</p>
-                  <Button 
-                    className="w-full bg-red-600 hover:bg-red-700"
-                    onClick={() => navigate('/register')}
-                  >
-                    Register Now
-                  </Button>
                 </div>
               </div>
             </div>
           </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 bg-white/90 backdrop-blur-sm border-t border-red-100 mt-auto">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-3">
+              <div className="bg-red-600 rounded-full p-2">
+                <Droplets className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-lg font-bold text-gray-900">LifeFlow</span>
+            </div>
+            
+            <div className="text-center md:text-right">
+              <p className="text-sm text-gray-600">
+                © 2024 LifeFlow. Saving lives, one donation at a time.
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 };
