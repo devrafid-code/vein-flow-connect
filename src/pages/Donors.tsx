@@ -177,20 +177,23 @@ const Donors = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-gray-900 truncate">{donor.name}</h3>
-                      <Badge variant="secondary" className="bg-red-50 text-red-700 border-red-200 font-medium">
-                        {donor.bloodType}
-                      </Badge>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-lg font-semibold text-gray-900 truncate">{donor.name}</h3>
+                        <Badge variant="secondary" className="bg-red-50 text-red-700 border-red-200 font-medium">
+                          {donor.bloodType}
+                        </Badge>
+                      </div>
+                      {/* Mobile number prominently displayed */}
+                      <div className="flex items-center mt-2">
+                        <div className="bg-green-100 rounded-full p-1.5 mr-2">
+                          <Phone className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="text-base font-semibold text-gray-900">{donor.phone}</span>
+                      </div>
                     </div>
                   </div>
                   
                   <div className="space-y-3">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <div className="bg-gray-100 rounded-full p-1.5 mr-3">
-                        <Phone className="h-3.5 w-3.5 text-gray-500" />
-                      </div>
-                      <span className="truncate">{donor.phone}</span>
-                    </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <div className="bg-gray-100 rounded-full p-1.5 mr-3">
                         <MapPin className="h-3.5 w-3.5 text-gray-500" />
