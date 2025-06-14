@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Edit, Trash2, Search, Users, Shield, UserPlus } from 'lucide-react';
+import { ArrowLeft, Plus, Edit, Trash2, Search, Users, Shield, UserPlus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +27,8 @@ const Admin = () => {
   
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'admin' | 'user' | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'active' | 'inactive' | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -61,11 +63,23 @@ const Admin = () => {
   }, []);
 
   // Filter users
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesRole = roleFilter ? user.role === roleFilter : true;
+    const matchesStatus = statusFilter ? user.status === statusFilter : true;
+    
+    return matchesSearch && matchesRole && matchesStatus;
+  });
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm('');
+    setRoleFilter(null);
+    setStatusFilter(null);
+  };
 
   // Reset form
   const resetForm = () => {
@@ -286,10 +300,11 @@ const Admin = () => {
           <p className="text-xl text-gray-600">Manage system users and their permissions</p>
         </div>
 
-        {/* Search */}
+        {/* Search and Filters */}
         <Card className="mb-8">
           <CardContent className="p-6">
-            <div className="flex-1">
+            <div className="space-y-4">
+              {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -299,6 +314,74 @@ const Admin = () => {
                   className="pl-10"
                 />
               </div>
+
+              {/* Filter Chips */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">Filters:</span>
+                
+                {/* Role Filters */}
+                <Button
+                  variant={roleFilter === 'admin' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setRoleFilter(roleFilter === 'admin' ? null : 'admin')}
+                  className={roleFilter === 'admin' ? 'bg-red-600 hover:bg-red-700' : 'border-red-200 text-red-600 hover:bg-red-50'}
+                >
+                  Admin
+                  {roleFilter === 'admin' && <X className="ml-1 h-3 w-3" />}
+                </Button>
+                
+                <Button
+                  variant={roleFilter === 'user' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setRoleFilter(roleFilter === 'user' ? null : 'user')}
+                  className={roleFilter === 'user' ? 'bg-blue-600 hover:bg-blue-700' : 'border-blue-200 text-blue-600 hover:bg-blue-50'}
+                >
+                  User
+                  {roleFilter === 'user' && <X className="ml-1 h-3 w-3" />}
+                </Button>
+
+                {/* Status Filters */}
+                <Button
+                  variant={statusFilter === 'active' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setStatusFilter(statusFilter === 'active' ? null : 'active')}
+                  className={statusFilter === 'active' ? 'bg-green-600 hover:bg-green-700' : 'border-green-200 text-green-600 hover:bg-green-50'}
+                >
+                  Active
+                  {statusFilter === 'active' && <X className="ml-1 h-3 w-3" />}
+                </Button>
+                
+                <Button
+                  variant={statusFilter === 'inactive' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setStatusFilter(statusFilter === 'inactive' ? null : 'inactive')}
+                  className={statusFilter === 'inactive' ? 'bg-gray-600 hover:bg-gray-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}
+                >
+                  Inactive
+                  {statusFilter === 'inactive' && <X className="ml-1 h-3 w-3" />}
+                </Button>
+
+                {/* Clear Filters */}
+                {(searchTerm || roleFilter || statusFilter) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearFilters}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Clear all
+                  </Button>
+                )}
+              </div>
+
+              {/* Active Filters Summary */}
+              {(roleFilter || statusFilter) && (
+                <div className="text-sm text-gray-600">
+                  Showing {filteredUsers.length} of {users.length} users
+                  {roleFilter && ` • Role: ${roleFilter}`}
+                  {statusFilter && ` • Status: ${statusFilter}`}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
