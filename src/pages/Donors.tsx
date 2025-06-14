@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -82,7 +83,7 @@ const Donors = () => {
 
         {/* Stats Cards - Subtle Redesign */}
         {donors.length > 0 && (
-          <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Total Donors Card */}
             <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white">
               <CardContent className="p-6">
@@ -110,6 +111,23 @@ const Donors = () => {
                   </div>
                   <div className="bg-blue-50 rounded-full p-3">
                     <Droplets className="h-6 w-6 text-blue-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Locations Card */}
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      {new Set(donors.map(d => d.address)).size}
+                    </div>
+                    <div className="text-gray-600 font-medium">Locations</div>
+                  </div>
+                  <div className="bg-purple-50 rounded-full p-3">
+                    <MapPin className="h-6 w-6 text-purple-600" />
                   </div>
                 </div>
               </CardContent>
