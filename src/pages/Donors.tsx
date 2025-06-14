@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -81,56 +80,53 @@ const Donors = () => {
           <p className="text-xl text-gray-600">Our community of heroes who help save lives</p>
         </div>
 
-        {/* Stats Cards - Redesigned */}
+        {/* Stats Cards - Subtle Redesign */}
         {donors.length > 0 && (
-          <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Total Donors Card */}
-            <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-red-500 to-red-600 text-white transform hover:scale-105 transition-all duration-300">
-              <CardContent className="p-8">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-4xl font-bold mb-2">{donors.length}</div>
-                    <div className="text-red-100 font-medium">Total Donors</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{donors.length}</div>
+                    <div className="text-gray-600 font-medium">Total Donors</div>
                   </div>
-                  <div className="bg-white/20 rounded-full p-4">
-                    <Users className="h-8 w-8 text-white" />
+                  <div className="bg-red-50 rounded-full p-3">
+                    <Users className="h-6 w-6 text-red-600" />
                   </div>
                 </div>
-                <div className="absolute -bottom-2 -right-2 bg-white/10 rounded-full w-20 h-20"></div>
               </CardContent>
             </Card>
 
             {/* Blood Types Card */}
-            <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white transform hover:scale-105 transition-all duration-300">
-              <CardContent className="p-8">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-4xl font-bold mb-2">
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
                       {new Set(donors.map(d => d.bloodType)).size}
                     </div>
-                    <div className="text-blue-100 font-medium">Blood Types</div>
+                    <div className="text-gray-600 font-medium">Blood Types</div>
                   </div>
-                  <div className="bg-white/20 rounded-full p-4">
-                    <Droplets className="h-8 w-8 text-white" />
+                  <div className="bg-blue-50 rounded-full p-3">
+                    <Droplets className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
-                <div className="absolute -bottom-2 -right-2 bg-white/10 rounded-full w-20 h-20"></div>
               </CardContent>
             </Card>
 
             {/* Active Results Card */}
-            <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-green-500 to-green-600 text-white transform hover:scale-105 transition-all duration-300">
-              <CardContent className="p-8">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-4xl font-bold mb-2">{filteredDonors.length}</div>
-                    <div className="text-green-100 font-medium">Active Results</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{filteredDonors.length}</div>
+                    <div className="text-gray-600 font-medium">Active Results</div>
                   </div>
-                  <div className="bg-white/20 rounded-full p-4">
-                    <Activity className="h-8 w-8 text-white" />
+                  <div className="bg-green-50 rounded-full p-3">
+                    <Activity className="h-6 w-6 text-green-600" />
                   </div>
                 </div>
-                <div className="absolute -bottom-2 -right-2 bg-white/10 rounded-full w-20 h-20"></div>
               </CardContent>
             </Card>
           </div>
