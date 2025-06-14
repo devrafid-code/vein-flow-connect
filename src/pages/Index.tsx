@@ -237,10 +237,7 @@ const Index = () => {
                             <ArrowRight className="h-5 w-5 ml-3" />
                           </Button>
                           
-                          <p className="text-sm text-gray-500 leading-relaxed">
-                            By registering, you agree to be contacted for donation opportunities. 
-                            Your information is secure and will only be used for blood donation coordination.
-                          </p>
+                          
                         </div>
                       </div>
                     </div>
