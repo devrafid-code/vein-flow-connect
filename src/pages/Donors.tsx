@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Phone, Mail, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,10 +8,8 @@ import { Input } from '@/components/ui/input';
 interface Donor {
   id: string;
   name: string;
-  email: string;
   phone: string;
   bloodType: string;
-  age: number;
   address: string;
   registeredAt: string;
 }
@@ -145,15 +142,10 @@ const Donors = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">{donor.name}</h3>
-                      <p className="text-sm text-gray-600">Age {donor.age}</p>
                     </div>
                   </div>
                   
                   <div className="space-y-3">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Mail className="h-4 w-4 mr-2 text-red-600" />
-                      {donor.email}
-                    </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Phone className="h-4 w-4 mr-2 text-red-600" />
                       {donor.phone}
