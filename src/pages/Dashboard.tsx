@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar } from 'lucide-react';
@@ -10,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface Donor {
   id: string;
@@ -284,54 +284,50 @@ const Dashboard = () => {
                 </Button>
               </div>
             ) : (
-              <div className="grid gap-4">
+              <div className="space-y-4">
                 {filteredDonors.map(donor => (
-                  <div key={donor.id} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200 hover:border-red-200">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-4">
-                        {/* Avatar */}
-                        <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-full p-3 shadow-lg">
-                          <Heart className="h-6 w-6 text-white" />
-                        </div>
-                        
-                        {/* Donor Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-3 mb-3">
-                            <h3 className="text-xl font-semibold text-gray-900 truncate">{donor.name}</h3>
-                            <Badge 
-                              variant="secondary" 
-                              className="bg-red-100 text-red-800 font-medium px-3 py-1 text-sm"
-                            >
+                  <div key={donor.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                      {/* Name & Blood Type Column */}
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-full p-2">
+                            <Heart className="h-4 w-4 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">{donor.name}</h3>
+                            <Badge variant="secondary" className="bg-red-100 text-red-800 text-xs">
                               {donor.bloodType}
                             </Badge>
                           </div>
-                          
-                          <div className="space-y-2">
-                            <div className="flex items-center text-gray-600">
-                              <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                              <span className="text-sm">{donor.phone}</span>
-                            </div>
-                            
-                            <div className="flex items-center text-gray-600">
-                              <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                              <span className="text-sm truncate">{donor.address}</span>
-                            </div>
-                            
-                            <div className="flex items-center text-gray-500">
-                              <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                              <span className="text-sm">Registered {formatDate(donor.registeredAt)}</span>
-                            </div>
-                          </div>
                         </div>
                       </div>
-                      
-                      {/* Action Buttons */}
-                      <div className="flex space-x-2 ml-4">
+
+                      {/* Phone Column */}
+                      <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                        <Phone className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-700">{donor.phone}</span>
+                      </div>
+
+                      {/* Address Column */}
+                      <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                        <MapPin className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-700 truncate">{donor.address}</span>
+                      </div>
+
+                      {/* Registration Date Column */}
+                      <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                        <Calendar className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-700">{formatDate(donor.registeredAt)}</span>
+                      </div>
+
+                      {/* Actions Column */}
+                      <div className="flex justify-end space-x-2">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleEditDonor(donor)}
-                          className="border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                          className="border-gray-200 text-gray-600 hover:bg-gray-50"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -339,7 +335,7 @@ const Dashboard = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDeleteDonor(donor)}
-                          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+                          className="border-red-200 text-red-600 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
