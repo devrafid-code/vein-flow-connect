@@ -126,10 +126,10 @@ const Index = () => {
         <div className="absolute inset-0 bg-black/40"></div>
         
         {/* Hero Text Section */}
-        <div className="relative z-10 flex-1 flex items-center">
+        <div className="relative z-10 flex-1 flex items-center py-8 sm:py-12">
           <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
-              <div className="space-y-4 sm:space-y-6">
+            <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
+              <div className="space-y-3 sm:space-y-4">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight px-4">Every Donation Can Save up to 3 Lives.</h1>
                 <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-2xl mx-auto px-4">
                   Every donation can save up to three lives. Join our community of heroes 
@@ -149,7 +149,7 @@ const Index = () => {
         </div>
 
         {/* Registration Form Section */}
-        <div className="relative z-10 pb-8 sm:pb-16">
+        <div className="relative z-10 py-6 sm:py-8">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-5xl mx-auto">
               <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
