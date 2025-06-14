@@ -146,13 +146,9 @@ const Index = () => {
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
-                <div className="bg-gradient-to-r from-red-600 to-red-700 px-8 py-6">
+                <div className="bg-red-600 px-8 py-4">
                   <div className="text-center">
-                    <div className="bg-white rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                      <Heart className="h-8 w-8 text-red-600" />
-                    </div>
-                    <CardTitle className="text-3xl font-bold text-white mb-2">Become a Life Saver</CardTitle>
-                    <p className="text-red-100 text-lg">Join our community of heroes and save lives today</p>
+                    <CardTitle className="text-2xl font-bold text-white">Register as Blood Donor</CardTitle>
                   </div>
                 </div>
                 
@@ -230,7 +226,7 @@ const Index = () => {
                     <div className="text-center space-y-4">
                       <Button 
                         type="submit" 
-                        className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 font-bold py-4 px-12 text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                        className="bg-red-600 hover:bg-red-700 font-bold py-4 px-12 text-lg"
                       >
                         <Heart className="h-5 w-5 mr-3" />
                         Register as Blood Donor
