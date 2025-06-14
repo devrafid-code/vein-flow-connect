@@ -128,16 +128,16 @@ const Index = () => {
         {/* Hero Text Section */}
         <div className="relative z-10 flex-1 flex items-center">
           <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+            <div className="max-w-4xl mx-auto text-left space-y-6 sm:space-y-8">
               <div className="space-y-4 sm:space-y-6">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight px-4">Every Donation Can Save up to 3 Lives.</h1>
-                <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-2xl mx-auto px-4">
+                <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-2xl px-4">
                   Every donation can save up to three lives. Join our community of heroes 
                   and make a difference that lasts a lifetime.
                 </p>
               </div>
               
-              <div className="flex flex-col gap-4 items-center px-4">
+              <div className="flex flex-col gap-4 items-start px-4">
                 <Button size="lg" className="bg-red-600 hover:bg-red-700 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-fit" onClick={() => navigate('/donors')}>
                   <Users className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
                   View All Donors
