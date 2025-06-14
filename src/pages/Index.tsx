@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+
 const Index = () => {
   const [donorCount, setDonorCount] = useState(0);
   const [livesCount, setLivesCount] = useState(0);
@@ -119,12 +120,12 @@ const Index = () => {
         
         {/* Content Container */}
         <div className="relative z-10 container mx-auto px-6">
-          <div className="grid lg:grid-cols-3 gap-12 items-center w-full">
+          <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
             
-            {/* Left Column - Hero Text */}
-            <div className="space-y-8">
+            {/* Left Column - Hero Text (50% width) */}
+            <div className="space-y-8 flex flex-col justify-center h-full">
               <div className="space-y-6">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight whitespace-nowrap">Every Donation Can Save up to 3 Lives.</h1>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">Every Donation Can Save up to 3 Lives.</h1>
                 <p className="text-lg text-white/90 leading-relaxed">
                   Every donation can save up to three lives. Join our community of heroes 
                   and make a difference that lasts a lifetime.
@@ -139,11 +140,8 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            
-            {/* Middle Column - Space for visual balance */}
-            <div className="hidden lg:block"></div>
 
-            {/* Right Column - Registration Form */}
+            {/* Right Column - Registration Form (50% width) */}
             <div className="w-full">
               <Card className="border-2 border-red-100 shadow-xl bg-white/95 backdrop-blur-sm">
                 <CardHeader className="text-center pb-4">
@@ -207,4 +205,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;
