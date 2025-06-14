@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Table as TableComponent, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
 interface Donor {
   id: string;
   name: string;
@@ -17,7 +16,6 @@ interface Donor {
   address: string;
   registeredAt: string;
 }
-
 const Donors = () => {
   const navigate = useNavigate();
   const [donors, setDonors] = useState<Donor[]>([]);
@@ -25,195 +23,168 @@ const Donors = () => {
   const [filterBloodType, setFilterBloodType] = useState('all');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
-
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // Sample donors data
-  const sampleDonors: Donor[] = [
-    {
-      id: '1',
-      name: 'John Smith',
-      phone: '+1-555-0123',
-      bloodType: 'O+',
-      address: '123 Main St, New York, NY',
-      registeredAt: '2024-01-15T10:30:00Z'
-    },
-    {
-      id: '2',
-      name: 'Sarah Johnson',
-      phone: '+1-555-0234',
-      bloodType: 'A+',
-      address: '456 Oak Ave, Los Angeles, CA',
-      registeredAt: '2024-02-20T14:15:00Z'
-    },
-    {
-      id: '3',
-      name: 'Michael Brown',
-      phone: '+1-555-0345',
-      bloodType: 'B-',
-      address: '789 Pine Rd, Chicago, IL',
-      registeredAt: '2024-03-10T09:45:00Z'
-    },
-    {
-      id: '4',
-      name: 'Emily Davis',
-      phone: '+1-555-0456',
-      bloodType: 'AB+',
-      address: '321 Elm St, Houston, TX',
-      registeredAt: '2024-03-25T16:20:00Z'
-    },
-    {
-      id: '5',
-      name: 'David Wilson',
-      phone: '+1-555-0567',
-      bloodType: 'O-',
-      address: '654 Maple Dr, Phoenix, AZ',
-      registeredAt: '2024-04-05T11:30:00Z'
-    },
-    {
-      id: '6',
-      name: 'Lisa Anderson',
-      phone: '+1-555-0678',
-      bloodType: 'A-',
-      address: '987 Cedar Ln, Philadelphia, PA',
-      registeredAt: '2024-04-18T13:45:00Z'
-    },
-    {
-      id: '7',
-      name: 'Robert Taylor',
-      phone: '+1-555-0789',
-      bloodType: 'B+',
-      address: '147 Birch St, San Antonio, TX',
-      registeredAt: '2024-05-02T08:15:00Z'
-    },
-    {
-      id: '8',
-      name: 'Jennifer White',
-      phone: '+1-555-0890',
-      bloodType: 'AB-',
-      address: '258 Spruce Ave, San Diego, CA',
-      registeredAt: '2024-05-15T15:30:00Z'
-    },
-    {
-      id: '9',
-      name: 'Christopher Lee',
-      phone: '+1-555-0901',
-      bloodType: 'O+',
-      address: '369 Willow Rd, Dallas, TX',
-      registeredAt: '2024-05-28T12:00:00Z'
-    },
-    {
-      id: '10',
-      name: 'Amanda Garcia',
-      phone: '+1-555-1012',
-      bloodType: 'A+',
-      address: '741 Ash Dr, San Jose, CA',
-      registeredAt: '2024-06-03T10:45:00Z'
-    },
-    {
-      id: '11',
-      name: 'Matthew Martinez',
-      phone: '+1-555-1123',
-      bloodType: 'B-',
-      address: '852 Poplar St, Austin, TX',
-      registeredAt: '2024-06-08T14:30:00Z'
-    },
-    {
-      id: '12',
-      name: 'Jessica Rodriguez',
-      phone: '+1-555-1234',
-      bloodType: 'AB+',
-      address: '963 Hickory Ave, Jacksonville, FL',
-      registeredAt: '2024-06-12T09:20:00Z'
-    },
-    {
-      id: '13',
-      name: 'Daniel Hernandez',
-      phone: '+1-555-1345',
-      bloodType: 'O-',
-      address: '159 Walnut Ln, Fort Worth, TX',
-      registeredAt: '2024-06-15T16:45:00Z'
-    },
-    {
-      id: '14',
-      name: 'Ashley Lopez',
-      phone: '+1-555-1456',
-      bloodType: 'A-',
-      address: '753 Chestnut Rd, Columbus, OH',
-      registeredAt: '2024-06-18T11:15:00Z'
-    },
-    {
-      id: '15',
-      name: 'Kevin Gonzalez',
-      phone: '+1-555-1567',
-      bloodType: 'B+',
-      address: '486 Sycamore Dr, Charlotte, NC',
-      registeredAt: '2024-06-20T13:30:00Z'
-    },
-    {
-      id: '16',
-      name: 'Stephanie Wilson',
-      phone: '+1-555-1678',
-      bloodType: 'AB-',
-      address: '297 Magnolia St, Seattle, WA',
-      registeredAt: '2024-06-22T08:45:00Z'
-    },
-    {
-      id: '17',
-      name: 'Brian Anderson',
-      phone: '+1-555-1789',
-      bloodType: 'O+',
-      address: '518 Dogwood Ave, Denver, CO',
-      registeredAt: '2024-06-24T15:20:00Z'
-    },
-    {
-      id: '18',
-      name: 'Michelle Thomas',
-      phone: '+1-555-1890',
-      bloodType: 'A+',
-      address: '629 Redwood Ln, Boston, MA',
-      registeredAt: '2024-06-26T12:10:00Z'
-    },
-    {
-      id: '19',
-      name: 'Steven Jackson',
-      phone: '+1-555-1901',
-      bloodType: 'B-',
-      address: '740 Palm Dr, El Paso, TX',
-      registeredAt: '2024-06-28T10:30:00Z'
-    },
-    {
-      id: '20',
-      name: 'Nicole White',
-      phone: '+1-555-2012',
-      bloodType: 'AB+',
-      address: '851 Cypress Rd, Detroit, MI',
-      registeredAt: '2024-06-30T14:45:00Z'
-    }
-  ];
-
+  const sampleDonors: Donor[] = [{
+    id: '1',
+    name: 'John Smith',
+    phone: '+1-555-0123',
+    bloodType: 'O+',
+    address: '123 Main St, New York, NY',
+    registeredAt: '2024-01-15T10:30:00Z'
+  }, {
+    id: '2',
+    name: 'Sarah Johnson',
+    phone: '+1-555-0234',
+    bloodType: 'A+',
+    address: '456 Oak Ave, Los Angeles, CA',
+    registeredAt: '2024-02-20T14:15:00Z'
+  }, {
+    id: '3',
+    name: 'Michael Brown',
+    phone: '+1-555-0345',
+    bloodType: 'B-',
+    address: '789 Pine Rd, Chicago, IL',
+    registeredAt: '2024-03-10T09:45:00Z'
+  }, {
+    id: '4',
+    name: 'Emily Davis',
+    phone: '+1-555-0456',
+    bloodType: 'AB+',
+    address: '321 Elm St, Houston, TX',
+    registeredAt: '2024-03-25T16:20:00Z'
+  }, {
+    id: '5',
+    name: 'David Wilson',
+    phone: '+1-555-0567',
+    bloodType: 'O-',
+    address: '654 Maple Dr, Phoenix, AZ',
+    registeredAt: '2024-04-05T11:30:00Z'
+  }, {
+    id: '6',
+    name: 'Lisa Anderson',
+    phone: '+1-555-0678',
+    bloodType: 'A-',
+    address: '987 Cedar Ln, Philadelphia, PA',
+    registeredAt: '2024-04-18T13:45:00Z'
+  }, {
+    id: '7',
+    name: 'Robert Taylor',
+    phone: '+1-555-0789',
+    bloodType: 'B+',
+    address: '147 Birch St, San Antonio, TX',
+    registeredAt: '2024-05-02T08:15:00Z'
+  }, {
+    id: '8',
+    name: 'Jennifer White',
+    phone: '+1-555-0890',
+    bloodType: 'AB-',
+    address: '258 Spruce Ave, San Diego, CA',
+    registeredAt: '2024-05-15T15:30:00Z'
+  }, {
+    id: '9',
+    name: 'Christopher Lee',
+    phone: '+1-555-0901',
+    bloodType: 'O+',
+    address: '369 Willow Rd, Dallas, TX',
+    registeredAt: '2024-05-28T12:00:00Z'
+  }, {
+    id: '10',
+    name: 'Amanda Garcia',
+    phone: '+1-555-1012',
+    bloodType: 'A+',
+    address: '741 Ash Dr, San Jose, CA',
+    registeredAt: '2024-06-03T10:45:00Z'
+  }, {
+    id: '11',
+    name: 'Matthew Martinez',
+    phone: '+1-555-1123',
+    bloodType: 'B-',
+    address: '852 Poplar St, Austin, TX',
+    registeredAt: '2024-06-08T14:30:00Z'
+  }, {
+    id: '12',
+    name: 'Jessica Rodriguez',
+    phone: '+1-555-1234',
+    bloodType: 'AB+',
+    address: '963 Hickory Ave, Jacksonville, FL',
+    registeredAt: '2024-06-12T09:20:00Z'
+  }, {
+    id: '13',
+    name: 'Daniel Hernandez',
+    phone: '+1-555-1345',
+    bloodType: 'O-',
+    address: '159 Walnut Ln, Fort Worth, TX',
+    registeredAt: '2024-06-15T16:45:00Z'
+  }, {
+    id: '14',
+    name: 'Ashley Lopez',
+    phone: '+1-555-1456',
+    bloodType: 'A-',
+    address: '753 Chestnut Rd, Columbus, OH',
+    registeredAt: '2024-06-18T11:15:00Z'
+  }, {
+    id: '15',
+    name: 'Kevin Gonzalez',
+    phone: '+1-555-1567',
+    bloodType: 'B+',
+    address: '486 Sycamore Dr, Charlotte, NC',
+    registeredAt: '2024-06-20T13:30:00Z'
+  }, {
+    id: '16',
+    name: 'Stephanie Wilson',
+    phone: '+1-555-1678',
+    bloodType: 'AB-',
+    address: '297 Magnolia St, Seattle, WA',
+    registeredAt: '2024-06-22T08:45:00Z'
+  }, {
+    id: '17',
+    name: 'Brian Anderson',
+    phone: '+1-555-1789',
+    bloodType: 'O+',
+    address: '518 Dogwood Ave, Denver, CO',
+    registeredAt: '2024-06-24T15:20:00Z'
+  }, {
+    id: '18',
+    name: 'Michelle Thomas',
+    phone: '+1-555-1890',
+    bloodType: 'A+',
+    address: '629 Redwood Ln, Boston, MA',
+    registeredAt: '2024-06-26T12:10:00Z'
+  }, {
+    id: '19',
+    name: 'Steven Jackson',
+    phone: '+1-555-1901',
+    bloodType: 'B-',
+    address: '740 Palm Dr, El Paso, TX',
+    registeredAt: '2024-06-28T10:30:00Z'
+  }, {
+    id: '20',
+    name: 'Nicole White',
+    phone: '+1-555-2012',
+    bloodType: 'AB+',
+    address: '851 Cypress Rd, Detroit, MI',
+    registeredAt: '2024-06-30T14:45:00Z'
+  }];
   useEffect(() => {
     const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
     // Combine saved donors with sample donors, avoiding duplicates
     const allDonors = [...savedDonors];
-    
     sampleDonors.forEach(sampleDonor => {
       if (!allDonors.find(donor => donor.id === sampleDonor.id)) {
         allDonors.push(sampleDonor);
       }
     });
-    
     setDonors(allDonors);
     // Save the combined list back to localStorage
     localStorage.setItem('donors', JSON.stringify(allDonors));
   }, []);
-
   const filteredDonors = donors.filter(donor => {
     const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || donor.bloodType.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesBloodType = filterBloodType === 'all' || donor.bloodType === filterBloodType;
     return matchesSearch && matchesBloodType;
   });
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -221,26 +192,11 @@ const Donors = () => {
       day: 'numeric'
     });
   };
-
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
-
-  const renderGridView = () => (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-      {filteredDonors.map(donor => (
-        <Card 
-          key={donor.id} 
-          className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${
-            hoveredCard && hoveredCard !== donor.id 
-              ? 'scale-95 opacity-75' 
-              : hoveredCard === donor.id 
-                ? 'shadow-2xl scale-105 z-50' 
-                : 'hover:shadow-2xl hover:-translate-y-2'
-          } bg-gradient-to-br from-white via-white to-gray-50/30`}
-          onMouseEnter={() => setHoveredCard(donor.id)}
-          onMouseLeave={() => setHoveredCard(null)}
-        >
+  const renderGridView = () => <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
+      {filteredDonors.map(donor => <Card key={donor.id} className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${hoveredCard && hoveredCard !== donor.id ? 'scale-95 opacity-75' : hoveredCard === donor.id ? 'shadow-2xl scale-105 z-50' : 'hover:shadow-2xl hover:-translate-y-2'} bg-gradient-to-br from-white via-white to-gray-50/30`} onMouseEnter={() => setHoveredCard(donor.id)} onMouseLeave={() => setHoveredCard(null)}>
           <CardContent className="p-0">
             {/* Header section with gradient */}
             <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
@@ -278,13 +234,9 @@ const Donors = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-
-  const renderTableView = () => (
-    <Card className="border-0 shadow-lg bg-white">
+        </Card>)}
+    </div>;
+  const renderTableView = () => <Card className="border-0 shadow-lg bg-white">
       <CardContent className="p-0">
         <TableComponent>
           <TableHeader>
@@ -297,8 +249,7 @@ const Donors = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredDonors.map(donor => (
-              <TableRow key={donor.id} className="hover:bg-red-50/50 transition-colors duration-200">
+            {filteredDonors.map(donor => <TableRow key={donor.id} className="hover:bg-red-50/50 transition-colors duration-200">
                 <TableCell className="font-medium text-gray-900">{donor.name}</TableCell>
                 <TableCell>
                   <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold">
@@ -308,16 +259,12 @@ const Donors = () => {
                 <TableCell className="font-semibold text-green-700">{donor.phone}</TableCell>
                 <TableCell className="text-gray-600 max-w-xs truncate">{donor.address}</TableCell>
                 <TableCell className="text-gray-600">{formatDate(donor.registeredAt)}</TableCell>
-              </TableRow>
-            ))}
+              </TableRow>)}
           </TableBody>
         </TableComponent>
       </CardContent>
-    </Card>
-  );
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30">
+    </Card>;
+  return <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30">
       {/* Navigation */}
       <nav className="bg-white/95 backdrop-blur-md border-b border-red-100/50 sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
@@ -351,15 +298,10 @@ const Donors = () => {
         </div>
 
         {/* Filters */}
-        <div className="rounded-2xl p-6 mb-8">
+        <div className="rounded-2xl p-6 mb-8 px-0">
           <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
             <div className="flex-1">
-              <Input 
-                placeholder="Search by name or blood type..." 
-                value={searchTerm} 
-                onChange={e => setSearchTerm(e.target.value)} 
-                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl h-10" 
-              />
+              <Input placeholder="Search by name or blood type..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl h-10" />
             </div>
             
             {/* Vertical separator after search bar */}
@@ -369,29 +311,12 @@ const Donors = () => {
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               {/* Blood Type Chips */}
               <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setFilterBloodType('all')}
-                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
-                    filterBloodType === 'all'
-                      ? 'bg-red-500 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
+                <button onClick={() => setFilterBloodType('all')} className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${filterBloodType === 'all' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
                   All
                 </button>
-                {bloodTypes.map(type => (
-                  <button
-                    key={type}
-                    onClick={() => setFilterBloodType(type)}
-                    className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
-                      filterBloodType === type
-                        ? 'bg-red-500 text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
+                {bloodTypes.map(type => <button key={type} onClick={() => setFilterBloodType(type)} className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${filterBloodType === type ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
                     {type}
-                  </button>
-                ))}
+                  </button>)}
               </div>
               
               {/* Vertical separator */}
@@ -399,7 +324,7 @@ const Donors = () => {
               
               {/* View Toggle */}
               <div className="bg-red-50 rounded-xl p-1 h-10 flex items-center">
-                <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
+                <ToggleGroup type="single" value={viewMode} onValueChange={value => value && setViewMode(value as 'grid' | 'table')}>
                   <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white rounded-xl h-8">
                     <Grid2X2 className="h-4 w-4" />
                   </ToggleGroupItem>
@@ -413,8 +338,7 @@ const Donors = () => {
         </div>
 
         {/* Donors List */}
-        {filteredDonors.length === 0 ? (
-          <Card className="text-center py-16 border-0 shadow-xl bg-gradient-to-br from-white to-gray-50/50">
+        {filteredDonors.length === 0 ? <Card className="text-center py-16 border-0 shadow-xl bg-gradient-to-br from-white to-gray-50/50">
             <CardContent>
               <div className="bg-gradient-to-br from-red-100 to-red-200 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-lg">
                 <Heart className="h-10 w-10 text-red-600" />
@@ -428,13 +352,8 @@ const Donors = () => {
                 Register as Donor
               </Button>
             </CardContent>
-          </Card>
-        ) : (
-          viewMode === 'grid' ? renderGridView() : renderTableView()
-        )}
+          </Card> : viewMode === 'grid' ? renderGridView() : renderTableView()}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Donors;
