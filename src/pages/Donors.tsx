@@ -351,7 +351,7 @@ const Donors = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-red-50/50 rounded-2xl p-6 mb-8 border border-red-100/50">
+        <div className="rounded-2xl p-6 mb-8">
           <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
             <div className="flex-1">
               <Input 
@@ -398,14 +398,16 @@ const Donors = () => {
               <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
               
               {/* View Toggle */}
-              <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
-                <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
-                  <Grid2X2 className="h-4 w-4" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
-                  <Table className="h-4 w-4" />
-                </ToggleGroupItem>
-              </ToggleGroup>
+              <div className="bg-red-50 rounded-lg p-1">
+                <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
+                  <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                    <Grid2X2 className="h-4 w-4" />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                    <Table className="h-4 w-4" />
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
             </div>
           </div>
         </div>
