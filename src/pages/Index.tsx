@@ -230,7 +230,7 @@ const Index = () => {
                         <div className="text-center space-y-4">
                           <Button 
                             type="submit" 
-                            className="bg-red-600 hover:bg-red-700 font-bold py-4 px-12 text-lg w-full"
+                            className="bg-red-600 hover:bg-red-700 font-bold py-4 px-12 text-lg"
                           >
                             <Heart className="h-5 w-5 mr-3" />
                             Register as Blood Donor
