@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity, Grid2X2, Table } from 'lucide-react';
@@ -361,6 +360,9 @@ const Donors = () => {
               className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
             />
           </div>
+          
+          {/* Vertical separator after search bar */}
+          <div className="hidden lg:block w-px bg-gray-300 mx-2"></div>
           
           {/* Blood Type Chips and View Toggle with vertical separators */}
           <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
