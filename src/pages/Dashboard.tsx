@@ -38,9 +38,9 @@ const Dashboard = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  // Get blood type color - using consistent black background with white text
+  // Get blood type color - using grayish background with black text
   const getBloodTypeColor = (bloodType: string) => {
-    return 'bg-black text-white border-gray-800';
+    return 'bg-gray-200 text-black border-gray-300';
   };
 
   // Load donors from localStorage
