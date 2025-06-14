@@ -216,7 +216,7 @@ const Index = () => {
                       </div>
                     </div>
 
-                    {/* Second Row - Address, Register Button, and Disclaimer */}
+                    {/* Second Row - Address */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {/* Address - 1 column */}
                       <div className="w-full">
@@ -236,9 +236,12 @@ const Index = () => {
                           />
                         </div>
                       </div>
+                    </div>
 
-                      {/* Register Button - 1 full column */}
-                      <div className="w-full flex flex-col justify-end">
+                    {/* Third Row - Register Button and Disclaimer */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                      {/* Register Button and Disclaimer - 1 column */}
+                      <div className="w-full space-y-4">
                         <Button 
                           type="submit" 
                           className="bg-red-600 hover:bg-red-700 font-bold py-4 px-6 text-lg h-12 w-full"
@@ -247,10 +250,7 @@ const Index = () => {
                           Register
                           <ArrowRight className="h-5 w-5 ml-2" />
                         </Button>
-                      </div>
-
-                      {/* Disclaimer - 1 column */}
-                      <div className="w-full flex flex-col justify-end">
+                        
                         <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-md border">
                           <p className="font-semibold text-gray-700 mb-1">Quick Registration</p>
                           <p>Join our community of heroes and help save lives with just one donation.</p>
