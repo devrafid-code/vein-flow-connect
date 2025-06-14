@@ -126,7 +126,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-black/40"></div>
         
         {/* Hero Text Section */}
-        <div className="relative z-10 flex-1 flex items-center py-8 sm:py-12">
+        <div className="relative z-10 flex-1 flex items-center">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
               <div className="space-y-3 sm:space-y-4">
