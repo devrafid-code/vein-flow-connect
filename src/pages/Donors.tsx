@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -25,9 +24,184 @@ const Donors = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+  // Sample donors data
+  const sampleDonors: Donor[] = [
+    {
+      id: '1',
+      name: 'John Smith',
+      phone: '+1-555-0123',
+      bloodType: 'O+',
+      address: '123 Main St, New York, NY',
+      registeredAt: '2024-01-15T10:30:00Z'
+    },
+    {
+      id: '2',
+      name: 'Sarah Johnson',
+      phone: '+1-555-0234',
+      bloodType: 'A+',
+      address: '456 Oak Ave, Los Angeles, CA',
+      registeredAt: '2024-02-20T14:15:00Z'
+    },
+    {
+      id: '3',
+      name: 'Michael Brown',
+      phone: '+1-555-0345',
+      bloodType: 'B-',
+      address: '789 Pine Rd, Chicago, IL',
+      registeredAt: '2024-03-10T09:45:00Z'
+    },
+    {
+      id: '4',
+      name: 'Emily Davis',
+      phone: '+1-555-0456',
+      bloodType: 'AB+',
+      address: '321 Elm St, Houston, TX',
+      registeredAt: '2024-03-25T16:20:00Z'
+    },
+    {
+      id: '5',
+      name: 'David Wilson',
+      phone: '+1-555-0567',
+      bloodType: 'O-',
+      address: '654 Maple Dr, Phoenix, AZ',
+      registeredAt: '2024-04-05T11:30:00Z'
+    },
+    {
+      id: '6',
+      name: 'Lisa Anderson',
+      phone: '+1-555-0678',
+      bloodType: 'A-',
+      address: '987 Cedar Ln, Philadelphia, PA',
+      registeredAt: '2024-04-18T13:45:00Z'
+    },
+    {
+      id: '7',
+      name: 'Robert Taylor',
+      phone: '+1-555-0789',
+      bloodType: 'B+',
+      address: '147 Birch St, San Antonio, TX',
+      registeredAt: '2024-05-02T08:15:00Z'
+    },
+    {
+      id: '8',
+      name: 'Jennifer White',
+      phone: '+1-555-0890',
+      bloodType: 'AB-',
+      address: '258 Spruce Ave, San Diego, CA',
+      registeredAt: '2024-05-15T15:30:00Z'
+    },
+    {
+      id: '9',
+      name: 'Christopher Lee',
+      phone: '+1-555-0901',
+      bloodType: 'O+',
+      address: '369 Willow Rd, Dallas, TX',
+      registeredAt: '2024-05-28T12:00:00Z'
+    },
+    {
+      id: '10',
+      name: 'Amanda Garcia',
+      phone: '+1-555-1012',
+      bloodType: 'A+',
+      address: '741 Ash Dr, San Jose, CA',
+      registeredAt: '2024-06-03T10:45:00Z'
+    },
+    {
+      id: '11',
+      name: 'Matthew Martinez',
+      phone: '+1-555-1123',
+      bloodType: 'B-',
+      address: '852 Poplar St, Austin, TX',
+      registeredAt: '2024-06-08T14:30:00Z'
+    },
+    {
+      id: '12',
+      name: 'Jessica Rodriguez',
+      phone: '+1-555-1234',
+      bloodType: 'AB+',
+      address: '963 Hickory Ave, Jacksonville, FL',
+      registeredAt: '2024-06-12T09:20:00Z'
+    },
+    {
+      id: '13',
+      name: 'Daniel Hernandez',
+      phone: '+1-555-1345',
+      bloodType: 'O-',
+      address: '159 Walnut Ln, Fort Worth, TX',
+      registeredAt: '2024-06-15T16:45:00Z'
+    },
+    {
+      id: '14',
+      name: 'Ashley Lopez',
+      phone: '+1-555-1456',
+      bloodType: 'A-',
+      address: '753 Chestnut Rd, Columbus, OH',
+      registeredAt: '2024-06-18T11:15:00Z'
+    },
+    {
+      id: '15',
+      name: 'Kevin Gonzalez',
+      phone: '+1-555-1567',
+      bloodType: 'B+',
+      address: '486 Sycamore Dr, Charlotte, NC',
+      registeredAt: '2024-06-20T13:30:00Z'
+    },
+    {
+      id: '16',
+      name: 'Stephanie Wilson',
+      phone: '+1-555-1678',
+      bloodType: 'AB-',
+      address: '297 Magnolia St, Seattle, WA',
+      registeredAt: '2024-06-22T08:45:00Z'
+    },
+    {
+      id: '17',
+      name: 'Brian Anderson',
+      phone: '+1-555-1789',
+      bloodType: 'O+',
+      address: '518 Dogwood Ave, Denver, CO',
+      registeredAt: '2024-06-24T15:20:00Z'
+    },
+    {
+      id: '18',
+      name: 'Michelle Thomas',
+      phone: '+1-555-1890',
+      bloodType: 'A+',
+      address: '629 Redwood Ln, Boston, MA',
+      registeredAt: '2024-06-26T12:10:00Z'
+    },
+    {
+      id: '19',
+      name: 'Steven Jackson',
+      phone: '+1-555-1901',
+      bloodType: 'B-',
+      address: '740 Palm Dr, El Paso, TX',
+      registeredAt: '2024-06-28T10:30:00Z'
+    },
+    {
+      id: '20',
+      name: 'Nicole White',
+      phone: '+1-555-2012',
+      bloodType: 'AB+',
+      address: '851 Cypress Rd, Detroit, MI',
+      registeredAt: '2024-06-30T14:45:00Z'
+    }
+  ];
+
   useEffect(() => {
     const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    setDonors(savedDonors);
+    // Combine saved donors with sample donors, avoiding duplicates
+    const allDonors = [...savedDonors];
+    
+    sampleDonors.forEach(sampleDonor => {
+      if (!allDonors.find(donor => donor.id === sampleDonor.id)) {
+        allDonors.push(sampleDonor);
+      }
+    });
+    
+    setDonors(allDonors);
+    // Save the combined list back to localStorage
+    localStorage.setItem('donors', JSON.stringify(allDonors));
   }, []);
 
   const filteredDonors = donors.filter(donor => {
