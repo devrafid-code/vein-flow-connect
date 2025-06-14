@@ -154,89 +154,95 @@ const Index = () => {
                 
                 <CardContent className="p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-8">
-                    {/* Horizontal Input Fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      <div className="space-y-3">
-                        <Label htmlFor="name" className="text-gray-700 font-semibold flex items-center gap-2">
-                          <Users className="h-4 w-4 text-red-600" />
-                          Full Name
-                        </Label>
-                        <Input 
-                          id="name" 
-                          name="name" 
-                          value={formData.name} 
-                          onChange={handleInputChange} 
-                          placeholder="Enter your full name" 
-                          className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
-                          required 
-                        />
+                    {/* 2-Column Layout for Inputs and Button */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Left Column - Input Fields */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                          <Label htmlFor="name" className="text-gray-700 font-semibold flex items-center gap-2">
+                            <Users className="h-4 w-4 text-red-600" />
+                            Full Name
+                          </Label>
+                          <Input 
+                            id="name" 
+                            name="name" 
+                            value={formData.name} 
+                            onChange={handleInputChange} 
+                            placeholder="Enter your full name" 
+                            className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
+                            required 
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <Label htmlFor="phone" className="text-gray-700 font-semibold flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-red-600" />
+                            Phone Number
+                          </Label>
+                          <Input 
+                            id="phone" 
+                            name="phone" 
+                            value={formData.phone} 
+                            onChange={handleInputChange} 
+                            placeholder="Your phone number" 
+                            className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
+                            required 
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <Label htmlFor="bloodType" className="text-gray-700 font-semibold flex items-center gap-2">
+                            <Droplets className="h-4 w-4 text-red-600" />
+                            Blood Type
+                          </Label>
+                          <select 
+                            id="bloodType" 
+                            name="bloodType" 
+                            value={formData.bloodType} 
+                            onChange={handleInputChange} 
+                            className="flex h-12 w-full rounded-md border-2 border-gray-200 bg-background px-4 py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" 
+                            required
+                          >
+                            <option value="">Select blood type</option>
+                            {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                          </select>
+                        </div>
+
+                        <div className="space-y-3">
+                          <Label htmlFor="address" className="text-gray-700 font-semibold flex items-center gap-2">
+                            <MapPin className="h-4 w-4 text-red-600" />
+                            Address
+                          </Label>
+                          <Input 
+                            id="address" 
+                            name="address" 
+                            value={formData.address} 
+                            onChange={handleInputChange} 
+                            placeholder="Your address" 
+                            className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
+                            required 
+                          />
+                        </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <Label htmlFor="phone" className="text-gray-700 font-semibold flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-red-600" />
-                          Phone Number
-                        </Label>
-                        <Input 
-                          id="phone" 
-                          name="phone" 
-                          value={formData.phone} 
-                          onChange={handleInputChange} 
-                          placeholder="Your phone number" 
-                          className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
-                          required 
-                        />
+                      {/* Right Column - Button and Description */}
+                      <div className="flex flex-col justify-center space-y-6">
+                        <div className="text-center space-y-4">
+                          <Button 
+                            type="submit" 
+                            className="bg-red-600 hover:bg-red-700 font-bold py-4 px-12 text-lg w-full"
+                          >
+                            <Heart className="h-5 w-5 mr-3" />
+                            Register as Blood Donor
+                            <ArrowRight className="h-5 w-5 ml-3" />
+                          </Button>
+                          
+                          <p className="text-sm text-gray-500 leading-relaxed">
+                            By registering, you agree to be contacted for donation opportunities. 
+                            Your information is secure and will only be used for blood donation coordination.
+                          </p>
+                        </div>
                       </div>
-
-                      <div className="space-y-3">
-                        <Label htmlFor="bloodType" className="text-gray-700 font-semibold flex items-center gap-2">
-                          <Droplets className="h-4 w-4 text-red-600" />
-                          Blood Type
-                        </Label>
-                        <select 
-                          id="bloodType" 
-                          name="bloodType" 
-                          value={formData.bloodType} 
-                          onChange={handleInputChange} 
-                          className="flex h-12 w-full rounded-md border-2 border-gray-200 bg-background px-4 py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" 
-                          required
-                        >
-                          <option value="">Select blood type</option>
-                          {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
-                        </select>
-                      </div>
-
-                      <div className="space-y-3">
-                        <Label htmlFor="address" className="text-gray-700 font-semibold flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-red-600" />
-                          Address
-                        </Label>
-                        <Input 
-                          id="address" 
-                          name="address" 
-                          value={formData.address} 
-                          onChange={handleInputChange} 
-                          placeholder="Your address" 
-                          className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
-                          required 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="text-center space-y-4">
-                      <Button 
-                        type="submit" 
-                        className="bg-red-600 hover:bg-red-700 font-bold py-4 px-12 text-lg"
-                      >
-                        <Heart className="h-5 w-5 mr-3" />
-                        Register as Blood Donor
-                        <ArrowRight className="h-5 w-5 ml-3" />
-                      </Button>
-                      
-                      <p className="text-sm text-gray-500 max-w-md mx-auto leading-relaxed">
-                        By registering, you agree to be contacted for donation opportunities. 
-                        Your information is secure and will only be used for blood donation coordination.
-                      </p>
                     </div>
                   </form>
                 </CardContent>
