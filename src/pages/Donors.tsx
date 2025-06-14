@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 interface Donor {
   id: string;
@@ -40,6 +42,10 @@ const Donors = () => {
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
   return (
@@ -162,29 +168,40 @@ const Donors = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDonors.map((donor) => (
-              <Card key={donor.id} className="border-2 border-red-100 hover:border-red-300 transition-colors">
+              <Card key={donor.id} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="bg-red-600 rounded-full w-12 h-12 flex items-center justify-center text-white font-bold text-lg mr-4">
-                      {donor.bloodType}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{donor.name}</h3>
+                  <div className="flex items-start space-x-4 mb-6">
+                    <Avatar className="h-12 w-12 ring-2 ring-red-100">
+                      <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-600 text-white font-semibold">
+                        {getInitials(donor.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">{donor.name}</h3>
+                      <Badge variant="secondary" className="bg-red-50 text-red-700 border-red-200 font-medium">
+                        {donor.bloodType}
+                      </Badge>
                     </div>
                   </div>
                   
                   <div className="space-y-3">
                     <div className="flex items-center text-sm text-gray-600">
-                      <Phone className="h-4 w-4 mr-2 text-red-600" />
-                      {donor.phone}
+                      <div className="bg-gray-100 rounded-full p-1.5 mr-3">
+                        <Phone className="h-3.5 w-3.5 text-gray-500" />
+                      </div>
+                      <span className="truncate">{donor.phone}</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
-                      <MapPin className="h-4 w-4 mr-2 text-red-600" />
-                      {donor.address}
+                      <div className="bg-gray-100 rounded-full p-1.5 mr-3">
+                        <MapPin className="h-3.5 w-3.5 text-gray-500" />
+                      </div>
+                      <span className="truncate">{donor.address}</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
-                      <Calendar className="h-4 w-4 mr-2 text-red-600" />
-                      Registered {formatDate(donor.registeredAt)}
+                      <div className="bg-gray-100 rounded-full p-1.5 mr-3">
+                        <Calendar className="h-3.5 w-3.5 text-gray-500" />
+                      </div>
+                      <span>Registered {formatDate(donor.registeredAt)}</span>
                     </div>
                   </div>
                 </CardContent>
