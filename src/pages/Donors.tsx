@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity, Grid2X2, Table, Search } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity, Grid2X2, Table, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -301,7 +301,7 @@ const Donors = () => {
         <div className="rounded-2xl p-6 mb-8 px-0">
           <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <List className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
                 placeholder="Search by name or blood type..." 
                 value={searchTerm} 
