@@ -277,13 +277,13 @@ const Donors = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={() => navigate('/register')} className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-200">
-                <Heart className="h-4 w-4 mr-2" />
-                Register as Donor
-              </Button>
               <Button variant="outline" onClick={() => navigate('/')} className="border-gray-200 text-gray-600 hover:bg-gray-50 transition-all duration-200">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Home
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/register')} className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-200">
+                <Heart className="h-4 w-4 mr-2" />
+                Register as Donor
               </Button>
             </div>
           </div>
