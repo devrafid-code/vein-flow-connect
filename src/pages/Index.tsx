@@ -154,7 +154,7 @@ const Index = () => {
                 
                 <CardContent className="p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-8">
-                    {/* 2-Column Layout for Inputs and Button */}
+                    {/* 2-Column Layout with Equal Width */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       {/* Left Column - Input Fields */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -225,8 +225,8 @@ const Index = () => {
                         </div>
                       </div>
 
-                      {/* Right Column - Button and Description */}
-                      <div className="flex flex-col justify-center space-y-6">
+                      {/* Right Column - Button */}
+                      <div className="flex flex-col justify-center">
                         <div className="text-center space-y-4">
                           <Button 
                             type="submit" 
@@ -236,8 +236,6 @@ const Index = () => {
                             Register as Blood Donor
                             <ArrowRight className="h-5 w-5 ml-3" />
                           </Button>
-                          
-                          
                         </div>
                       </div>
                     </div>
