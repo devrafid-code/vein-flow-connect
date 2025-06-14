@@ -87,47 +87,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex flex-col">
-      {/* Animated Blood Vein Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800">
-          <defs>
-            <linearGradient id="bloodGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#dc2626" stopOpacity="0.1" />
-              <stop offset="50%" stopColor="#ef4444" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#dc2626" stopOpacity="0.1" />
-            </linearGradient>
-          </defs>
-          
-          {/* Animated blood vein lines */}
-          <path
-            d="M0,400 Q300,200 600,400 T1200,400"
-            stroke="url(#bloodGradient)"
-            strokeWidth="2"
-            fill="none"
-            className="animate-pulse"
-          />
-          <path
-            d="M0,300 Q400,100 800,300 T1200,300"
-            stroke="url(#bloodGradient)"
-            strokeWidth="1.5"
-            fill="none"
-            className="animate-pulse"
-            style={{ animationDelay: '0.5s' }}
-          />
-          <path
-            d="M0,500 Q200,700 400,500 T800,500 T1200,500"
-            stroke="url(#bloodGradient)"
-            strokeWidth="1"
-            fill="none"
-            className="animate-pulse"
-            style={{ animationDelay: '1s' }}
-          />
-        </svg>
-      </div>
-
+    <div className="min-h-screen relative">
       {/* Navigation */}
-      <nav className="relative z-10 bg-white/90 backdrop-blur-sm border-b border-red-100">
+      <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -166,20 +128,28 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative z-10 container mx-auto px-6 py-12 min-h-[80vh] flex items-center">
+      {/* Full Screen Hero Section */}
+      <section 
+        className="relative min-h-screen bg-cover bg-center bg-no-repeat flex items-center"
+        style={{
+          backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
+        }}
+      >
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
+        
+        {/* Content Container */}
+        <div className="relative z-10 container mx-auto px-6">
           <div className="grid lg:grid-cols-3 gap-12 items-center w-full">
             
             {/* Left Column - Hero Text */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight">
                   Give Life,
-                  <span className="text-red-600 block">Save Lives</span>
+                  <span className="text-red-400 block">Save Lives</span>
                 </h1>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-lg text-white/90 leading-relaxed">
                   Every donation can save up to three lives. Join our community of heroes 
                   and make a difference that lasts a lifetime.
                 </p>
@@ -198,49 +168,28 @@ const Index = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
+              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/20">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">{donorCount.toLocaleString()}+</div>
-                  <div className="text-xs text-gray-600">Active Donors</div>
+                  <div className="text-2xl font-bold text-red-400">{donorCount.toLocaleString()}+</div>
+                  <div className="text-xs text-white/80">Active Donors</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">{livesCount.toLocaleString()}+</div>
-                  <div className="text-xs text-gray-600">Lives Saved</div>
+                  <div className="text-2xl font-bold text-red-400">{livesCount.toLocaleString()}+</div>
+                  <div className="text-xs text-white/80">Lives Saved</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">{unitsCount.toLocaleString()}+</div>
-                  <div className="text-xs text-gray-600">Units Collected</div>
+                  <div className="text-2xl font-bold text-red-400">{unitsCount.toLocaleString()}+</div>
+                  <div className="text-xs text-white/80">Units Collected</div>
                 </div>
               </div>
             </div>
             
-            {/* Middle Column - Happy Blood Donor Image */}
-            <div className="relative flex justify-center">
-              <div className="relative">
-                <img
-                  src="/lovable-uploads/999f8890-845a-441f-9972-c97627361e1c.png"
-                  alt="Happy blood donor"
-                  className="w-full max-w-md h-auto rounded-2xl shadow-2xl"
-                />
-                
-                {/* Floating badges */}
-                <div className="absolute -top-4 -left-4 bg-white rounded-full p-3 shadow-lg border-2 border-red-100">
-                  <Heart className="h-6 w-6 text-red-600 animate-pulse" fill="currentColor" />
-                </div>
-                
-                <div className="absolute -bottom-4 -right-4 bg-red-600 text-white rounded-full p-3 shadow-lg">
-                  <Droplets className="h-6 w-6" />
-                </div>
-                
-                <div className="absolute top-1/2 -right-8 bg-white rounded-lg p-2 shadow-lg border border-red-100">
-                  <div className="text-xs font-semibold text-red-600">3 Lives Saved!</div>
-                </div>
-              </div>
-            </div>
+            {/* Middle Column - Space for visual balance */}
+            <div className="hidden lg:block"></div>
 
             {/* Right Column - Registration Form */}
             <div className="w-full">
-              <Card className="border-2 border-red-100 shadow-xl">
+              <Card className="border-2 border-red-100 shadow-xl bg-white/95 backdrop-blur-sm">
                 <CardHeader className="text-center pb-4">
                   <div className="bg-red-600 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
                     <Heart className="h-6 w-6 text-white" />
@@ -320,11 +269,11 @@ const Index = () => {
               </Card>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="relative z-10 bg-white/90 backdrop-blur-sm border-t border-red-100 mt-auto">
+      <footer className="relative z-10 bg-white/90 backdrop-blur-sm border-t border-red-100">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center">
             <p className="text-sm text-gray-600">
