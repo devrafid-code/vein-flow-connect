@@ -371,7 +371,7 @@ const Donors = () => {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setFilterBloodType('all')}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  className={`px-6 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     filterBloodType === 'all'
                       ? 'bg-red-500 text-white shadow-md'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -383,7 +383,7 @@ const Donors = () => {
                   <button
                     key={type}
                     onClick={() => setFilterBloodType(type)}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    className={`px-6 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                       filterBloodType === type
                         ? 'bg-red-500 text-white shadow-md'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
