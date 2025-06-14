@@ -154,7 +154,7 @@ const Index = () => {
                 
                 <CardContent className="p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-8">
-                    {/* 3-Column Grid Layout - First Row */}
+                    {/* First Row - Name, Phone, Register Button */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {/* Column 1 - Name */}
                       <div className="w-full">
@@ -194,7 +194,22 @@ const Index = () => {
                         </div>
                       </div>
 
-                      {/* Column 3 - Blood Type */}
+                      {/* Column 3 - Register Button */}
+                      <div className="w-full flex flex-col justify-end">
+                        <Button 
+                          type="submit" 
+                          className="bg-red-600 hover:bg-red-700 font-bold py-4 px-6 text-lg h-12 w-full"
+                        >
+                          <Heart className="h-5 w-5 mr-2" />
+                          Register
+                          <ArrowRight className="h-5 w-5 ml-2" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Second Row - Blood Type, Address, Disclaimer */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                      {/* Column 1 - Blood Type */}
                       <div className="w-full">
                         <div className="space-y-3">
                           <Label htmlFor="bloodType" className="text-gray-700 font-semibold flex items-center gap-2">
@@ -214,11 +229,8 @@ const Index = () => {
                           </select>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Second Row - Address */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      {/* Address - 1 column */}
+                      {/* Column 2 - Address */}
                       <div className="w-full">
                         <div className="space-y-3">
                           <Label htmlFor="address" className="text-gray-700 font-semibold flex items-center gap-2">
@@ -236,21 +248,9 @@ const Index = () => {
                           />
                         </div>
                       </div>
-                    </div>
 
-                    {/* Third Row - Register Button and Disclaimer */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      {/* Register Button and Disclaimer - 1 column */}
-                      <div className="w-full space-y-4">
-                        <Button 
-                          type="submit" 
-                          className="bg-red-600 hover:bg-red-700 font-bold py-4 px-6 text-lg h-12 w-full"
-                        >
-                          <Heart className="h-5 w-5 mr-2" />
-                          Register
-                          <ArrowRight className="h-5 w-5 ml-2" />
-                        </Button>
-                        
+                      {/* Column 3 - Disclaimer */}
+                      <div className="w-full flex flex-col justify-end">
                         <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-md border">
                           <p className="font-semibold text-gray-700 mb-1">Quick Registration</p>
                           <p>Join our community of heroes and help save lives with just one donation.</p>
