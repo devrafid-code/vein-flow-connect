@@ -41,16 +41,16 @@ const Dashboard = () => {
   // Get blood type color - using same colors as frontend Donors page
   const getBloodTypeColor = (bloodType: string) => {
     const colors = {
-      'A+': 'from-emerald-400 to-emerald-500',
-      'A-': 'from-emerald-500 to-emerald-600',
-      'B+': 'from-blue-400 to-blue-500',
-      'B-': 'from-blue-500 to-blue-600',
-      'AB+': 'from-purple-400 to-purple-500',
-      'AB-': 'from-purple-500 to-purple-600',
-      'O+': 'from-orange-400 to-orange-500',
-      'O-': 'from-orange-500 to-orange-600'
+      'A+': 'from-red-50 to-red-100 text-red-800 border-red-200',
+      'A-': 'from-red-100 to-red-200 text-red-900 border-red-300',
+      'B+': 'from-blue-50 to-blue-100 text-blue-800 border-blue-200',
+      'B-': 'from-blue-100 to-blue-200 text-blue-900 border-blue-300',
+      'AB+': 'from-purple-50 to-purple-100 text-purple-800 border-purple-200',
+      'AB-': 'from-purple-100 to-purple-200 text-purple-900 border-purple-300',
+      'O+': 'from-green-50 to-green-100 text-green-800 border-green-200',
+      'O-': 'from-green-100 to-green-200 text-green-900 border-green-300'
     };
-    return colors[bloodType as keyof typeof colors] || 'from-red-500 to-red-600';
+    return colors[bloodType as keyof typeof colors] || 'from-gray-50 to-gray-100 text-gray-800 border-gray-200';
   };
 
   // Load donors from localStorage
@@ -170,13 +170,6 @@ const Dashboard = () => {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Home
               </Button>
-              <Button 
-                onClick={() => navigate('/register')}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Donor
-              </Button>
             </div>
           </div>
         </div>
@@ -233,7 +226,16 @@ const Dashboard = () => {
         {/* Donors Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Donors ({filteredDonors.length})</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Donors ({filteredDonors.length})</CardTitle>
+              <Button 
+                onClick={() => navigate('/register')}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add New Donor
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             {filteredDonors.length === 0 ? (
