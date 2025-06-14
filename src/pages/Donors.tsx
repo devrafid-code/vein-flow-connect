@@ -327,7 +327,7 @@ const Donors = () => {
         )}
 
         {/* Filters */}
-        <div className="flex flex-col gap-6 mb-8">
+        <div className="flex flex-col lg:flex-row gap-6 mb-8">
           <div className="flex-1">
             <Input 
               placeholder="Search by name or blood type..." 
@@ -338,7 +338,7 @@ const Donors = () => {
           </div>
           
           {/* Blood Type Chips */}
-          <div className="w-full">
+          <div className="flex-shrink-0">
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilterBloodType('all')}
