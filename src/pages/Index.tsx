@@ -142,58 +142,110 @@ const Index = () => {
         </div>
 
         {/* Registration Form Section */}
-        <div className="relative z-10 pb-12">
+        <div className="relative z-10 pb-16">
           <div className="container mx-auto px-6">
-            <Card className="max-w-4xl mx-auto border-2 border-red-100 shadow-xl bg-white/95 backdrop-blur-sm">
-              <CardHeader className="text-center pb-4">
-                <div className="bg-red-600 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                  <Heart className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-gray-900">Quick Registration</CardTitle>
-                <p className="text-sm text-gray-600">Become a hero today</p>
-              </CardHeader>
-              
-              <CardContent>
-                <form onSubmit={handleQuickRegister} className="space-y-6">
-                  {/* Horizontal Input Fields */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
-                      <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Your full name" className="h-10" required />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
-                      <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Your phone number" className="h-10" required />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="bloodType" className="text-sm font-medium">Blood Type</Label>
-                      <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" required>
-                        <option value="">Select blood type</option>
-                        {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="address" className="text-sm font-medium">Address</Label>
-                      <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="Your address" className="h-10" required />
-                    </div>
-                  </div>
-
+            <div className="max-w-5xl mx-auto">
+              <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-red-600 to-red-700 px-8 py-6">
                   <div className="text-center">
-                    <Button type="submit" className="bg-red-600 hover:bg-red-700 font-semibold py-3 px-8">
-                      <Heart className="h-4 w-4 mr-2" />
-                      Register Now
-                    </Button>
+                    <div className="bg-white rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                      <Heart className="h-8 w-8 text-red-600" />
+                    </div>
+                    <CardTitle className="text-3xl font-bold text-white mb-2">Become a Life Saver</CardTitle>
+                    <p className="text-red-100 text-lg">Join our community of heroes and save lives today</p>
                   </div>
-                  
-                  <p className="text-xs text-gray-500 text-center">
-                    By registering, you agree to be contacted for donation opportunities
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
+                </div>
+                
+                <CardContent className="p-8">
+                  <form onSubmit={handleQuickRegister} className="space-y-8">
+                    {/* Horizontal Input Fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      <div className="space-y-3">
+                        <Label htmlFor="name" className="text-gray-700 font-semibold flex items-center gap-2">
+                          <Users className="h-4 w-4 text-red-600" />
+                          Full Name
+                        </Label>
+                        <Input 
+                          id="name" 
+                          name="name" 
+                          value={formData.name} 
+                          onChange={handleInputChange} 
+                          placeholder="Enter your full name" 
+                          className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
+                          required 
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <Label htmlFor="phone" className="text-gray-700 font-semibold flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-red-600" />
+                          Phone Number
+                        </Label>
+                        <Input 
+                          id="phone" 
+                          name="phone" 
+                          value={formData.phone} 
+                          onChange={handleInputChange} 
+                          placeholder="Your phone number" 
+                          className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
+                          required 
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <Label htmlFor="bloodType" className="text-gray-700 font-semibold flex items-center gap-2">
+                          <Droplets className="h-4 w-4 text-red-600" />
+                          Blood Type
+                        </Label>
+                        <select 
+                          id="bloodType" 
+                          name="bloodType" 
+                          value={formData.bloodType} 
+                          onChange={handleInputChange} 
+                          className="flex h-12 w-full rounded-md border-2 border-gray-200 bg-background px-4 py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" 
+                          required
+                        >
+                          <option value="">Select blood type</option>
+                          {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                        </select>
+                      </div>
+
+                      <div className="space-y-3">
+                        <Label htmlFor="address" className="text-gray-700 font-semibold flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-red-600" />
+                          Address
+                        </Label>
+                        <Input 
+                          id="address" 
+                          name="address" 
+                          value={formData.address} 
+                          onChange={handleInputChange} 
+                          placeholder="Your address" 
+                          className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors" 
+                          required 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="text-center space-y-4">
+                      <Button 
+                        type="submit" 
+                        className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 font-bold py-4 px-12 text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                      >
+                        <Heart className="h-5 w-5 mr-3" />
+                        Register as Blood Donor
+                        <ArrowRight className="h-5 w-5 ml-3" />
+                      </Button>
+                      
+                      <p className="text-sm text-gray-500 max-w-md mx-auto leading-relaxed">
+                        By registering, you agree to be contacted for donation opportunities. 
+                        Your information is secure and will only be used for blood donation coordination.
+                      </p>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
