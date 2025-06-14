@@ -111,28 +111,26 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Full Screen Hero Section */}
-      <section className="relative min-h-screen bg-cover bg-center bg-no-repeat flex items-center" style={{
+      {/* Hero Section with Background */}
+      <section className="relative min-h-screen bg-cover bg-center bg-no-repeat flex flex-col" style={{
       backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
     }}>
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/40"></div>
         
-        {/* Content Container */}
-        <div className="relative z-10 container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
-            
-            {/* Left Column - Hero Text (50% width) */}
-            <div className="space-y-8 flex flex-col justify-center h-full">
+        {/* Hero Text Section */}
+        <div className="relative z-10 flex-1 flex items-center">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto text-center space-y-8">
               <div className="space-y-6">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">Every Donation Can Save up to 3 Lives.</h1>
-                <p className="text-lg text-white/90 leading-relaxed">
+                <p className="text-lg text-white/90 leading-relaxed max-w-2xl mx-auto">
                   Every donation can save up to three lives. Join our community of heroes 
                   and make a difference that lasts a lifetime.
                 </p>
               </div>
               
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 items-center">
                 <Button size="lg" className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6 w-fit" onClick={() => navigate('/donors')}>
                   <Users className="h-5 w-5 mr-2" />
                   View All Donors
@@ -140,20 +138,25 @@ const Index = () => {
                 </Button>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Right Column - Registration Form (50% width) */}
-            <div className="w-full">
-              <Card className="border-2 border-red-100 shadow-xl bg-white/95 backdrop-blur-sm">
-                <CardHeader className="text-center pb-4">
-                  <div className="bg-red-600 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                    <Heart className="h-6 w-6 text-white" />
-                  </div>
-                  <CardTitle className="text-2xl font-bold text-gray-900">Quick Registration</CardTitle>
-                  <p className="text-sm text-gray-600">Become a hero today</p>
-                </CardHeader>
-                
-                <CardContent>
-                  <form onSubmit={handleQuickRegister} className="space-y-4">
+        {/* Registration Form Section */}
+        <div className="relative z-10 pb-12">
+          <div className="container mx-auto px-6">
+            <Card className="max-w-4xl mx-auto border-2 border-red-100 shadow-xl bg-white/95 backdrop-blur-sm">
+              <CardHeader className="text-center pb-4">
+                <div className="bg-red-600 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                  <Heart className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-2xl font-bold text-gray-900">Quick Registration</CardTitle>
+                <p className="text-sm text-gray-600">Become a hero today</p>
+              </CardHeader>
+              
+              <CardContent>
+                <form onSubmit={handleQuickRegister} className="space-y-6">
+                  {/* Horizontal Input Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
                       <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Your full name" className="h-10" required />
@@ -176,19 +179,21 @@ const Index = () => {
                       <Label htmlFor="address" className="text-sm font-medium">Address</Label>
                       <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="Your address" className="h-10" required />
                     </div>
+                  </div>
 
-                    <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 font-semibold py-3">
+                  <div className="text-center">
+                    <Button type="submit" className="bg-red-600 hover:bg-red-700 font-semibold py-3 px-8">
                       <Heart className="h-4 w-4 mr-2" />
                       Register Now
                     </Button>
-                    
-                    <p className="text-xs text-gray-500 text-center">
-                      By registering, you agree to be contacted for donation opportunities
-                    </p>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
+                  </div>
+                  
+                  <p className="text-xs text-gray-500 text-center">
+                    By registering, you agree to be contacted for donation opportunities
+                  </p>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
