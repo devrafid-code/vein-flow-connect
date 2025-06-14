@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Donor {
   id: string;
@@ -327,7 +327,7 @@ const Donors = () => {
         )}
 
         {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <div className="flex flex-col gap-6 mb-8">
           <div className="flex-1">
             <Input 
               placeholder="Search by name or blood type..." 
@@ -336,18 +336,28 @@ const Donors = () => {
               className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
             />
           </div>
-          <div className="md:w-48">
-            <Select value={filterBloodType} onValueChange={setFilterBloodType}>
-              <SelectTrigger className="border-gray-200 focus:border-red-300 focus:ring-red-100">
-                <SelectValue placeholder="All Blood Types" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Blood Types</SelectItem>
+          
+          {/* Blood Type Tabs */}
+          <div className="w-full">
+            <Tabs value={filterBloodType} onValueChange={setFilterBloodType} className="w-full">
+              <TabsList className="grid grid-cols-5 lg:grid-cols-9 w-full h-auto p-1 bg-gray-100 rounded-lg">
+                <TabsTrigger 
+                  value="all" 
+                  className="data-[state=active]:bg-red-500 data-[state=active]:text-white text-sm font-medium py-2"
+                >
+                  All
+                </TabsTrigger>
                 {bloodTypes.map(type => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                  <TabsTrigger 
+                    key={type} 
+                    value={type}
+                    className="data-[state=active]:bg-red-500 data-[state=active]:text-white text-sm font-medium py-2"
+                  >
+                    {type}
+                  </TabsTrigger>
                 ))}
-              </SelectContent>
-            </Select>
+              </TabsList>
+            </Tabs>
           </div>
         </div>
 
