@@ -358,7 +358,7 @@ const Donors = () => {
                 placeholder="Search by name or blood type..." 
                 value={searchTerm} 
                 onChange={e => setSearchTerm(e.target.value)} 
-                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
+                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl" 
               />
             </div>
             
@@ -371,7 +371,7 @@ const Donors = () => {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setFilterBloodType('all')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     filterBloodType === 'all'
                       ? 'bg-red-500 text-white shadow-md'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -383,7 +383,7 @@ const Donors = () => {
                   <button
                     key={type}
                     onClick={() => setFilterBloodType(type)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                       filterBloodType === type
                         ? 'bg-red-500 text-white shadow-md'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -398,12 +398,12 @@ const Donors = () => {
               <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
               
               {/* View Toggle */}
-              <div className="bg-red-50 rounded-lg p-1">
+              <div className="bg-red-50 rounded-xl p-1">
                 <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
-                  <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                  <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white rounded-xl">
                     <Grid2X2 className="h-4 w-4" />
                   </ToggleGroupItem>
-                  <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                  <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white rounded-xl">
                     <Table className="h-4 w-4" />
                   </ToggleGroupItem>
                 </ToggleGroup>
