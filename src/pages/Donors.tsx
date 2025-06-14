@@ -337,27 +337,33 @@ const Donors = () => {
             />
           </div>
           
-          {/* Blood Type Tabs */}
+          {/* Blood Type Chips */}
           <div className="w-full">
-            <Tabs value={filterBloodType} onValueChange={setFilterBloodType} className="w-full">
-              <TabsList className="grid grid-cols-5 lg:grid-cols-9 w-full h-auto p-1 bg-gray-100 rounded-lg">
-                <TabsTrigger 
-                  value="all" 
-                  className="data-[state=active]:bg-red-500 data-[state=active]:text-white text-sm font-medium py-2"
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setFilterBloodType('all')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  filterBloodType === 'all'
+                    ? 'bg-red-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All
+              </button>
+              {bloodTypes.map(type => (
+                <button
+                  key={type}
+                  onClick={() => setFilterBloodType(type)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filterBloodType === type
+                      ? 'bg-red-500 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
-                  All
-                </TabsTrigger>
-                {bloodTypes.map(type => (
-                  <TabsTrigger 
-                    key={type} 
-                    value={type}
-                    className="data-[state=active]:bg-red-500 data-[state=active]:text-white text-sm font-medium py-2"
-                  >
-                    {type}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+                  {type}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
