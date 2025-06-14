@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from 'react';
-import { Heart, Droplets, Calendar, ArrowRight, Users } from 'lucide-react';
+import { Heart, Droplets, Calendar, ArrowRight, Users, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -86,6 +87,14 @@ const Index = () => {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
+              <Button 
+                variant="outline" 
+                className="border-gray-600 text-gray-600 hover:bg-gray-50"
+                onClick={() => navigate('/dashboard')}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Dashboard
+              </Button>
               <Button 
                 variant="outline" 
                 className="border-red-600 text-red-600 hover:bg-red-50"
