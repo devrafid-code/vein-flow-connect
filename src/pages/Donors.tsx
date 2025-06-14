@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -20,7 +21,7 @@ const Donors = () => {
   const navigate = useNavigate();
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterBloodType, setFilterBloodType] = useState('');
+  const [filterBloodType, setFilterBloodType] = useState('all');
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -31,7 +32,7 @@ const Donors = () => {
 
   const filteredDonors = donors.filter(donor => {
     const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || donor.bloodType.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesBloodType = !filterBloodType || donor.bloodType === filterBloodType;
+    const matchesBloodType = filterBloodType === 'all' || donor.bloodType === filterBloodType;
     return matchesSearch && matchesBloodType;
   });
 
@@ -166,7 +167,7 @@ const Donors = () => {
                 <SelectValue placeholder="All Blood Types" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Blood Types</SelectItem>
+                <SelectItem value="all">All Blood Types</SelectItem>
                 {bloodTypes.map(type => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
