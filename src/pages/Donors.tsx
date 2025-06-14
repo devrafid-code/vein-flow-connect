@@ -351,60 +351,62 @@ const Donors = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-8 pb-6 border-b border-gray-200">
-          <div className="flex-1">
-            <Input 
-              placeholder="Search by name or blood type..." 
-              value={searchTerm} 
-              onChange={e => setSearchTerm(e.target.value)} 
-              className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
-            />
-          </div>
-          
-          {/* Vertical separator after search bar */}
-          <div className="hidden lg:block w-px bg-gray-300 mx-2"></div>
-          
-          {/* Blood Type Chips and View Toggle with vertical separators */}
-          <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-            {/* Blood Type Chips */}
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setFilterBloodType('all')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  filterBloodType === 'all'
-                    ? 'bg-red-500 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                All
-              </button>
-              {bloodTypes.map(type => (
+        <div className="bg-red-50/50 rounded-2xl p-6 mb-8 border border-red-100/50">
+          <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
+            <div className="flex-1">
+              <Input 
+                placeholder="Search by name or blood type..." 
+                value={searchTerm} 
+                onChange={e => setSearchTerm(e.target.value)} 
+                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
+              />
+            </div>
+            
+            {/* Vertical separator after search bar */}
+            <div className="hidden lg:block w-px bg-gray-300 mx-2"></div>
+            
+            {/* Blood Type Chips and View Toggle with vertical separators */}
+            <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
+              {/* Blood Type Chips */}
+              <div className="flex flex-wrap gap-2">
                 <button
-                  key={type}
-                  onClick={() => setFilterBloodType(type)}
+                  onClick={() => setFilterBloodType('all')}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    filterBloodType === type
+                    filterBloodType === 'all'
                       ? 'bg-red-500 text-white shadow-md'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  {type}
+                  All
                 </button>
-              ))}
+                {bloodTypes.map(type => (
+                  <button
+                    key={type}
+                    onClick={() => setFilterBloodType(type)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      filterBloodType === type
+                        ? 'bg-red-500 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Vertical separator */}
+              <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
+              
+              {/* View Toggle */}
+              <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
+                <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                  <Grid2X2 className="h-4 w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                  <Table className="h-4 w-4" />
+                </ToggleGroupItem>
+              </ToggleGroup>
             </div>
-            
-            {/* Vertical separator */}
-            <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
-            
-            {/* View Toggle */}
-            <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
-              <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
-                <Grid2X2 className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
-                <Table className="h-4 w-4" />
-              </ToggleGroupItem>
-            </ToggleGroup>
           </div>
         </div>
 
