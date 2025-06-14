@@ -307,13 +307,7 @@ const Admin = () => {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-6">
-                <CardTitle>Users ({filteredUsers.length})</CardTitle>
-                <div className="flex items-center space-x-2">
-                  <Users className="h-5 w-5 text-gray-600" />
-                  <span className="text-sm text-gray-600">Total: {users.length}</span>
-                </div>
-              </div>
+              <CardTitle>Users ({filteredUsers.length})</CardTitle>
               
               <Button onClick={handleAddUser} className="bg-red-600 hover:bg-red-700">
                 <UserPlus className="h-4 w-4 mr-2" />
