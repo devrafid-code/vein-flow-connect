@@ -1,20 +1,19 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Users, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface Donor {
   id: string;
   name: string;
-  email: string;
   phone: string;
   bloodType: string;
-  age: number;
   address: string;
   registeredAt: string;
 }
@@ -22,12 +21,11 @@ interface Donor {
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     phone: '',
     bloodType: '',
-    age: '',
     address: ''
   });
 
@@ -37,7 +35,7 @@ const Register = () => {
     e.preventDefault();
     
     // Validate form
-    if (!formData.name || !formData.email || !formData.phone || !formData.bloodType || !formData.age || !formData.address) {
+    if (!formData.name || !formData.phone || !formData.bloodType || !formData.address) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -50,7 +48,6 @@ const Register = () => {
     const newDonor: Donor = {
       id: Date.now().toString(),
       ...formData,
-      age: parseInt(formData.age),
       registeredAt: new Date().toISOString()
     };
 
@@ -59,12 +56,12 @@ const Register = () => {
     existingDonors.push(newDonor);
     localStorage.setItem('donors', JSON.stringify(existingDonors));
 
-    toast({
-      title: "Registration Successful!",
-      description: "You have been registered as a blood donor.",
-    });
+    // Show success dialog
+    setShowSuccessDialog(true);
+  };
 
-    // Navigate to donors list
+  const handleDialogClose = () => {
+    setShowSuccessDialog(false);
     navigate('/donors');
   };
 
@@ -114,60 +111,28 @@ const Register = () => {
             
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    required
+                  />
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="Enter your phone number"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="age">Age</Label>
-                    <Input
-                      id="age"
-                      name="age"
-                      type="number"
-                      min="18"
-                      max="65"
-                      value={formData.age}
-                      onChange={handleInputChange}
-                      placeholder="Enter your age"
-                      required
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="Enter your phone number"
+                    required
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -208,6 +173,70 @@ const Register = () => {
           </Card>
         </div>
       </div>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl font-bold text-red-600 mb-4">
+              Welcome, Hero! 🎉
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="text-center space-y-6">
+            {/* Animated Hearts */}
+            <div className="relative flex justify-center items-center h-24">
+              <Heart className="h-16 w-16 text-red-600 animate-pulse" fill="currentColor" />
+              <Heart className="absolute h-8 w-8 text-red-400 animate-bounce" fill="currentColor" style={{ top: '10px', left: '30px' }} />
+              <Heart className="absolute h-6 w-6 text-red-300 animate-pulse" fill="currentColor" style={{ bottom: '15px', right: '25px', animationDelay: '0.5s' }} />
+            </div>
+
+            {/* Success Message */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-gray-900">
+                You're About to Save Lives! 💪
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Your registration could help save up to <span className="font-bold text-red-600">3 lives</span> with just one donation. 
+                You've joined a community of heroes making a real difference.
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4 py-4 border-t border-gray-100">
+              <div className="text-center">
+                <div className="flex justify-center mb-2">
+                  <Users className="h-6 w-6 text-red-600" />
+                </div>
+                <div className="text-sm font-medium text-gray-900">3 Lives</div>
+                <div className="text-xs text-gray-500">Per Donation</div>
+              </div>
+              <div className="text-center">
+                <div className="flex justify-center mb-2">
+                  <Clock className="h-6 w-6 text-red-600" />
+                </div>
+                <div className="text-sm font-medium text-gray-900">10 Min</div>
+                <div className="text-xs text-gray-500">Process Time</div>
+              </div>
+              <div className="text-center">
+                <div className="flex justify-center mb-2">
+                  <Droplets className="h-6 w-6 text-red-600" />
+                </div>
+                <div className="text-sm font-medium text-gray-900">56 Days</div>
+                <div className="text-xs text-gray-500">Between Donations</div>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <Button 
+              onClick={handleDialogClose}
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3"
+            >
+              View All Donors
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
