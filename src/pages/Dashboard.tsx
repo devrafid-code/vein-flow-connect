@@ -38,19 +38,9 @@ const Dashboard = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  // Get blood type color - using subtle red variations
+  // Get blood type color - using consistent black background with white text
   const getBloodTypeColor = (bloodType: string) => {
-    const colors = {
-      'A+': 'from-red-50 to-red-100 text-red-700 border-red-200',
-      'A-': 'from-red-100 to-red-150 text-red-800 border-red-250',
-      'B+': 'from-red-75 to-red-125 text-red-750 border-red-225',
-      'B-': 'from-red-125 to-red-175 text-red-825 border-red-275',
-      'AB+': 'from-red-100 to-red-150 text-red-800 border-red-250',
-      'AB-': 'from-red-150 to-red-200 text-red-850 border-red-300',
-      'O+': 'from-red-75 to-red-125 text-red-750 border-red-225',
-      'O-': 'from-red-125 to-red-175 text-red-825 border-red-275'
-    };
-    return colors[bloodType as keyof typeof colors] || 'from-red-50 to-red-100 text-red-700 border-red-200';
+    return 'bg-black text-white border-gray-800';
   };
 
   // Load donors from localStorage
@@ -261,7 +251,7 @@ const Dashboard = () => {
                       {/* Name & Blood Type Column */}
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
-                          <div className={`bg-gradient-to-br ${getBloodTypeColor(donor.bloodType)} rounded-full p-2 flex items-center justify-center w-10 h-10 border`}>
+                          <div className={`${getBloodTypeColor(donor.bloodType)} rounded-full p-2 flex items-center justify-center w-10 h-10 border`}>
                             <span className="font-bold text-sm">{donor.bloodType}</span>
                           </div>
                           <div>
