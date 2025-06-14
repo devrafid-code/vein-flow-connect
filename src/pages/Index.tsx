@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Heart, Droplets, Calendar, ArrowRight, Users, Settings, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -145,9 +146,9 @@ const Index = () => {
             {/* Left Column - Hero Text */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight">
-                  Give Life,
-                  <span className="text-red-400 block">Save Lives</span>
+                <h1 className="text-6xl lg:text-8xl font-bold text-white leading-tight">
+                  Save Lives,
+                  <span className="text-red-400 block">Share Hope</span>
                 </h1>
                 <p className="text-lg text-white/90 leading-relaxed">
                   Every donation can save up to three lives. Join our community of heroes 
