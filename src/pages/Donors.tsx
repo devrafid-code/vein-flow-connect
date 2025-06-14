@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User } from 'lucide-react';
@@ -191,10 +190,8 @@ const Donors = () => {
                   {/* Content section */}
                   <div className="p-6 pt-2">
                     {/* Mobile number prominently displayed */}
-                    <div className="flex items-center mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
-                      <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-2 mr-3 shadow-md">
-                        <Phone className="h-4 w-4 text-white" />
-                      </div>
+                    <div className="flex items-center mb-4">
+                      <Phone className="h-5 w-5 text-green-600 mr-3" />
                       <span className="text-lg font-bold text-gray-900">{donor.phone}</span>
                     </div>
                     
