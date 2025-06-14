@@ -47,7 +47,7 @@ const LoginForm = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@lifeflow.com"
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -59,7 +59,7 @@ const LoginForm = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="admin123 or user123"
+              placeholder="Enter your password"
               required
             />
           </div>
@@ -68,12 +68,6 @@ const LoginForm = () => {
             Login
           </Button>
         </form>
-        
-        <div className="mt-4 text-sm text-gray-600">
-          <p>Demo credentials:</p>
-          <p>Admin: admin@lifeflow.com / admin123</p>
-          <p>User: any user email / user123</p>
-        </div>
       </CardContent>
     </Card>
   );
