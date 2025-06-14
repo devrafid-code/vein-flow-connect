@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -259,15 +260,6 @@ const Donors = () => {
 
         {/* Filters */}
         <div className="flex flex-col lg:flex-row gap-6 mb-8">
-          <div className="flex-1">
-            <Input 
-              placeholder="Search by name or blood type..." 
-              value={searchTerm} 
-              onChange={e => setSearchTerm(e.target.value)} 
-              className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
-            />
-          </div>
-          
           {/* Blood Type Chips */}
           <div className="flex-shrink-0">
             <div className="flex flex-wrap gap-2">
@@ -295,6 +287,15 @@ const Donors = () => {
                 </button>
               ))}
             </div>
+          </div>
+          
+          <div className="flex-1">
+            <Input 
+              placeholder="Search by name or blood type..." 
+              value={searchTerm} 
+              onChange={e => setSearchTerm(e.target.value)} 
+              className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100" 
+            />
           </div>
         </div>
 
