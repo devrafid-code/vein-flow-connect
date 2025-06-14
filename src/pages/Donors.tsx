@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity, Grid2X2, Table } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity, Grid2X2, Table, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -300,8 +300,14 @@ const Donors = () => {
         {/* Filters */}
         <div className="rounded-2xl p-6 mb-8 px-0">
           <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
-            <div className="flex-1">
-              <Input placeholder="Search by name or blood type..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl h-10" />
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search by name or blood type..." 
+                value={searchTerm} 
+                onChange={e => setSearchTerm(e.target.value)} 
+                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl h-10 pl-10" 
+              />
             </div>
             
             {/* Vertical separator after search bar */}
