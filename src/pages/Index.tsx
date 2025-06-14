@@ -166,22 +166,6 @@ const Index = () => {
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </div>
-
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/20">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-400">{donorCount.toLocaleString()}+</div>
-                  <div className="text-xs text-white/80">Active Donors</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-400">{livesCount.toLocaleString()}+</div>
-                  <div className="text-xs text-white/80">Lives Saved</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-400">{unitsCount.toLocaleString()}+</div>
-                  <div className="text-xs text-white/80">Units Collected</div>
-                </div>
-              </div>
             </div>
             
             {/* Middle Column - Space for visual balance */}
