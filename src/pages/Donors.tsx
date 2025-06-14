@@ -1,11 +1,14 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity, Grid2X2, Table } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Table as TableComponent, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface Donor {
   id: string;
@@ -22,6 +25,7 @@ const Donors = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBloodType, setFilterBloodType] = useState('all');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -223,6 +227,96 @@ const Donors = () => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
+  const renderGridView = () => (
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
+      {filteredDonors.map(donor => (
+        <Card 
+          key={donor.id} 
+          className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${
+            hoveredCard && hoveredCard !== donor.id 
+              ? 'scale-95 opacity-75' 
+              : hoveredCard === donor.id 
+                ? 'shadow-2xl scale-105 z-50' 
+                : 'hover:shadow-2xl hover:-translate-y-2'
+          } bg-gradient-to-br from-white via-white to-gray-50/30`}
+          onMouseEnter={() => setHoveredCard(donor.id)}
+          onMouseLeave={() => setHoveredCard(null)}
+        >
+          <CardContent className="p-0">
+            {/* Header section with gradient */}
+            <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
+              <div className="flex items-center space-x-4">
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
+                  {donor.bloodType}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
+                </div>
+              </div>
+            </div>
+            
+            {/* Content section */}
+            <div className="p-6 pt-2">
+              {/* Mobile number prominently displayed */}
+              <div className="flex items-center mb-4">
+                <Phone className="h-5 w-5 text-green-600 mr-3" />
+                <span className="text-lg font-bold text-gray-900">{donor.phone}</span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
+                  <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
+                    <MapPin className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <span className="truncate text-sm font-medium">{donor.address}</span>
+                </div>
+                <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
+                  <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <span className="text-sm font-medium">Registered {formatDate(donor.registeredAt)}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const renderTableView = () => (
+    <Card className="border-0 shadow-lg bg-white">
+      <CardContent className="p-0">
+        <TableComponent>
+          <TableHeader>
+            <TableRow className="bg-gradient-to-r from-red-50 to-red-25">
+              <TableHead className="font-bold text-gray-900">Name</TableHead>
+              <TableHead className="font-bold text-gray-900">Blood Type</TableHead>
+              <TableHead className="font-bold text-gray-900">Phone</TableHead>
+              <TableHead className="font-bold text-gray-900">Address</TableHead>
+              <TableHead className="font-bold text-gray-900">Registered</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredDonors.map(donor => (
+              <TableRow key={donor.id} className="hover:bg-red-50/50 transition-colors duration-200">
+                <TableCell className="font-medium text-gray-900">{donor.name}</TableCell>
+                <TableCell>
+                  <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold">
+                    {donor.bloodType}
+                  </Badge>
+                </TableCell>
+                <TableCell className="font-semibold text-green-700">{donor.phone}</TableCell>
+                <TableCell className="text-gray-600 max-w-xs truncate">{donor.address}</TableCell>
+                <TableCell className="text-gray-600">{formatDate(donor.registeredAt)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </TableComponent>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30">
       {/* Navigation */}
@@ -268,8 +362,9 @@ const Donors = () => {
             />
           </div>
           
-          {/* Blood Type Chips */}
-          <div className="flex-shrink-0">
+          {/* Blood Type Chips and View Toggle */}
+          <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
+            {/* Blood Type Chips */}
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilterBloodType('all')}
@@ -295,10 +390,20 @@ const Donors = () => {
                 </button>
               ))}
             </div>
+            
+            {/* View Toggle */}
+            <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'table')}>
+              <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                <Grid2X2 className="h-4 w-4" />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white">
+                <Table className="h-4 w-4" />
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
         </div>
 
-        {/* Donors Grid */}
+        {/* Donors List */}
         {filteredDonors.length === 0 ? (
           <Card className="text-center py-16 border-0 shadow-xl bg-gradient-to-br from-white to-gray-50/50">
             <CardContent>
@@ -316,60 +421,7 @@ const Donors = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-            {filteredDonors.map(donor => (
-              <Card 
-                key={donor.id} 
-                className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${
-                  hoveredCard && hoveredCard !== donor.id 
-                    ? 'scale-95 opacity-75' 
-                    : hoveredCard === donor.id 
-                      ? 'shadow-2xl scale-105 z-50' 
-                      : 'hover:shadow-2xl hover:-translate-y-2'
-                } bg-gradient-to-br from-white via-white to-gray-50/30`}
-                onMouseEnter={() => setHoveredCard(donor.id)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <CardContent className="p-0">
-                  {/* Header section with gradient */}
-                  <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
-                        {donor.bloodType}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Content section */}
-                  <div className="p-6 pt-2">
-                    {/* Mobile number prominently displayed */}
-                    <div className="flex items-center mb-4">
-                      <Phone className="h-5 w-5 text-green-600 mr-3" />
-                      <span className="text-lg font-bold text-gray-900">{donor.phone}</span>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
-                        <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
-                          <MapPin className="h-4 w-4 text-gray-500" />
-                        </div>
-                        <span className="truncate text-sm font-medium">{donor.address}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
-                        <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
-                          <Calendar className="h-4 w-4 text-gray-500" />
-                        </div>
-                        <span className="text-sm font-medium">Registered {formatDate(donor.registeredAt)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          viewMode === 'grid' ? renderGridView() : renderTableView()
         )}
       </div>
     </div>
