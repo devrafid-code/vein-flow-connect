@@ -111,30 +111,7 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Text Section - Moved to top */}
-      <section className="relative z-10 bg-red-600 text-white py-12">
-        <div className="container mx-auto px-6">
-          <div className="space-y-8 flex flex-col justify-center h-full">
-            <div className="space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">Every Donation Can Save up to 3 Lives.</h1>
-              <p className="text-lg text-white/90 leading-relaxed">
-                Every donation can save up to three lives. Join our community of heroes 
-                and make a difference that lasts a lifetime.
-              </p>
-            </div>
-            
-            <div className="flex flex-col gap-4">
-              <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 text-lg px-8 py-6 w-fit" onClick={() => navigate('/donors')}>
-                <Users className="h-5 w-5 mr-2" />
-                View All Donors
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Registration Form Section */}
+      {/* Full Screen Hero Section */}
       <section className="relative min-h-screen bg-cover bg-center bg-no-repeat flex items-center" style={{
       backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
     }}>
@@ -143,9 +120,29 @@ const Index = () => {
         
         {/* Content Container */}
         <div className="relative z-10 container mx-auto px-6">
-          <div className="flex justify-center items-center w-full">
-            {/* Registration Form */}
-            <div className="w-full max-w-md">
+          <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
+            
+            {/* Left Column - Hero Text (50% width) */}
+            <div className="space-y-8 flex flex-col justify-center h-full">
+              <div className="space-y-6">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">Every Donation Can Save up to 3 Lives.</h1>
+                <p className="text-lg text-white/90 leading-relaxed">
+                  Every donation can save up to three lives. Join our community of heroes 
+                  and make a difference that lasts a lifetime.
+                </p>
+              </div>
+              
+              <div className="flex flex-col gap-4">
+                <Button size="lg" className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6 w-fit" onClick={() => navigate('/donors')}>
+                  <Users className="h-5 w-5 mr-2" />
+                  View All Donors
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Column - Registration Form (50% width) */}
+            <div className="w-full">
               <Card className="border-2 border-red-100 shadow-xl bg-white/95 backdrop-blur-sm">
                 <CardHeader className="text-center pb-4">
                   <div className="bg-red-600 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
