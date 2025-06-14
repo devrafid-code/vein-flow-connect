@@ -125,42 +125,47 @@ const Donors = () => {
                 Register as Donor
               </Button>
             </CardContent>
-          </Card> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredDonors.map(donor => <Card key={donor.id} className="group hover:shadow-2xl transition-all duration-500 border-0 shadow-lg hover:-translate-y-2 bg-gradient-to-br from-white via-white to-gray-50/30 backdrop-blur-sm overflow-hidden">
+          </Card> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredDonors.map(donor => <Card key={donor.id} className="group hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-red-200 bg-white overflow-hidden">
                 <CardContent className="p-0">
-                  {/* Header section with gradient */}
-                  <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
-                    <div className="flex items-center justify-center space-x-4">
-                      <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
+                  {/* Header with blood type badge */}
+                  <div className="relative bg-gradient-to-r from-red-500 to-red-600 p-6 text-white">
+                    <div className="absolute top-4 right-4">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-bold">
                         {donor.bloodType}
                       </div>
-                      <div className="flex-1 min-w-0 text-center">
-                        <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200 text-left">{donor.name}</h3>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-2xl font-bold">
+                        {getInitials(donor.name)}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold mb-1">{donor.name}</h3>
+                        <p className="text-red-100 text-sm">Blood Donor</p>
                       </div>
                     </div>
                   </div>
                   
                   {/* Content section */}
-                  <div className="p-6 pt-2">
-                    {/* Mobile number prominently displayed */}
-                    <div className="flex items-center mb-4">
+                  <div className="p-6 space-y-4">
+                    {/* Phone number - prominent */}
+                    <div className="flex items-center justify-center bg-green-50 rounded-lg p-3 border border-green-200">
                       <Phone className="h-5 w-5 text-green-600 mr-3" />
-                      <span className="text-lg font-bold text-gray-900">{donor.phone}</span>
+                      <span className="text-lg font-semibold text-green-700">{donor.phone}</span>
                     </div>
                     
-                    <div className="space-y-3">
-                      <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
-                        <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
-                          <MapPin className="h-4 w-4 text-gray-500" />
-                        </div>
-                        <span className="truncate text-sm font-medium">{donor.address}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
-                        <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
-                          <Calendar className="h-4 w-4 text-gray-500" />
-                        </div>
-                        <span className="text-sm font-medium">Registered {formatDate(donor.registeredAt)}</span>
-                      </div>
+                    {/* Address */}
+                    <div className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50">
+                      <MapPin className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700 text-sm leading-relaxed">{donor.address}</span>
+                    </div>
+                    
+                    {/* Registration date */}
+                    <div className="flex items-center space-x-3 p-3 rounded-lg bg-blue-50">
+                      <Calendar className="h-5 w-5 text-blue-500" />
+                      <span className="text-blue-700 text-sm font-medium">
+                        Registered {formatDate(donor.registeredAt)}
+                      </span>
                     </div>
                   </div>
                 </CardContent>
