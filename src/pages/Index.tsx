@@ -129,7 +129,7 @@ const Index = () => {
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center space-y-4">
               <div className="space-y-3 sm:space-y-4">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight px-4">Every Donation Can Save up to 3 Lives.</h1>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight px-4 xl:text-7xl">Every Donation Can Save up to 3 Lives.</h1>
                 <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-2xl mx-auto px-4"> Join our community of heroes and make a difference that lasts a lifetime.</p>
               </div>
               
