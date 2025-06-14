@@ -120,7 +120,7 @@ const Index = () => {
 
       {/* Hero Section with Background */}
       <section className="relative min-h-screen bg-cover bg-center bg-no-repeat flex flex-col" style={{
-      backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
+      backgroundImage: `url('/lovable-uploads/97b71b50-5bd3-4b13-8fd4-e791eab05646.png')`
     }}>
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/40"></div>
