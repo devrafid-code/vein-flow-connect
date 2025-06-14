@@ -146,13 +146,11 @@ const Index = () => {
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
-                <div className="bg-red-600 px-8 py-4">
-                  <div className="text-center">
-                    <CardTitle className="text-2xl font-bold text-white">Register as Blood Donor</CardTitle>
-                  </div>
-                </div>
-                
                 <CardContent className="p-8">
+                  <div className="text-center mb-8">
+                    <CardTitle className="text-2xl font-bold text-gray-900">Register as Blood Donor</CardTitle>
+                  </div>
+                  
                   <form onSubmit={handleQuickRegister} className="space-y-8">
                     {/* First Row - Name, Phone, Register Button */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
