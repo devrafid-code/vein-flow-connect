@@ -38,19 +38,19 @@ const Dashboard = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  // Get blood type color
+  // Get blood type color - using same colors as frontend Donors page
   const getBloodTypeColor = (bloodType: string) => {
     const colors = {
-      'A+': 'from-red-500 to-red-600',
-      'A-': 'from-blue-500 to-blue-600',
-      'B+': 'from-green-500 to-green-600',
-      'B-': 'from-purple-500 to-purple-600',
-      'AB+': 'from-orange-500 to-orange-600',
-      'AB-': 'from-pink-500 to-pink-600',
-      'O+': 'from-yellow-500 to-yellow-600',
-      'O-': 'from-indigo-500 to-indigo-600'
+      'A+': 'from-emerald-400 to-emerald-500',
+      'A-': 'from-emerald-500 to-emerald-600',
+      'B+': 'from-blue-400 to-blue-500',
+      'B-': 'from-blue-500 to-blue-600',
+      'AB+': 'from-purple-400 to-purple-500',
+      'AB-': 'from-purple-500 to-purple-600',
+      'O+': 'from-orange-400 to-orange-500',
+      'O-': 'from-orange-500 to-orange-600'
     };
-    return colors[bloodType as keyof typeof colors] || 'from-gray-500 to-gray-600';
+    return colors[bloodType as keyof typeof colors] || 'from-red-500 to-red-600';
   };
 
   // Load donors from localStorage
