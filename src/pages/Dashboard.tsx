@@ -62,8 +62,17 @@ const Dashboard = () => {
     return matchesSearch && matchesBloodType;
   });
 
-  // Handle edit donor
+  // Handle edit donor - only for admin users
   const handleEditDonor = (donor: Donor) => {
+    if (!isAdmin()) {
+      toast({
+        title: "Access Denied",
+        description: "Only admin users can edit donor information",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setSelectedDonor(donor);
     setEditFormData({
       name: donor.name,
@@ -74,9 +83,9 @@ const Dashboard = () => {
     setShowEditDialog(true);
   };
 
-  // Handle save edit
+  // Handle save edit - only for admin users
   const handleSaveEdit = () => {
-    if (!selectedDonor) return;
+    if (!selectedDonor || !isAdmin()) return;
 
     // Validate form
     if (!editFormData.name || !editFormData.phone || !editFormData.bloodType || !editFormData.address) {
@@ -105,15 +114,24 @@ const Dashboard = () => {
     });
   };
 
-  // Handle delete donor
+  // Handle delete donor - only for admin users
   const handleDeleteDonor = (donor: Donor) => {
+    if (!isAdmin()) {
+      toast({
+        title: "Access Denied",
+        description: "Only admin users can delete donor information",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setSelectedDonor(donor);
     setShowDeleteDialog(true);
   };
 
-  // Confirm delete
+  // Confirm delete - only for admin users
   const confirmDelete = () => {
-    if (!selectedDonor) return;
+    if (!selectedDonor || !isAdmin()) return;
 
     const updatedDonors = donors.filter(donor => donor.id !== selectedDonor.id);
     setDonors(updatedDonors);
@@ -325,7 +343,9 @@ const Dashboard = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleEditDonor(donor)}
-                          className="border-gray-200 text-gray-600 hover:bg-gray-50"
+                          disabled={!isAdmin()}
+                          className={`border-gray-200 ${isAdmin() ? 'text-gray-600 hover:bg-gray-50' : 'text-gray-400 cursor-not-allowed'}`}
+                          title={!isAdmin() ? "Only admin users can edit donor information" : "Edit donor"}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -333,7 +353,9 @@ const Dashboard = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDeleteDonor(donor)}
-                          className="border-red-200 text-red-600 hover:bg-red-50"
+                          disabled={!isAdmin()}
+                          className={`border-red-200 ${isAdmin() ? 'text-red-600 hover:bg-red-50' : 'text-gray-400 cursor-not-allowed'}`}
+                          title={!isAdmin() ? "Only admin users can delete donor information" : "Delete donor"}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
