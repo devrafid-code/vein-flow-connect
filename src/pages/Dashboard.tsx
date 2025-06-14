@@ -291,34 +291,31 @@ const Dashboard = () => {
                       {/* Name & Blood Type Column */}
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
-                          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-full p-2">
-                            <Droplets className="h-4 w-4 text-white" />
+                          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-full p-2 flex items-center justify-center w-10 h-10">
+                            <span className="text-white font-bold text-sm">{donor.bloodType}</span>
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">{donor.name}</h3>
-                            <Badge variant="secondary" className="bg-red-100 text-red-800 text-xs">
-                              {donor.bloodType}
-                            </Badge>
                           </div>
                         </div>
                       </div>
 
                       {/* Phone Column */}
-                      <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <span className="text-sm text-primary font-medium">{donor.phone}</span>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="h-4 w-4 text-gray-600" />
+                        <span className="text-sm text-black font-medium">{donor.phone}</span>
                       </div>
 
                       {/* Address Column */}
-                      <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span className="text-sm text-primary font-medium truncate">{donor.address}</span>
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="h-4 w-4 text-gray-600" />
+                        <span className="text-sm text-black font-medium truncate">{donor.address}</span>
                       </div>
 
                       {/* Registration Date Column */}
-                      <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                        <Calendar className="h-4 w-4 text-primary" />
-                        <span className="text-sm text-primary font-medium">{formatDate(donor.registeredAt)}</span>
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="h-4 w-4 text-gray-600" />
+                        <span className="text-sm text-black font-medium">{formatDate(donor.registeredAt)}</span>
                       </div>
 
                       {/* Actions Column */}
