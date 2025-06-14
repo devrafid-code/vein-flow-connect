@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from 'react';
-import { Heart, Droplets, Users, Calendar, ArrowRight, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Heart, Droplets, Calendar, ArrowRight, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const [donorCount, setDonorCount] = useState(0);
   const [livesCount, setLivesCount] = useState(0);
   const [unitsCount, setUnitsCount] = useState(0);
+  const navigate = useNavigate();
 
   // Animated counter effect
   useEffect(() => {
@@ -86,12 +87,20 @@ const Index = () => {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#about" className="text-gray-700 hover:text-red-600 transition-colors">About</a>
-              <a href="#process" className="text-gray-700 hover:text-red-600 transition-colors">Process</a>
-              <a href="#locations" className="text-gray-700 hover:text-red-600 transition-colors">Locations</a>
-              <Button className="bg-red-600 hover:bg-red-700">
+              <Button 
+                variant="outline" 
+                className="border-red-600 text-red-600 hover:bg-red-50"
+                onClick={() => navigate('/donors')}
+              >
+                <Users className="h-4 w-4 mr-2" />
+                View Donors
+              </Button>
+              <Button 
+                className="bg-red-600 hover:bg-red-700"
+                onClick={() => navigate('/register')}
+              >
                 <Heart className="h-4 w-4 mr-2" />
-                Donate Now
+                Register as Donor
               </Button>
             </div>
           </div>
@@ -114,13 +123,23 @@ const Index = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6">
+              <Button 
+                size="lg" 
+                className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6"
+                onClick={() => navigate('/register')}
+              >
                 <Calendar className="h-5 w-5 mr-2" />
-                Schedule Donation
+                Register as Donor
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
-              <Button size="lg" variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 text-lg px-8 py-6">
-                Learn More
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-red-600 text-red-600 hover:bg-red-50 text-lg px-8 py-6"
+                onClick={() => navigate('/donors')}
+              >
+                <Users className="h-5 w-5 mr-2" />
+                View Donors
               </Button>
             </div>
 
@@ -149,9 +168,12 @@ const Index = () => {
                     <Heart className="h-12 w-12 text-white animate-pulse" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900">Ready to Donate?</h3>
-                  <p className="text-gray-600">The process is quick, safe, and saves lives. Book your appointment today.</p>
-                  <Button className="w-full bg-red-600 hover:bg-red-700">
-                    Find Nearest Center
+                  <p className="text-gray-600">Join our community of heroes and save lives today.</p>
+                  <Button 
+                    className="w-full bg-red-600 hover:bg-red-700"
+                    onClick={() => navigate('/register')}
+                  >
+                    Register Now
                   </Button>
                 </div>
               </div>
@@ -159,212 +181,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Why Donate Section */}
-      <section id="about" className="relative z-10 bg-white py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Your Donation Matters</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Blood donation is one of the most impactful ways to help your community. 
-              Here's how your single donation creates a ripple effect of hope.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-2 border-red-100 hover:border-red-300 transition-colors group">
-              <CardContent className="p-8 text-center">
-                <div className="bg-red-100 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                  <Users className="h-8 w-8 text-red-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Emergency Response</h3>
-                <p className="text-gray-600">
-                  Your blood helps accident victims, surgery patients, and those with medical conditions 
-                  requiring immediate transfusions.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-red-100 hover:border-red-300 transition-colors group">
-              <CardContent className="p-8 text-center">
-                <div className="bg-red-100 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                  <Heart className="h-8 w-8 text-red-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Cancer Treatment</h3>
-                <p className="text-gray-600">
-                  Cancer patients often need blood transfusions during chemotherapy and other treatments 
-                  to maintain their strength.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-red-100 hover:border-red-300 transition-colors group">
-              <CardContent className="p-8 text-center">
-                <div className="bg-red-100 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                  <Droplets className="h-8 w-8 text-red-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Chronic Conditions</h3>
-                <p className="text-gray-600">
-                  People with sickle cell disease, thalassemia, and other blood disorders 
-                  depend on regular donations.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Donation Process */}
-      <section id="process" className="relative z-10 bg-gradient-to-br from-gray-50 to-red-50 py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Simple Donation Process</h2>
-            <p className="text-xl text-gray-600">
-              Donating blood is easier than you think. Here's what to expect during your visit.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              { step: 1, title: "Registration", desc: "Fill out a brief health questionnaire and show ID" },
-              { step: 2, title: "Health Check", desc: "Quick vitals check including blood pressure and hemoglobin" },
-              { step: 3, title: "Donation", desc: "The actual donation takes 8-10 minutes in a comfortable setting" },
-              { step: 4, title: "Recovery", desc: "Enjoy snacks and drinks while you rest for 10-15 minutes" }
-            ].map((item, index) => (
-              <div key={index} className="text-center">
-                <div className="bg-red-600 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center text-white text-xl font-bold">
-                  {item.step}
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact & Locations */}
-      <section id="locations" className="relative z-10 bg-white py-20">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Find a Donation Center</h2>
-              <p className="text-xl text-gray-600 mb-8">
-                We have convenient locations throughout the city, with flexible hours 
-                to fit your schedule.
-              </p>
-
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-red-100 rounded-full p-3">
-                    <MapPin className="h-6 w-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Downtown Medical Center</h3>
-                    <p className="text-gray-600">123 Health Ave, City Center</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="bg-red-100 rounded-full p-3">
-                    <Clock className="h-6 w-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Open 7 Days a Week</h3>
-                    <p className="text-gray-600">Mon-Fri: 8AM-8PM, Weekends: 9AM-5PM</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="bg-red-100 rounded-full p-3">
-                    <Phone className="h-6 w-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Call to Schedule</h3>
-                    <p className="text-gray-600">(555) 123-LIFE</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-red-600 to-red-700 rounded-3xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-6">Ready to Save Lives?</h3>
-              <p className="mb-8 opacity-90">
-                Schedule your donation today and join thousands of heroes in our community 
-                who are making a difference.
-              </p>
-              
-              <div className="space-y-4">
-                <Button className="w-full bg-white text-red-600 hover:bg-gray-100">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Book Appointment Online
-                </Button>
-                <Button variant="outline" className="w-full border-white text-white hover:bg-white hover:text-red-600">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Get Email Reminders
-                </Button>
-              </div>
-
-              <div className="mt-8 pt-8 border-t border-red-500">
-                <p className="text-sm opacity-80">
-                  Walk-ins welcome, but appointments ensure shorter wait times.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="bg-red-600 rounded-full p-2">
-                  <Droplets className="h-6 w-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold">LifeFlow</span>
-              </div>
-              <p className="text-gray-400">
-                Connecting donors with those in need, one donation at a time.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Donate Blood</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Find Locations</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Eligibility</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQs</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Emergency</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Mobile Units</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Emergency Line</h4>
-              <p className="text-red-400 text-xl font-bold">(555) 123-LIFE</p>
-              <p className="text-gray-400 text-sm mt-2">
-                24/7 support for urgent blood needs
-              </p>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 LifeFlow. All rights reserved. Saving lives together.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
