@@ -177,9 +177,6 @@ const Donors = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
-                        <Badge variant="secondary" className="bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-200 font-semibold px-3 py-1 text-sm">
-                          Donor
-                        </Badge>
                       </div>
                     </div>
                   </div>
