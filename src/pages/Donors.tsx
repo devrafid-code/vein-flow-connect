@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Table as TableComponent, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
 interface Donor {
   id: string;
   name: string;
@@ -16,6 +17,7 @@ interface Donor {
   address: string;
   registeredAt: string;
 }
+
 const Donors = () => {
   const navigate = useNavigate();
   const [donors, setDonors] = useState<Donor[]>([]);
@@ -24,6 +26,21 @@ const Donors = () => {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+  // Get blood type colors
+  const getBloodTypeColors = (bloodType: string) => {
+    const colorMap: Record<string, { from: string; to: string }> = {
+      'A+': { from: 'from-emerald-400', to: 'to-emerald-500' },
+      'A-': { from: 'from-emerald-500', to: 'to-emerald-600' },
+      'B+': { from: 'from-blue-400', to: 'to-blue-500' },
+      'B-': { from: 'from-blue-500', to: 'to-blue-600' },
+      'AB+': { from: 'from-purple-400', to: 'to-purple-500' },
+      'AB-': { from: 'from-purple-500', to: 'to-purple-600' },
+      'O+': { from: 'from-orange-400', to: 'to-orange-500' },
+      'O-': { from: 'from-orange-500', to: 'to-orange-600' },
+    };
+    return colorMap[bloodType] || { from: 'from-red-500', to: 'to-red-600' };
+  };
 
   // Sample donors data
   const sampleDonors: Donor[] = [{
@@ -196,12 +213,14 @@ const Donors = () => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
   const renderGridView = () => <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-      {filteredDonors.map(donor => <Card key={donor.id} className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${hoveredCard && hoveredCard !== donor.id ? 'scale-95 opacity-75' : hoveredCard === donor.id ? 'shadow-2xl scale-105 z-50' : 'hover:shadow-2xl hover:-translate-y-2'} bg-gradient-to-br from-white via-white to-gray-50/30`} onMouseEnter={() => setHoveredCard(donor.id)} onMouseLeave={() => setHoveredCard(null)}>
+      {filteredDonors.map(donor => {
+        const colors = getBloodTypeColors(donor.bloodType);
+        return <Card key={donor.id} className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${hoveredCard && hoveredCard !== donor.id ? 'scale-95 opacity-75' : hoveredCard === donor.id ? 'shadow-2xl scale-105 z-50' : 'hover:shadow-2xl hover:-translate-y-2'} bg-gradient-to-br from-white via-white to-gray-50/30`} onMouseEnter={() => setHoveredCard(donor.id)} onMouseLeave={() => setHoveredCard(null)}>
           <CardContent className="p-0">
             {/* Header section with gradient */}
             <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
               <div className="flex items-center space-x-4">
-                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
+                <div className={`h-14 w-14 rounded-full bg-gradient-to-br ${colors.from} ${colors.to} flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300`}>
                   {donor.bloodType}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -234,7 +253,8 @@ const Donors = () => {
               </div>
             </div>
           </CardContent>
-        </Card>)}
+        </Card>
+      })}
     </div>;
   const renderTableView = () => <Card className="border-0 shadow-lg bg-white">
       <CardContent className="p-0">
@@ -362,4 +382,5 @@ const Donors = () => {
       </div>
     </div>;
 };
+
 export default Donors;
