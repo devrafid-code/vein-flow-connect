@@ -38,19 +38,19 @@ const Dashboard = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  // Get blood type color - using same colors as frontend Donors page
+  // Get blood type color - using subtle red variations
   const getBloodTypeColor = (bloodType: string) => {
     const colors = {
-      'A+': 'from-red-50 to-red-100 text-red-800 border-red-200',
-      'A-': 'from-red-100 to-red-200 text-red-900 border-red-300',
-      'B+': 'from-blue-50 to-blue-100 text-blue-800 border-blue-200',
-      'B-': 'from-blue-100 to-blue-200 text-blue-900 border-blue-300',
-      'AB+': 'from-purple-50 to-purple-100 text-purple-800 border-purple-200',
-      'AB-': 'from-purple-100 to-purple-200 text-purple-900 border-purple-300',
-      'O+': 'from-green-50 to-green-100 text-green-800 border-green-200',
-      'O-': 'from-green-100 to-green-200 text-green-900 border-green-300'
+      'A+': 'from-red-50 to-red-100 text-red-700 border-red-200',
+      'A-': 'from-red-100 to-red-150 text-red-800 border-red-250',
+      'B+': 'from-red-75 to-red-125 text-red-750 border-red-225',
+      'B-': 'from-red-125 to-red-175 text-red-825 border-red-275',
+      'AB+': 'from-red-100 to-red-150 text-red-800 border-red-250',
+      'AB-': 'from-red-150 to-red-200 text-red-850 border-red-300',
+      'O+': 'from-red-75 to-red-125 text-red-750 border-red-225',
+      'O-': 'from-red-125 to-red-175 text-red-825 border-red-275'
     };
-    return colors[bloodType as keyof typeof colors] || 'from-gray-50 to-gray-100 text-gray-800 border-gray-200';
+    return colors[bloodType as keyof typeof colors] || 'from-red-50 to-red-100 text-red-700 border-red-200';
   };
 
   // Load donors from localStorage
@@ -261,8 +261,8 @@ const Dashboard = () => {
                       {/* Name & Blood Type Column */}
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
-                          <div className={`bg-gradient-to-br ${getBloodTypeColor(donor.bloodType)} rounded-full p-2 flex items-center justify-center w-10 h-10`}>
-                            <span className="text-white font-bold text-sm">{donor.bloodType}</span>
+                          <div className={`bg-gradient-to-br ${getBloodTypeColor(donor.bloodType)} rounded-full p-2 flex items-center justify-center w-10 h-10 border`}>
+                            <span className="font-bold text-sm">{donor.bloodType}</span>
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">{donor.name}</h3>
