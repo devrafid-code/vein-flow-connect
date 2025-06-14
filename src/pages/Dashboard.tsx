@@ -38,6 +38,21 @@ const Dashboard = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+  // Get blood type color
+  const getBloodTypeColor = (bloodType: string) => {
+    const colors = {
+      'A+': 'from-red-500 to-red-600',
+      'A-': 'from-blue-500 to-blue-600',
+      'B+': 'from-green-500 to-green-600',
+      'B-': 'from-purple-500 to-purple-600',
+      'AB+': 'from-orange-500 to-orange-600',
+      'AB-': 'from-pink-500 to-pink-600',
+      'O+': 'from-yellow-500 to-yellow-600',
+      'O-': 'from-indigo-500 to-indigo-600'
+    };
+    return colors[bloodType as keyof typeof colors] || 'from-gray-500 to-gray-600';
+  };
+
   // Load donors from localStorage
   useEffect(() => {
     const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
@@ -291,7 +306,7 @@ const Dashboard = () => {
                       {/* Name & Blood Type Column */}
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
-                          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-full p-2 flex items-center justify-center w-10 h-10">
+                          <div className={`bg-gradient-to-br ${getBloodTypeColor(donor.bloodType)} rounded-full p-2 flex items-center justify-center w-10 h-10`}>
                             <span className="text-white font-bold text-sm">{donor.bloodType}</span>
                           </div>
                           <div>
