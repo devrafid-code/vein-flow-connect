@@ -258,7 +258,7 @@ const Donors = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-8">
+        <div className="flex flex-col lg:flex-row gap-6 mb-8 pb-6 border-b border-gray-200">
           <div className="flex-1">
             <Input 
               placeholder="Search by name or blood type..." 
