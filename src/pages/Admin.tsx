@@ -301,90 +301,90 @@ const Admin = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search by name, email, or role..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-
+        <div className="rounded-2xl p-6 mb-8 px-0">
+          <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, email, or role..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl h-10 pl-10"
+              />
+            </div>
+            
+            {/* Vertical separator after search bar */}
+            <div className="hidden lg:block w-px bg-gray-300 mx-2"></div>
+            
+            {/* Filter Chips and Clear Button with vertical separators */}
+            <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               {/* Filter Chips */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">Filters:</span>
-                
+              <div className="flex flex-wrap gap-2">
                 {/* Role Filters */}
-                <Button
-                  variant={roleFilter === 'admin' ? 'default' : 'outline'}
-                  size="sm"
+                <button
                   onClick={() => setRoleFilter(roleFilter === 'admin' ? null : 'admin')}
-                  className={roleFilter === 'admin' ? 'bg-red-600 hover:bg-red-700' : 'border-red-200 text-red-600 hover:bg-red-50'}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    roleFilter === 'admin' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
                   Admin
-                  {roleFilter === 'admin' && <X className="ml-1 h-3 w-3" />}
-                </Button>
+                </button>
                 
-                <Button
-                  variant={roleFilter === 'user' ? 'default' : 'outline'}
-                  size="sm"
+                <button
                   onClick={() => setRoleFilter(roleFilter === 'user' ? null : 'user')}
-                  className={roleFilter === 'user' ? 'bg-blue-600 hover:bg-blue-700' : 'border-blue-200 text-blue-600 hover:bg-blue-50'}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    roleFilter === 'user' ? 'bg-blue-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
                   User
-                  {roleFilter === 'user' && <X className="ml-1 h-3 w-3" />}
-                </Button>
+                </button>
 
                 {/* Status Filters */}
-                <Button
-                  variant={statusFilter === 'active' ? 'default' : 'outline'}
-                  size="sm"
+                <button
                   onClick={() => setStatusFilter(statusFilter === 'active' ? null : 'active')}
-                  className={statusFilter === 'active' ? 'bg-green-600 hover:bg-green-700' : 'border-green-200 text-green-600 hover:bg-green-50'}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    statusFilter === 'active' ? 'bg-green-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
                   Active
-                  {statusFilter === 'active' && <X className="ml-1 h-3 w-3" />}
-                </Button>
+                </button>
                 
-                <Button
-                  variant={statusFilter === 'inactive' ? 'default' : 'outline'}
-                  size="sm"
+                <button
                   onClick={() => setStatusFilter(statusFilter === 'inactive' ? null : 'inactive')}
-                  className={statusFilter === 'inactive' ? 'bg-gray-600 hover:bg-gray-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    statusFilter === 'inactive' ? 'bg-gray-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
                   Inactive
-                  {statusFilter === 'inactive' && <X className="ml-1 h-3 w-3" />}
-                </Button>
-
-                {/* Clear Filters */}
-                {(searchTerm || roleFilter || statusFilter) && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                </button>
+              </div>
+              
+              {/* Vertical separator */}
+              {(searchTerm || roleFilter || statusFilter) && (
+                <>
+                  <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
+                  
+                  {/* Clear Filters */}
+                  <button
                     onClick={clearFilters}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 bg-gray-100 text-gray-700 hover:bg-gray-200"
                   >
                     Clear all
-                  </Button>
-                )}
-              </div>
-
-              {/* Active Filters Summary */}
-              {(roleFilter || statusFilter) && (
-                <div className="text-sm text-gray-600">
-                  Showing {filteredUsers.length} of {users.length} users
-                  {roleFilter && ` • Role: ${roleFilter}`}
-                  {statusFilter && ` • Status: ${statusFilter}`}
-                </div>
+                  </button>
+                </>
               )}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          
+          {/* Active Filters Summary */}
+          {(roleFilter || statusFilter) && (
+            <div className="text-sm text-gray-600 mt-4">
+              Showing {filteredUsers.length} of {users.length} users
+              {roleFilter && ` • Role: ${roleFilter}`}
+              {statusFilter && ` • Status: ${statusFilter}`}
+            </div>
+          )}
+        </div>
 
         {/* Users Table */}
         <Card>
