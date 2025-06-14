@@ -379,49 +379,47 @@ const Donors = () => {
                     : hoveredCard === donor.id 
                       ? 'shadow-2xl scale-105 z-50' 
                       : 'hover:shadow-2xl hover:-translate-y-2'
-                } bg-gradient-to-br from-white via-white to-gray-50/30 backdrop-blur-sm hover:before:animate-spin hover:before:absolute hover:before:inset-0 hover:before:rounded-lg hover:before:bg-gradient-to-r hover:before:from-red-500 hover:before:via-purple-500 hover:before:to-red-500 hover:before:p-[2px] hover:before:z-[-1] hover:before:content-[''] before:transition-all before:duration-500`}
+                } bg-gradient-to-br from-white via-white to-gray-50/30`}
                 onMouseEnter={() => setHoveredCard(donor.id)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
-                <div className="relative z-10 bg-gradient-to-br from-white via-white to-gray-50/30 rounded-lg h-full">
-                  <CardContent className="p-0">
-                    {/* Header section with gradient */}
-                    <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
-                          {donor.bloodType}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
-                        </div>
+                <CardContent className="p-0">
+                  {/* Header section with gradient */}
+                  <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
+                        {donor.bloodType}
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Content section */}
+                  <div className="p-6 pt-2">
+                    {/* Mobile number prominently displayed */}
+                    <div className="flex items-center mb-4">
+                      <Phone className="h-5 w-5 text-green-600 mr-3" />
+                      <span className="text-lg font-bold text-gray-900">{donor.phone}</span>
                     </div>
                     
-                    {/* Content section */}
-                    <div className="p-6 pt-2">
-                      {/* Mobile number prominently displayed */}
-                      <div className="flex items-center mb-4">
-                        <Phone className="h-5 w-5 text-green-600 mr-3" />
-                        <span className="text-lg font-bold text-gray-900">{donor.phone}</span>
+                    <div className="space-y-3">
+                      <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
+                        <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
+                          <MapPin className="h-4 w-4 text-gray-500" />
+                        </div>
+                        <span className="truncate text-sm font-medium">{donor.address}</span>
                       </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
-                          <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
-                            <MapPin className="h-4 w-4 text-gray-500" />
-                          </div>
-                          <span className="truncate text-sm font-medium">{donor.address}</span>
+                      <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
+                        <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
+                          <Calendar className="h-4 w-4 text-gray-500" />
                         </div>
-                        <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
-                          <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
-                            <Calendar className="h-4 w-4 text-gray-500" />
-                          </div>
-                          <span className="text-sm font-medium">Registered {formatDate(donor.registeredAt)}</span>
-                        </div>
+                        <span className="text-sm font-medium">Registered {formatDate(donor.registeredAt)}</span>
                       </div>
                     </div>
-                  </CardContent>
-                </div>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
