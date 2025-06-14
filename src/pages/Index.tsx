@@ -187,19 +187,10 @@ const Index = () => {
       {/* Footer */}
       <footer className="relative z-10 bg-white/90 backdrop-blur-sm border-t border-red-100 mt-auto">
         <div className="container mx-auto px-6 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            <div className="flex items-center space-x-3">
-              <div className="bg-red-600 rounded-full p-2">
-                <Droplets className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-lg font-bold text-gray-900">LifeFlow</span>
-            </div>
-            
-            <div className="text-center md:text-right">
-              <p className="text-sm text-gray-600">
-                © 2024 LifeFlow. Saving lives, one donation at a time.
-              </p>
-            </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              © 2024 LifeFlow. Saving lives, one donation at a time.
+            </p>
           </div>
         </div>
       </footer>
