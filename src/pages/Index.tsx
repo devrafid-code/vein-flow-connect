@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+
 const Index = () => {
   const [donorCount, setDonorCount] = useState(0);
   const [livesCount, setLivesCount] = useState(0);
@@ -119,24 +120,24 @@ const Index = () => {
 
       {/* Hero Section with Background */}
       <section className="relative min-h-screen bg-cover bg-center bg-no-repeat flex flex-col" style={{
-      backgroundImage: `url('/lovable-uploads/97b71b50-5bd3-4b13-8fd4-e791eab05646.png')`
+      backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
     }}>
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/40"></div>
         
         {/* Hero Text Section */}
         <div className="relative z-10 flex-1 flex items-center">
-          <div className="container mx-auto sm:px-6 px-0">
-            <div className="max-w-4xl mx-auto text-left space-y-6 sm:space-y-8">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
               <div className="space-y-4 sm:space-y-6">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight px-4">Every Donation Can Save up to 3 Lives.</h1>
-                <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-2xl px-4">
+                <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-2xl mx-auto px-4">
                   Every donation can save up to three lives. Join our community of heroes 
                   and make a difference that lasts a lifetime.
                 </p>
               </div>
               
-              <div className="flex flex-col gap-4 items-start px-4">
+              <div className="flex flex-col gap-4 items-center px-4">
                 <Button size="lg" className="bg-red-600 hover:bg-red-700 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-fit" onClick={() => navigate('/donors')}>
                   <Users className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
                   View All Donors
@@ -163,7 +164,15 @@ const Index = () => {
                             <Users className="h-4 w-4 text-red-600" />
                             Full Name
                           </Label>
-                          <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Enter your full name" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                          <Input 
+                            id="name" 
+                            name="name" 
+                            value={formData.name} 
+                            onChange={handleInputChange} 
+                            placeholder="Enter your full name" 
+                            className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" 
+                            required 
+                          />
                         </div>
                       </div>
 
@@ -174,13 +183,24 @@ const Index = () => {
                             <Phone className="h-4 w-4 text-red-600" />
                             Phone Number
                           </Label>
-                          <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Your phone number" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                          <Input 
+                            id="phone" 
+                            name="phone" 
+                            value={formData.phone} 
+                            onChange={handleInputChange} 
+                            placeholder="Your phone number" 
+                            className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" 
+                            required 
+                          />
                         </div>
                       </div>
 
                       {/* Column 3 - Register Button */}
                       <div className="w-full flex flex-col justify-end">
-                        <Button type="submit" className="bg-red-600 hover:bg-red-700 font-bold py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-lg h-10 sm:h-12 w-full">
+                        <Button 
+                          type="submit" 
+                          className="bg-red-600 hover:bg-red-700 font-bold py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-lg h-10 sm:h-12 w-full"
+                        >
                           <Heart className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
                           Register
                           <ArrowRight className="h-4 sm:h-5 w-4 sm:w-5 ml-2" />
@@ -197,7 +217,14 @@ const Index = () => {
                             <Droplets className="h-4 w-4 text-red-600" />
                             Blood Type
                           </Label>
-                          <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 sm:h-12 w-full rounded-md border-2 border-gray-200 bg-background px-3 sm:px-4 py-2 sm:py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" required>
+                          <select 
+                            id="bloodType" 
+                            name="bloodType" 
+                            value={formData.bloodType} 
+                            onChange={handleInputChange} 
+                            className="flex h-10 sm:h-12 w-full rounded-md border-2 border-gray-200 bg-background px-3 sm:px-4 py-2 sm:py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" 
+                            required
+                          >
                             <option value="">Select blood type</option>
                             {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
                           </select>
@@ -211,7 +238,15 @@ const Index = () => {
                             <MapPin className="h-4 w-4 text-red-600" />
                             Address
                           </Label>
-                          <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="Your address" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                          <Input 
+                            id="address" 
+                            name="address" 
+                            value={formData.address} 
+                            onChange={handleInputChange} 
+                            placeholder="Your address" 
+                            className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" 
+                            required 
+                          />
                         </div>
                       </div>
 
@@ -243,4 +278,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;
