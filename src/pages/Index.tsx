@@ -6,21 +6,20 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-
 const Index = () => {
   const [donorCount, setDonorCount] = useState(0);
   const [livesCount, setLivesCount] = useState(0);
   const [unitsCount, setUnitsCount] = useState(0);
   const navigate = useNavigate();
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     bloodType: '',
     address: ''
   });
-
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // Animated counter effect
@@ -38,56 +37,50 @@ const Index = () => {
         }
       }, 16);
     };
-
     const timer = setTimeout(() => {
       animateCounter(15000, setDonorCount);
       animateCounter(45000, setLivesCount);
       animateCounter(125000, setUnitsCount);
     }, 500);
-
     return () => clearTimeout(timer);
   }, []);
-
   const handleQuickRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!formData.name || !formData.phone || !formData.bloodType || !formData.address) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     const newDonor = {
       id: Date.now().toString(),
       ...formData,
       registeredAt: new Date().toISOString()
     };
-
     const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
     existingDonors.push(newDonor);
     localStorage.setItem('donors', JSON.stringify(existingDonors));
-
     toast({
       title: "Success!",
-      description: "You've been registered as a blood donor!",
+      description: "You've been registered as a blood donor!"
     });
-
-    setFormData({ name: '', phone: '', bloodType: '', address: '' });
+    setFormData({
+      name: '',
+      phone: '',
+      bloodType: '',
+      address: ''
+    });
     setTimeout(() => navigate('/donors'), 1500);
   };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
-
-  return (
-    <div className="min-h-screen relative">
+  return <div className="min-h-screen relative">
       {/* Navigation */}
       <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
         <div className="container mx-auto px-6 py-4">
@@ -100,26 +93,15 @@ const Index = () => {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <Button 
-                variant="outline" 
-                className="border-gray-600 text-gray-600 hover:bg-gray-50"
-                onClick={() => navigate('/dashboard')}
-              >
+              <Button variant="outline" className="border-gray-600 text-gray-600 hover:bg-gray-50" onClick={() => navigate('/dashboard')}>
                 <Settings className="h-4 w-4 mr-2" />
                 Dashboard
               </Button>
-              <Button 
-                variant="outline" 
-                className="border-red-600 text-red-600 hover:bg-red-50"
-                onClick={() => navigate('/donors')}
-              >
+              <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50" onClick={() => navigate('/donors')}>
                 <Users className="h-4 w-4 mr-2" />
                 View Donors
               </Button>
-              <Button 
-                className="bg-red-600 hover:bg-red-700"
-                onClick={() => navigate('/register')}
-              >
+              <Button className="bg-red-600 hover:bg-red-700" onClick={() => navigate('/register')}>
                 <Heart className="h-4 w-4 mr-2" />
                 Register as Donor
               </Button>
@@ -129,12 +111,9 @@ const Index = () => {
       </nav>
 
       {/* Full Screen Hero Section */}
-      <section 
-        className="relative min-h-screen bg-cover bg-center bg-no-repeat flex items-center"
-        style={{
-          backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
-        }}
-      >
+      <section className="relative min-h-screen bg-cover bg-center bg-no-repeat flex items-center" style={{
+      backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
+    }}>
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/40"></div>
         
@@ -145,9 +124,8 @@ const Index = () => {
             {/* Left Column - Hero Text */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight whitespace-nowrap">
-                  Save Lives, Share Hope
-                </h1>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight whitespace-nowrap">Save Lives, 
+Share Hope</h1>
                 <p className="text-lg text-white/90 leading-relaxed">
                   Every donation can save up to three lives. Join our community of heroes 
                   and make a difference that lasts a lifetime.
@@ -155,11 +133,7 @@ const Index = () => {
               </div>
               
               <div className="flex flex-col gap-4">
-                <Button 
-                  size="lg" 
-                  className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6 w-fit"
-                  onClick={() => navigate('/donors')}
-                >
+                <Button size="lg" className="bg-red-600 hover:bg-red-700 text-lg px-8 py-6 w-fit" onClick={() => navigate('/donors')}>
                   <Users className="h-5 w-5 mr-2" />
                   View All Donors
                   <ArrowRight className="h-5 w-5 ml-2" />
@@ -185,58 +159,25 @@ const Index = () => {
                   <form onSubmit={handleQuickRegister} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Your full name"
-                        className="h-10"
-                        required
-                      />
+                      <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Your full name" className="h-10" required />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="Your phone number"
-                        className="h-10"
-                        required
-                      />
+                      <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Your phone number" className="h-10" required />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="bloodType" className="text-sm font-medium">Blood Type</Label>
-                      <select
-                        id="bloodType"
-                        name="bloodType"
-                        value={formData.bloodType}
-                        onChange={handleInputChange}
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        required
-                      >
+                      <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" required>
                         <option value="">Select blood type</option>
-                        {bloodTypes.map(type => (
-                          <option key={type} value={type}>{type}</option>
-                        ))}
+                        {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
                       </select>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="address" className="text-sm font-medium">Address</Label>
-                      <Input
-                        id="address"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        placeholder="Your address"
-                        className="h-10"
-                        required
-                      />
+                      <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="Your address" className="h-10" required />
                     </div>
 
                     <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 font-semibold py-3">
@@ -265,8 +206,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
