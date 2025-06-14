@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -284,32 +284,54 @@ const Dashboard = () => {
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="grid gap-4">
                 {filteredDonors.map(donor => (
-                  <div key={donor.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                    <div className="flex items-center space-x-4">
-                      <div className="bg-red-100 rounded-full p-2">
-                        <Heart className="h-4 w-4 text-red-600" />
+                  <div key={donor.id} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200 hover:border-red-200">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-4">
+                        {/* Avatar */}
+                        <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-full p-3 shadow-lg">
+                          <Heart className="h-6 w-6 text-white" />
+                        </div>
+                        
+                        {/* Donor Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <h3 className="text-xl font-semibold text-gray-900 truncate">{donor.name}</h3>
+                            <Badge 
+                              variant="secondary" 
+                              className="bg-red-100 text-red-800 font-medium px-3 py-1 text-sm"
+                            >
+                              {donor.bloodType}
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center text-gray-600">
+                              <Phone className="h-4 w-4 mr-2 text-gray-400" />
+                              <span className="text-sm">{donor.phone}</span>
+                            </div>
+                            
+                            <div className="flex items-center text-gray-600">
+                              <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                              <span className="text-sm truncate">{donor.address}</span>
+                            </div>
+                            
+                            <div className="flex items-center text-gray-500">
+                              <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                              <span className="text-sm">Registered {formatDate(donor.registeredAt)}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{donor.name}</h3>
-                        <p className="text-sm text-gray-600">{donor.phone}</p>
-                        <p className="text-sm text-gray-500">{donor.address}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3">
-                      <Badge variant="secondary" className="bg-red-100 text-red-800">
-                        {donor.bloodType}
-                      </Badge>
-                      <div className="text-sm text-gray-500">
-                        {formatDate(donor.registeredAt)}
-                      </div>
-                      <div className="flex space-x-2">
+                      
+                      {/* Action Buttons */}
+                      <div className="flex space-x-2 ml-4">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleEditDonor(donor)}
+                          className="border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -317,7 +339,7 @@ const Dashboard = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDeleteDonor(donor)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
