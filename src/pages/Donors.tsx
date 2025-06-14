@@ -84,6 +84,34 @@ const Donors = () => {
           <p className="text-xl text-gray-600">Our community of heroes who help save lives</p>
         </div>
 
+        {/* Stats Cards - Moved to top */}
+        {donors.length > 0 && (
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <div className="text-3xl font-bold text-red-600 mb-2">{donors.length}</div>
+                <div className="text-sm text-gray-600">Total Donors</div>
+              </CardContent>
+            </Card>
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <div className="text-3xl font-bold text-red-600 mb-2">
+                  {new Set(donors.map(d => d.bloodType)).size}
+                </div>
+                <div className="text-sm text-gray-600">Blood Types Available</div>
+              </CardContent>
+            </Card>
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <div className="text-3xl font-bold text-red-600 mb-2">
+                  {filteredDonors.length}
+                </div>
+                <div className="text-sm text-gray-600">Showing Results</div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="flex-1">
@@ -162,34 +190,6 @@ const Donors = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        )}
-
-        {/* Stats */}
-        {donors.length > 0 && (
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold text-red-600 mb-2">{donors.length}</div>
-                <div className="text-sm text-gray-600">Total Donors</div>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold text-red-600 mb-2">
-                  {new Set(donors.map(d => d.bloodType)).size}
-                </div>
-                <div className="text-sm text-gray-600">Blood Types Available</div>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold text-red-600 mb-2">
-                  {filteredDonors.length}
-                </div>
-                <div className="text-sm text-gray-600">Showing Results</div>
-              </CardContent>
-            </Card>
           </div>
         )}
       </div>
