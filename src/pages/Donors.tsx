@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity } from 'lucide-react';
@@ -21,6 +22,7 @@ const Donors = () => {
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBloodType, setFilterBloodType] = useState('all');
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -368,9 +370,20 @@ const Donors = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
             {filteredDonors.map(donor => (
-              <Card key={donor.id} className="group hover:shadow-2xl transition-all duration-500 border-0 shadow-lg hover:-translate-y-2 bg-gradient-to-br from-white via-white to-gray-50/30 backdrop-blur-sm overflow-hidden">
+              <Card 
+                key={donor.id} 
+                className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${
+                  hoveredCard && hoveredCard !== donor.id 
+                    ? 'blur-sm scale-95 opacity-50' 
+                    : hoveredCard === donor.id 
+                      ? 'shadow-2xl scale-105 z-50' 
+                      : 'hover:shadow-2xl hover:-translate-y-2'
+                } bg-gradient-to-br from-white via-white to-gray-50/30 backdrop-blur-sm`}
+                onMouseEnter={() => setHoveredCard(donor.id)}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
                 <CardContent className="p-0">
                   {/* Header section with gradient */}
                   <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
