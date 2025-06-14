@@ -145,7 +145,7 @@ const Index = () => {
             {/* Left Column - Hero Text */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <h1 className="text-6xl lg:text-8xl font-bold text-white leading-tight">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight whitespace-nowrap">
                   Save Lives, Share Hope
                 </h1>
                 <p className="text-lg text-white/90 leading-relaxed">
