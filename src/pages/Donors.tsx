@@ -171,20 +171,13 @@ const Donors = () => {
               <Card key={donor.id} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4 mb-6">
-                    <Avatar className="h-12 w-12 ring-2 ring-red-100">
-                      <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-600 text-white font-semibold">
-                        {getInitials(donor.name)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="bg-gradient-to-br from-red-500 to-red-600 text-white font-bold text-xl rounded-full h-12 w-12 flex items-center justify-center ring-2 ring-red-100">
+                      {donor.bloodType}
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-900 truncate">{donor.name}</h3>
-                        <Badge variant="secondary" className="bg-red-50 text-red-700 border-red-200 font-medium">
-                          {donor.bloodType}
-                        </Badge>
-                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 truncate mb-2">{donor.name}</h3>
                       {/* Mobile number prominently displayed */}
-                      <div className="flex items-center mt-2">
+                      <div className="flex items-center">
                         <div className="bg-green-100 rounded-full p-1.5 mr-2">
                           <Phone className="h-4 w-4 text-green-600" />
                         </div>
