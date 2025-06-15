@@ -1,8 +1,8 @@
 
 import { Heart, Droplets, Users, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { MobileNav } from './mobile-nav';
 import { useNavigate } from 'react-router-dom';
+import { BottomNav } from './bottom-nav';
 
 export function ResponsiveNav() {
   const navigate = useNavigate();
@@ -32,49 +32,37 @@ export function ResponsiveNav() {
   ];
 
   return (
-    <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
-      <div className="container mx-auto px-4 sm:px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="bg-red-600 rounded-full p-2">
-              <Droplets className="h-6 w-6 text-white" />
+    <>
+      <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="bg-red-600 rounded-full p-2">
+                <Droplets className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900">LifeFlow</span>
             </div>
-            <span className="text-xl sm:text-2xl font-bold text-gray-900">LifeFlow</span>
-          </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
-            {navigationItems.map((item) => (
-              <Button
-                key={item.title}
-                variant={item.variant}
-                className={item.className}
-                onClick={item.onClick}
-              >
-                <item.icon className="h-4 w-4 mr-2" />
-                {item.title}
-              </Button>
-            ))}
-          </div>
-
-          {/* Mobile Navigation */}
-          <div className="md:hidden">
-            <MobileNav>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
               {navigationItems.map((item) => (
                 <Button
                   key={item.title}
                   variant={item.variant}
-                  className={`${item.className} w-full justify-start`}
+                  className={item.className}
                   onClick={item.onClick}
                 >
                   <item.icon className="h-4 w-4 mr-2" />
                   {item.title}
                 </Button>
               ))}
-            </MobileNav>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+      
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
+    </>
   );
 }
