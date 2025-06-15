@@ -1,25 +1,29 @@
 import { useState, useEffect } from 'react';
-import { Heart, Droplets, Calendar, ArrowRight, Users, Settings, Phone, MapPin } from 'lucide-react';
+import { Heart, Droplets, Calendar, ArrowRight, Users, Settings, Phone, MapPin, CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+
 const Index = () => {
   const [donorCount, setDonorCount] = useState(0);
   const [livesCount, setLivesCount] = useState(0);
   const [unitsCount, setUnitsCount] = useState(0);
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     bloodType: '',
     address: ''
   });
+  const [lastDonationDate, setLastDonationDate] = useState<Date>();
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // Animated counter effect
@@ -57,6 +61,7 @@ const Index = () => {
     const newDonor = {
       id: Date.now().toString(),
       ...formData,
+      lastDonationDate: lastDonationDate?.toISOString() || null,
       registeredAt: new Date().toISOString()
     };
     const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
@@ -72,6 +77,7 @@ const Index = () => {
       bloodType: '',
       address: ''
     });
+    setLastDonationDate(undefined);
     setTimeout(() => navigate('/donors'), 1500);
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -151,7 +157,7 @@ const Index = () => {
               <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-4 sm:p-6 lg:p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-6 sm:space-y-8">
-                    {/* First Row - Name, Phone, Disclaimer (Desktop) */}
+                    {/* First Row - Name, Phone, Last Donation Date (Desktop) */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                       {/* Column 1 - Name */}
                       <div className="w-full">
@@ -175,11 +181,37 @@ const Index = () => {
                         </div>
                       </div>
 
-                      {/* Column 3 - Disclaimer (Desktop only) */}
+                      {/* Column 3 - Last Donation Date (Desktop only) */}
                       <div className="w-full flex-col justify-end hidden lg:flex">
-                        <div className="text-xs sm:text-sm text-gray-600 p-2 sm:p-3 bg-gray-50 rounded-md border">
-                          <p className="font-semibold text-gray-700 mb-1">Quick Registration</p>
-                          <p>Join our community of heroes and help save lives with just one donation.</p>
+                        <div className="space-y-2 sm:space-y-3">
+                          <Label htmlFor="lastDonationDate" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                            <Calendar className="h-4 w-4 text-red-600" />
+                            Last Blood Donation Date
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                  !lastDonationDate && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <CalendarComponent
+                                mode="single"
+                                selected={lastDonationDate}
+                                onSelect={setLastDonationDate}
+                                disabled={(date) => date > new Date()}
+                                initialFocus
+                                className={cn("p-3 pointer-events-auto")}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         </div>
                       </div>
                     </div>
@@ -218,6 +250,40 @@ const Index = () => {
                           Register
                           <ArrowRight className="h-4 sm:h-5 w-4 sm:w-5 ml-2" />
                         </Button>
+                      </div>
+                    </div>
+
+                    {/* Mobile Last Donation Date - Between form rows */}
+                    <div className="lg:hidden w-full">
+                      <div className="space-y-2 sm:space-y-3">
+                        <Label htmlFor="lastDonationDateMobile" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                          <Calendar className="h-4 w-4 text-red-600" />
+                          Last Blood Donation Date
+                        </Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                !lastDonationDate && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <CalendarComponent
+                              mode="single"
+                              selected={lastDonationDate}
+                              onSelect={setLastDonationDate}
+                              disabled={(date) => date > new Date()}
+                              initialFocus
+                              className={cn("p-3 pointer-events-auto")}
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
 
