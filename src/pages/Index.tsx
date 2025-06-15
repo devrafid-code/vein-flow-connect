@@ -151,7 +151,7 @@ const Index = () => {
               <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-4 sm:p-6 lg:p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-6 sm:space-y-8">
-                    {/* First Row - Name, Phone, Register Button */}
+                    {/* First Row - Name, Phone, Register Button (Desktop) */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                       {/* Column 1 - Name */}
                       <div className="w-full">
@@ -175,8 +175,8 @@ const Index = () => {
                         </div>
                       </div>
 
-                      {/* Column 3 - Register Button */}
-                      <div className="w-full flex flex-col justify-end">
+                      {/* Column 3 - Register Button (Desktop only) */}
+                      <div className="w-full flex-col justify-end hidden lg:flex">
                         <Button type="submit" className="bg-red-600 hover:bg-red-700 font-bold py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-lg h-10 sm:h-12 w-full">
                           <Heart className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
                           Register
@@ -219,6 +219,15 @@ const Index = () => {
                           <p>Join our community of heroes and help save lives with just one donation.</p>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Mobile Register Button - Bottom */}
+                    <div className="lg:hidden w-full">
+                      <Button type="submit" className="bg-red-600 hover:bg-red-700 font-bold py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-lg h-10 sm:h-12 w-full">
+                        <Heart className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
+                        Register
+                        <ArrowRight className="h-4 sm:h-5 w-4 sm:w-5 ml-2" />
+                      </Button>
                     </div>
                   </form>
                 </CardContent>
