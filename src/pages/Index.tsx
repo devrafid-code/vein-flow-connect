@@ -59,6 +59,17 @@ const Index = () => {
       });
       return;
     }
+
+    // Validate last donation date is required when not never donated
+    if (!neverDonated && !lastDonationDate) {
+      toast({
+        title: "Error",
+        description: "Please select your last donation date or check 'Never donated before'",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const newDonor = {
       id: Date.now().toString(),
       ...formData,
