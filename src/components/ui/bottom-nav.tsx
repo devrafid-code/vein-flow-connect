@@ -10,10 +10,10 @@ export function BottomNav() {
 
   const navigationItems = [
     {
-      title: "Dashboard",
-      icon: Settings,
-      onClick: () => navigate('/dashboard'),
-      path: '/dashboard'
+      title: "Home",
+      icon: Droplets,
+      onClick: () => navigate('/'),
+      path: '/'
     },
     {
       title: "Donors",
@@ -22,16 +22,16 @@ export function BottomNav() {
       path: '/donors'
     },
     {
-      title: "Home",
-      icon: Droplets,
-      onClick: () => navigate('/'),
-      path: '/'
-    },
-    {
       title: "Register",
       icon: Heart,
       onClick: () => navigate('/register'),
       path: '/register'
+    },
+    {
+      title: "Dashboard",
+      icon: Settings,
+      onClick: () => navigate('/dashboard'),
+      path: '/dashboard'
     }
   ];
 
