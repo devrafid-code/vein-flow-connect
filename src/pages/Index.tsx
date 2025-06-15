@@ -74,29 +74,30 @@ const Index = () => {
     if (!formData.bloodType) newErrors.bloodType = true;
     if (!formData.address) newErrors.address = true;
 
-    // Check last donation date
+    // Check last donation date - this should be checked BEFORE the early return
     if (!neverDonated && !lastDonationDate) {
       newErrors.lastDonationDate = true;
     }
 
     setErrors(newErrors);
 
-    if (!formData.name || !formData.phone || !formData.bloodType || !formData.address) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Validate last donation date is required when not never donated
-    if (!neverDonated && !lastDonationDate) {
-      toast({
-        title: "Error",
-        description: "Please select your last donation date or check 'Never donated before'",
-        variant: "destructive"
-      });
+    // Check if ANY field has errors (including lastDonationDate)
+    const hasAnyError = Object.values(newErrors).some(error => error);
+    
+    if (hasAnyError) {
+      if (!formData.name || !formData.phone || !formData.bloodType || !formData.address) {
+        toast({
+          title: "Error",
+          description: "Please fill in all fields",
+          variant: "destructive"
+        });
+      } else if (!neverDonated && !lastDonationDate) {
+        toast({
+          title: "Error",
+          description: "Please select your last donation date or check 'Never donated before'",
+          variant: "destructive"
+        });
+      }
       return;
     }
 
@@ -303,7 +304,7 @@ const Index = () => {
                                     "h-10 sm:h-12 w-full text-sm sm:text-base justify-start text-left font-normal border-2 transition-colors",
                                     (!lastDonationDate || neverDonated) && "text-muted-foreground",
                                     neverDonated && "cursor-not-allowed opacity-50",
-                                    errors.lastDonationDate ? "border-red-500 hover:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
+                                    errors.lastDonationDate ? "border-red-500 hover:border-red-500 focus:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
                                   )}
                                 >
                                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -413,7 +414,7 @@ const Index = () => {
                                   "h-10 sm:h-12 w-full text-sm sm:text-base justify-start text-left font-normal border-2 transition-colors",
                                   (!lastDonationDate || neverDonated) && "text-muted-foreground",
                                   neverDonated && "cursor-not-allowed opacity-50",
-                                  errors.lastDonationDate ? "border-red-500 hover:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
+                                  errors.lastDonationDate ? "border-red-500 hover:border-red-500 focus:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
                                 )}
                               >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
