@@ -189,7 +189,7 @@ const Index = () => {
                         <div className="space-y-2 sm:space-y-3">
                           <Label htmlFor="lastDonationDate" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
                             <Calendar className="h-4 w-4 text-red-600" />
-                            Last Blood Donation Date
+                            Last Donated On
                           </Label>
                           <Popover>
                             <PopoverTrigger asChild>
@@ -258,7 +258,7 @@ const Index = () => {
                       <div className="space-y-2 sm:space-y-3">
                         <Label htmlFor="lastDonationDateMobile" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
                           <Calendar className="h-4 w-4 text-red-600" />
-                          Last Blood Donation Date
+                          Last Donated On
                         </Label>
                         <Popover>
                           <PopoverTrigger asChild>
