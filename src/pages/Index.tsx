@@ -203,20 +203,22 @@ const Index = () => {
                             Last Donated On
                           </Label>
                           <div className="space-y-2">
-                            {!neverDonated && (
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    className={cn(
-                                      "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
-                                      !lastDonationDate && "text-muted-foreground"
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
-                                  </Button>
-                                </PopoverTrigger>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  disabled={neverDonated}
+                                  className={cn(
+                                    "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                    (!lastDonationDate || neverDonated) && "text-muted-foreground",
+                                    neverDonated && "cursor-not-allowed opacity-50"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {neverDonated ? "Never donated" : (lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>)}
+                                </Button>
+                              </PopoverTrigger>
+                              {!neverDonated && (
                                 <PopoverContent className="w-auto p-0" align="start">
                                   <CalendarComponent
                                     mode="single"
@@ -227,8 +229,8 @@ const Index = () => {
                                     className={cn("p-3 pointer-events-auto")}
                                   />
                                 </PopoverContent>
-                              </Popover>
-                            )}
+                              )}
+                            </Popover>
                             <div className="flex items-center space-x-2">
                               <input
                                 type="checkbox"
@@ -288,20 +290,22 @@ const Index = () => {
                           Last Donated On
                         </Label>
                         <div className="space-y-2">
-                          {!neverDonated && (
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  className={cn(
-                                    "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
-                                    !lastDonationDate && "text-muted-foreground"
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
-                                </Button>
-                              </PopoverTrigger>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                disabled={neverDonated}
+                                className={cn(
+                                  "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                  (!lastDonationDate || neverDonated) && "text-muted-foreground",
+                                  neverDonated && "cursor-not-allowed opacity-50"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {neverDonated ? "Never donated" : (lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>)}
+                              </Button>
+                            </PopoverTrigger>
+                            {!neverDonated && (
                               <PopoverContent className="w-auto p-0" align="start">
                                 <CalendarComponent
                                   mode="single"
@@ -312,8 +316,8 @@ const Index = () => {
                                   className={cn("p-3 pointer-events-auto")}
                                 />
                               </PopoverContent>
-                            </Popover>
-                          )}
+                            )}
+                          </Popover>
                           <div className="flex items-center space-x-2">
                             <input
                               type="checkbox"
