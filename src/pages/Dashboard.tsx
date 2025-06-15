@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar, Shield } from 'lucide-react';
@@ -12,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAuth } from '@/contexts/AuthContext';
+import { ResponsiveNav } from '@/components/ui/responsive-nav';
 import LoginForm from '@/components/LoginForm';
 
 interface Donor {
@@ -160,65 +160,53 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-16 md:pb-0">
       {/* Navigation */}
-      <nav className="bg-white/90 backdrop-blur-sm border-b border-red-100">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-red-600 rounded-full p-2">
-                <Heart className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-gray-900">LifeFlow</span>
+      <ResponsiveNav />
+
+      <div className="container mx-auto px-4 sm:px-6 py-8">
+        {/* Header with user info and admin controls */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Donor Management</h1>
+              <p className="text-lg sm:text-xl text-gray-600">Manage and monitor your blood donor database</p>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <span className="text-sm text-gray-600">
                 Welcome, {currentUser?.name} ({currentUser?.role})
               </span>
               
-              {isAdmin() && (
+              <div className="flex gap-2">
+                {isAdmin() && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => navigate('/admin')}
+                    className="border-gray-200 text-gray-600 hover:bg-gray-50"
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Admin Panel
+                  </Button>
+                )}
+                
                 <Button 
                   variant="outline" 
-                  onClick={() => navigate('/admin')}
-                  className="border-gray-200 text-gray-600 hover:bg-gray-50"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="border-red-200 text-red-600 hover:bg-red-50"
                 >
-                  <Shield className="h-4 w-4 mr-2" />
-                  Admin Panel
+                  Logout
                 </Button>
-              )}
-              
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/')}
-                className="border-gray-200 text-gray-600 hover:bg-gray-50"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={handleLogout}
-                className="border-red-200 text-red-600 hover:bg-red-50"
-              >
-                Logout
-              </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Donor Management</h1>
-          <p className="text-xl text-gray-600">Manage and monitor your blood donor database</p>
         </div>
 
         {/* Filters */}
         <Card className="mb-8">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
@@ -260,23 +248,23 @@ const Dashboard = () => {
         {/* Donors Table */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <CardTitle>Donors ({filteredDonors.length})</CardTitle>
               <Button 
                 onClick={() => navigate('/register')}
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-red-600 hover:bg-red-700 w-full sm:w-auto"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add New Donor
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             {filteredDonors.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No donors found</h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-sm sm:text-base">
                   {donors.length === 0 
                     ? "No donors registered yet. Add the first donor to get started."
                     : "No donors match your search criteria."
@@ -290,8 +278,8 @@ const Dashboard = () => {
             ) : (
               <div className="space-y-4">
                 {filteredDonors.map(donor => (
-                  <div key={donor.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                  <div key={donor.id} className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-start lg:items-center">
                       {/* Name & Blood Type Column */}
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
@@ -323,7 +311,7 @@ const Dashboard = () => {
                       </div>
 
                       {/* Actions Column */}
-                      <div className="flex justify-end space-x-2">
+                      <div className="flex justify-start lg:justify-end space-x-2">
                         <Button
                           variant="outline"
                           size="sm"
