@@ -185,8 +185,8 @@ const Index = () => {
                       </div>
                     </div>
 
-                    {/* Second Row - Blood Type, Address */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+                    {/* Second Row - Blood Type, Address, Disclaimer */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                       {/* Column 1 - Blood Type */}
                       <div className="w-full">
                         <div className="space-y-2 sm:space-y-3">
@@ -211,13 +211,13 @@ const Index = () => {
                           <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="Your address" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
                         </div>
                       </div>
-                    </div>
 
-                    {/* Disclaimer - Above Mobile Register Button */}
-                    <div className="lg:hidden w-full">
-                      <div className="text-xs sm:text-sm text-gray-600 p-2 sm:p-3 bg-gray-50 rounded-md border mb-4">
-                        <p className="font-semibold text-gray-700 mb-1">Quick Registration</p>
-                        <p>Join our community of heroes and help save lives with just one donation.</p>
+                      {/* Column 3 - Disclaimer */}
+                      <div className="w-full flex flex-col justify-end">
+                        <div className="text-xs sm:text-sm text-gray-600 p-2 sm:p-3 bg-gray-50 rounded-md border">
+                          <p className="font-semibold text-gray-700 mb-1">Quick Registration</p>
+                          <p>Join our community of heroes and help save lives with just one donation.</p>
+                        </div>
                       </div>
                     </div>
 
