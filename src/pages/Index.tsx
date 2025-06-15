@@ -24,6 +24,7 @@ const Index = () => {
     address: ''
   });
   const [lastDonationDate, setLastDonationDate] = useState<Date>();
+  const [neverDonated, setNeverDonated] = useState(false);
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // Animated counter effect
@@ -61,7 +62,7 @@ const Index = () => {
     const newDonor = {
       id: Date.now().toString(),
       ...formData,
-      lastDonationDate: lastDonationDate?.toISOString() || null,
+      lastDonationDate: neverDonated ? 'never' : lastDonationDate?.toISOString() || null,
       registeredAt: new Date().toISOString()
     };
     const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
@@ -78,14 +79,24 @@ const Index = () => {
       address: ''
     });
     setLastDonationDate(undefined);
+    setNeverDonated(false);
     setTimeout(() => navigate('/donors'), 1500);
   };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
+
+  const handleNeverDonatedChange = (checked: boolean) => {
+    setNeverDonated(checked);
+    if (checked) {
+      setLastDonationDate(undefined);
+    }
+  };
+
   return <div className="min-h-screen relative">
       {/* Navigation */}
       <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
@@ -191,30 +202,46 @@ const Index = () => {
                             <Calendar className="h-4 w-4 text-red-600" />
                             Last Donated On
                           </Label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
-                                  !lastDonationDate && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <CalendarComponent
-                                mode="single"
-                                selected={lastDonationDate}
-                                onSelect={setLastDonationDate}
-                                disabled={(date) => date > new Date()}
-                                initialFocus
-                                className={cn("p-3 pointer-events-auto")}
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id="neverDonated"
+                                checked={neverDonated}
+                                onChange={(e) => handleNeverDonatedChange(e.target.checked)}
+                                className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                               />
-                            </PopoverContent>
-                          </Popover>
+                              <label htmlFor="neverDonated" className="text-sm text-gray-600">
+                                Never donated before
+                              </label>
+                            </div>
+                            {!neverDonated && (
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className={cn(
+                                      "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                      !lastDonationDate && "text-muted-foreground"
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                  <CalendarComponent
+                                    mode="single"
+                                    selected={lastDonationDate}
+                                    onSelect={setLastDonationDate}
+                                    disabled={(date) => date > new Date()}
+                                    initialFocus
+                                    className={cn("p-3 pointer-events-auto")}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -260,30 +287,46 @@ const Index = () => {
                           <Calendar className="h-4 w-4 text-red-600" />
                           Last Donated On
                         </Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
-                                !lastDonationDate && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <CalendarComponent
-                              mode="single"
-                              selected={lastDonationDate}
-                              onSelect={setLastDonationDate}
-                              disabled={(date) => date > new Date()}
-                              initialFocus
-                              className={cn("p-3 pointer-events-auto")}
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="neverDonatedMobile"
+                              checked={neverDonated}
+                              onChange={(e) => handleNeverDonatedChange(e.target.checked)}
+                              className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                             />
-                          </PopoverContent>
-                        </Popover>
+                            <label htmlFor="neverDonatedMobile" className="text-sm text-gray-600">
+                              Never donated before
+                            </label>
+                          </div>
+                          {!neverDonated && (
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                    !lastDonationDate && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <CalendarComponent
+                                  mode="single"
+                                  selected={lastDonationDate}
+                                  onSelect={setLastDonationDate}
+                                  disabled={(date) => date > new Date()}
+                                  initialFocus
+                                  className={cn("p-3 pointer-events-auto")}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          )}
+                        </div>
                       </div>
                     </div>
 
