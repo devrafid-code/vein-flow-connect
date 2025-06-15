@@ -25,6 +25,13 @@ const Index = () => {
   });
   const [lastDonationDate, setLastDonationDate] = useState<Date>();
   const [neverDonated, setNeverDonated] = useState(false);
+  const [errors, setErrors] = useState({
+    name: false,
+    phone: false,
+    bloodType: false,
+    address: false,
+    lastDonationDate: false
+  });
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // Animated counter effect
@@ -51,6 +58,29 @@ const Index = () => {
   }, []);
   const handleQuickRegister = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Reset errors
+    const newErrors = {
+      name: false,
+      phone: false,
+      bloodType: false,
+      address: false,
+      lastDonationDate: false
+    };
+
+    // Check for empty fields
+    if (!formData.name) newErrors.name = true;
+    if (!formData.phone) newErrors.phone = true;
+    if (!formData.bloodType) newErrors.bloodType = true;
+    if (!formData.address) newErrors.address = true;
+
+    // Check last donation date
+    if (!neverDonated && !lastDonationDate) {
+      newErrors.lastDonationDate = true;
+    }
+
+    setErrors(newErrors);
+
     if (!formData.name || !formData.phone || !formData.bloodType || !formData.address) {
       toast({
         title: "Error",
@@ -91,20 +121,49 @@ const Index = () => {
     });
     setLastDonationDate(undefined);
     setNeverDonated(false);
+    setErrors({
+      name: false,
+      phone: false,
+      bloodType: false,
+      address: false,
+      lastDonationDate: false
+    });
     setTimeout(() => navigate('/donors'), 1500);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: false
+      });
+    }
   };
 
   const handleNeverDonatedChange = (checked: boolean) => {
     setNeverDonated(checked);
     if (checked) {
       setLastDonationDate(undefined);
+      setErrors({
+        ...errors,
+        lastDonationDate: false
+      });
+    }
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setLastDonationDate(date);
+    if (date) {
+      setErrors({
+        ...errors,
+        lastDonationDate: false
+      });
     }
   };
 
@@ -188,7 +247,18 @@ const Index = () => {
                             <Users className="h-4 w-4 text-red-600" />
                             Full Name
                           </Label>
-                          <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Enter your full name" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                          <Input 
+                            id="name" 
+                            name="name" 
+                            value={formData.name} 
+                            onChange={handleInputChange} 
+                            placeholder="Enter your full name" 
+                            className={cn(
+                              "h-10 sm:h-12 border-2 transition-colors w-full text-sm sm:text-base",
+                              errors.name ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
+                            )} 
+                            required 
+                          />
                         </div>
                       </div>
 
@@ -199,7 +269,17 @@ const Index = () => {
                             <Droplets className="h-4 w-4 text-red-600" />
                             Blood Type
                           </Label>
-                          <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 sm:h-12 w-full rounded-md border-2 border-gray-200 bg-background px-3 sm:px-4 pr-8 sm:pr-10 py-2 sm:py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" required>
+                          <select 
+                            id="bloodType" 
+                            name="bloodType" 
+                            value={formData.bloodType} 
+                            onChange={handleInputChange} 
+                            className={cn(
+                              "flex h-10 sm:h-12 w-full rounded-md bg-background px-3 sm:px-4 pr-8 sm:pr-10 py-2 sm:py-3 text-sm ring-offset-background focus:outline-none transition-colors border-2",
+                              errors.bloodType ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
+                            )} 
+                            required
+                          >
                             <option value="">Select blood type</option>
                             {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
                           </select>
@@ -220,9 +300,10 @@ const Index = () => {
                                   variant="outline"
                                   disabled={neverDonated}
                                   className={cn(
-                                    "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                    "h-10 sm:h-12 w-full text-sm sm:text-base justify-start text-left font-normal border-2 transition-colors",
                                     (!lastDonationDate || neverDonated) && "text-muted-foreground",
-                                    neverDonated && "cursor-not-allowed opacity-50"
+                                    neverDonated && "cursor-not-allowed opacity-50",
+                                    errors.lastDonationDate ? "border-red-500 hover:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
                                   )}
                                 >
                                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -234,7 +315,7 @@ const Index = () => {
                                   <CalendarComponent
                                     mode="single"
                                     selected={lastDonationDate}
-                                    onSelect={setLastDonationDate}
+                                    onSelect={handleDateSelect}
                                     disabled={(date) => date > new Date()}
                                     initialFocus
                                     className={cn("p-3 pointer-events-auto")}
@@ -268,7 +349,18 @@ const Index = () => {
                             <MapPin className="h-4 w-4 text-red-600" />
                             Address
                           </Label>
-                          <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="Your address" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                          <Input 
+                            id="address" 
+                            name="address" 
+                            value={formData.address} 
+                            onChange={handleInputChange} 
+                            placeholder="Your address" 
+                            className={cn(
+                              "h-10 sm:h-12 border-2 transition-colors w-full text-sm sm:text-base",
+                              errors.address ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
+                            )} 
+                            required 
+                          />
                         </div>
                       </div>
 
@@ -279,7 +371,18 @@ const Index = () => {
                             <Phone className="h-4 w-4 text-red-600" />
                             Phone Number
                           </Label>
-                          <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Your phone number" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                          <Input 
+                            id="phone" 
+                            name="phone" 
+                            value={formData.phone} 
+                            onChange={handleInputChange} 
+                            placeholder="Your phone number" 
+                            className={cn(
+                              "h-10 sm:h-12 border-2 transition-colors w-full text-sm sm:text-base",
+                              errors.phone ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
+                            )} 
+                            required 
+                          />
                         </div>
                       </div>
 
@@ -307,9 +410,10 @@ const Index = () => {
                                 variant="outline"
                                 disabled={neverDonated}
                                 className={cn(
-                                  "h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base justify-start text-left font-normal",
+                                  "h-10 sm:h-12 w-full text-sm sm:text-base justify-start text-left font-normal border-2 transition-colors",
                                   (!lastDonationDate || neverDonated) && "text-muted-foreground",
-                                  neverDonated && "cursor-not-allowed opacity-50"
+                                  neverDonated && "cursor-not-allowed opacity-50",
+                                  errors.lastDonationDate ? "border-red-500 hover:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
                                 )}
                               >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -321,7 +425,7 @@ const Index = () => {
                                 <CalendarComponent
                                   mode="single"
                                   selected={lastDonationDate}
-                                  onSelect={setLastDonationDate}
+                                  onSelect={handleDateSelect}
                                   disabled={(date) => date > new Date()}
                                   initialFocus
                                   className={cn("p-3 pointer-events-auto")}
