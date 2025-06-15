@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Users, Clock } from 'lucide-react';
@@ -8,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
 interface Donor {
   id: string;
@@ -73,29 +73,8 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
-      {/* Navigation */}
-      <nav className="bg-white/90 backdrop-blur-sm border-b border-red-100">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-red-600 rounded-full p-2">
-                <Droplets className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-gray-900">LifeFlow</span>
-            </div>
-            
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/')}
-              className="border-red-600 text-red-600 hover:bg-red-50"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
-            </Button>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-20 md:pb-0">
+      <ResponsiveNav />
 
       {/* Registration Form */}
       <div className="container mx-auto px-6 py-12">

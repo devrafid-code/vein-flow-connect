@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Table as TableComponent, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
 interface Donor {
   id: string;
@@ -284,31 +285,9 @@ const Donors = () => {
         </TableComponent>
       </CardContent>
     </Card>;
-  return <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30">
-      {/* Navigation */}
-      <nav className="bg-white/95 backdrop-blur-md border-b border-red-100/50 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-2.5 shadow-lg">
-                <Droplets className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">LifeFlow</span>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={() => navigate('/')} className="border-gray-200 text-gray-600 hover:bg-gray-50 transition-all duration-200">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/register')} className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-200">
-                <Heart className="h-4 w-4 mr-2" />
-                Register as Donor
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30 pb-20 md:pb-0">
+      <ResponsiveNav />
 
       {/* Donors List */}
       <div className="container mx-auto px-6 py-12">
@@ -380,7 +359,8 @@ const Donors = () => {
             </CardContent>
           </Card> : viewMode === 'grid' ? renderGridView() : renderTableView()}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default Donors;
