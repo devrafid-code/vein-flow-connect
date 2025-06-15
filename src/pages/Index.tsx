@@ -203,18 +203,6 @@ const Index = () => {
                             Last Donated On
                           </Label>
                           <div className="space-y-2">
-                            <div className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                id="neverDonated"
-                                checked={neverDonated}
-                                onChange={(e) => handleNeverDonatedChange(e.target.checked)}
-                                className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                              />
-                              <label htmlFor="neverDonated" className="text-sm text-gray-600">
-                                Never donated before
-                              </label>
-                            </div>
                             {!neverDonated && (
                               <Popover>
                                 <PopoverTrigger asChild>
@@ -241,6 +229,18 @@ const Index = () => {
                                 </PopoverContent>
                               </Popover>
                             )}
+                            <div className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id="neverDonated"
+                                checked={neverDonated}
+                                onChange={(e) => handleNeverDonatedChange(e.target.checked)}
+                                className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                              />
+                              <label htmlFor="neverDonated" className="text-sm text-gray-600">
+                                Never donated before
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -288,18 +288,6 @@ const Index = () => {
                           Last Donated On
                         </Label>
                         <div className="space-y-2">
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              id="neverDonatedMobile"
-                              checked={neverDonated}
-                              onChange={(e) => handleNeverDonatedChange(e.target.checked)}
-                              className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                            />
-                            <label htmlFor="neverDonatedMobile" className="text-sm text-gray-600">
-                              Never donated before
-                            </label>
-                          </div>
                           {!neverDonated && (
                             <Popover>
                               <PopoverTrigger asChild>
@@ -326,6 +314,18 @@ const Index = () => {
                               </PopoverContent>
                             </Popover>
                           )}
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="neverDonatedMobile"
+                              checked={neverDonated}
+                              onChange={(e) => handleNeverDonatedChange(e.target.checked)}
+                              className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                            />
+                            <label htmlFor="neverDonatedMobile" className="text-sm text-gray-600">
+                              Never donated before
+                            </label>
+                          </div>
                         </div>
                       </div>
                     </div>
