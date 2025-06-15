@@ -157,9 +157,9 @@ const Index = () => {
               <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-4 sm:p-6 lg:p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-6 sm:space-y-8">
-                    {/* First Row - Name, Phone, Last Donation Date (Desktop) */}
+                    {/* First Row - Full name, Blood type, Last Donation Date */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                      {/* Column 1 - Name */}
+                      {/* Column 1 - Full Name */}
                       <div className="w-full">
                         <div className="space-y-2 sm:space-y-3">
                           <Label htmlFor="name" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
@@ -170,14 +170,17 @@ const Index = () => {
                         </div>
                       </div>
 
-                      {/* Column 2 - Phone */}
+                      {/* Column 2 - Blood Type */}
                       <div className="w-full">
                         <div className="space-y-2 sm:space-y-3">
-                          <Label htmlFor="phone" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                            <Phone className="h-4 w-4 text-red-600" />
-                            Phone Number
+                          <Label htmlFor="bloodType" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                            <Droplets className="h-4 w-4 text-red-600" />
+                            Blood Type
                           </Label>
-                          <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Your phone number" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                          <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 sm:h-12 w-full rounded-md border-2 border-gray-200 bg-background px-3 sm:px-4 py-2 sm:py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" required>
+                            <option value="">Select blood type</option>
+                            {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                          </select>
                         </div>
                       </div>
 
@@ -216,23 +219,9 @@ const Index = () => {
                       </div>
                     </div>
 
-                    {/* Second Row - Blood Type, Address, Register Button */}
+                    {/* Second Row - Address, Phone Number, Register Button */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                      {/* Column 1 - Blood Type */}
-                      <div className="w-full">
-                        <div className="space-y-2 sm:space-y-3">
-                          <Label htmlFor="bloodType" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                            <Droplets className="h-4 w-4 text-red-600" />
-                            Blood Type
-                          </Label>
-                          <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 sm:h-12 w-full rounded-md border-2 border-gray-200 bg-background px-3 sm:px-4 py-2 sm:py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" required>
-                            <option value="">Select blood type</option>
-                            {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Column 2 - Address */}
+                      {/* Column 1 - Address */}
                       <div className="w-full">
                         <div className="space-y-2 sm:space-y-3">
                           <Label htmlFor="address" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
@@ -240,6 +229,17 @@ const Index = () => {
                             Address
                           </Label>
                           <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="Your address" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
+                        </div>
+                      </div>
+
+                      {/* Column 2 - Phone Number */}
+                      <div className="w-full">
+                        <div className="space-y-2 sm:space-y-3">
+                          <Label htmlFor="phone" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                            <Phone className="h-4 w-4 text-red-600" />
+                            Phone Number
+                          </Label>
+                          <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Your phone number" className="h-10 sm:h-12 border-2 border-gray-200 focus:border-red-500 transition-colors w-full text-sm sm:text-base" required />
                         </div>
                       </div>
 
