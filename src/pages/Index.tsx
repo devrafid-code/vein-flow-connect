@@ -177,7 +177,7 @@ const Index = () => {
                             <Droplets className="h-4 w-4 text-red-600" />
                             Blood Type
                           </Label>
-                          <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 sm:h-12 w-full rounded-md border-2 border-gray-200 bg-background px-3 sm:px-4 py-2 sm:py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" required>
+                          <select id="bloodType" name="bloodType" value={formData.bloodType} onChange={handleInputChange} className="flex h-10 sm:h-12 w-full rounded-md border-2 border-gray-200 bg-background px-3 sm:px-4 pr-8 sm:pr-10 py-2 sm:py-3 text-sm ring-offset-background focus:border-red-500 focus:outline-none transition-colors" required>
                             <option value="">Select blood type</option>
                             {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
                           </select>
