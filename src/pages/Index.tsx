@@ -73,28 +73,25 @@ const Index = () => {
     if (!formData.phone) newErrors.phone = true;
     if (!formData.bloodType) newErrors.bloodType = true;
     if (!formData.address) newErrors.address = true;
-
-    // Check last donation date - this should be checked BEFORE the early return
-    if (!neverDonated && !lastDonationDate) {
-      newErrors.lastDonationDate = true;
-    }
+    if (!neverDonated && !lastDonationDate) newErrors.lastDonationDate = true;
 
     setErrors(newErrors);
 
-    // Check if ANY field has errors (including lastDonationDate)
+    // Check if ANY field has errors and show appropriate error message
     const hasAnyError = Object.values(newErrors).some(error => error);
     
     if (hasAnyError) {
-      if (!formData.name || !formData.phone || !formData.bloodType || !formData.address) {
-        toast({
-          title: "Error",
-          description: "Please fill in all fields",
-          variant: "destructive"
-        });
-      } else if (!neverDonated && !lastDonationDate) {
+      // Prioritize showing the most relevant error message
+      if (newErrors.lastDonationDate) {
         toast({
           title: "Error",
           description: "Please select your last donation date or check 'Never donated before'",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Please fill in all fields",
           variant: "destructive"
         });
       }
