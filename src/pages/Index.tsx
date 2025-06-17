@@ -1,456 +1,141 @@
-import { useState, useEffect } from 'react';
-import { Heart, Droplets, Calendar, ArrowRight, Users, Settings, Phone, MapPin, CalendarIcon } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { ResponsiveNav } from '@/components/ui/responsive-nav';
+import { Heart, Droplets, Users, Shield, Phone, MapPin, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
 const Index = () => {
-  const [donorCount, setDonorCount] = useState(0);
-  const [livesCount, setLivesCount] = useState(0);
-  const [unitsCount, setUnitsCount] = useState(0);
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    bloodType: '',
-    address: ''
-  });
-  const [lastDonationDate, setLastDonationDate] = useState<Date>();
-  const [neverDonated, setNeverDonated] = useState(false);
-  const [errors, setErrors] = useState({
-    name: false,
-    phone: false,
-    bloodType: false,
-    address: false,
-    lastDonationDate: false
-  });
-  const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  // Animated counter effect
-  useEffect(() => {
-    const animateCounter = (target: number, setter: (value: number) => void, duration: number = 2000) => {
-      let start = 0;
-      const increment = target / (duration / 16);
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= target) {
-          setter(target);
-          clearInterval(timer);
-        } else {
-          setter(Math.floor(start));
-        }
-      }, 16);
-    };
-    const timer = setTimeout(() => {
-      animateCounter(15000, setDonorCount);
-      animateCounter(45000, setLivesCount);
-      animateCounter(125000, setUnitsCount);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
-  const handleQuickRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Reset errors
-    const newErrors = {
-      name: false,
-      phone: false,
-      bloodType: false,
-      address: false,
-      lastDonationDate: false
-    };
+  const stats = [
+    { icon: Users, label: 'Active Donors', value: '2,500+', color: 'text-red-600' },
+    { icon: Droplets, label: 'Lives Saved', value: '10,000+', color: 'text-blue-600' },
+    { icon: Heart, label: 'Success Rate', value: '98%', color: 'text-green-600' },
+  ];
 
-    // Check for empty fields
-    if (!formData.name) newErrors.name = true;
-    if (!formData.phone) newErrors.phone = true;
-    if (!formData.bloodType) newErrors.bloodType = true;
-    if (!formData.address) newErrors.address = true;
-    if (!neverDonated && !lastDonationDate) newErrors.lastDonationDate = true;
-
-    setErrors(newErrors);
-
-    // Check if ANY field has errors and show appropriate error message
-    const hasAnyError = Object.values(newErrors).some(error => error);
-    
-    if (hasAnyError) {
-      // Prioritize showing the most relevant error message
-      if (newErrors.lastDonationDate) {
-        toast({
-          title: "Error",
-          description: "Please select your last donation date or check 'Never donated before'",
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "Please fill in all fields",
-          variant: "destructive"
-        });
-      }
-      return;
+  const features = [
+    {
+      icon: Shield,
+      title: 'Secure & Private',
+      description: 'Your data is protected with enterprise-grade security'
+    },
+    {
+      icon: Clock,
+      title: 'Quick Registration',
+      description: 'Register as a donor in less than 5 minutes'
+    },
+    {
+      icon: MapPin,
+      title: 'Location Tracking',
+      description: 'Find nearby donors and donation centers'
+    },
+    {
+      icon: Phone,
+      title: '24/7 Support',
+      description: 'Round-the-clock assistance for urgent needs'
     }
-
-    const newDonor = {
-      id: Date.now().toString(),
-      ...formData,
-      lastDonationDate: neverDonated ? 'never' : lastDonationDate?.toISOString() || null,
-      registeredAt: new Date().toISOString()
-    };
-    const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    existingDonors.push(newDonor);
-    localStorage.setItem('donors', JSON.stringify(existingDonors));
-    toast({
-      title: "Success!",
-      description: "You've been registered as a blood donor!"
-    });
-    setFormData({
-      name: '',
-      phone: '',
-      bloodType: '',
-      address: ''
-    });
-    setLastDonationDate(undefined);
-    setNeverDonated(false);
-    setErrors({
-      name: false,
-      phone: false,
-      bloodType: false,
-      address: false,
-      lastDonationDate: false
-    });
-    setTimeout(() => navigate('/donors'), 1500);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-    // Clear error when user starts typing
-    if (errors[name as keyof typeof errors]) {
-      setErrors({
-        ...errors,
-        [name]: false
-      });
-    }
-  };
-
-  const handleNeverDonatedChange = (checked: boolean) => {
-    setNeverDonated(checked);
-    if (checked) {
-      setLastDonationDate(undefined);
-      setErrors({
-        ...errors,
-        lastDonationDate: false
-      });
-    }
-  };
-
-  const handleDateSelect = (date: Date | undefined) => {
-    setLastDonationDate(date);
-    if (date) {
-      setErrors({
-        ...errors,
-        lastDonationDate: false
-      });
-    }
-  };
+  ];
 
   return (
-    <div className="min-h-screen relative pb-16 md:pb-0">
-      {/* Navigation */}
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-20 md:pb-0">
       <ResponsiveNav />
-
-      {/* Hero Section with Background */}
-      <section className="relative min-h-screen bg-cover bg-center bg-no-repeat flex flex-col" style={{
-        backgroundImage: `url('/lovable-uploads/c4530eba-7ea7-4705-96b9-c43b27d2c9d5.png')`
-      }}>
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40"></div>
-        
-        {/* Hero Text Section */}
-        <div className="relative z-10 flex items-center justify-center py-8 sm:py-16 lg:py-20">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto text-center space-y-4">
-              <div className="space-y-3 sm:space-y-4">
-                <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight px-4">
-                  Every Donation Can Save up to 3 Lives.
-                </h1>
-                <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed max-w-2xl mx-auto px-4">
-                  Join our community of heroes and make a difference that lasts a lifetime.
-                </p>
-              </div>
-              
-              <div className="flex flex-col gap-4 items-center px-4 pt-4">
-                <Button 
-                  size="lg" 
-                  className="bg-red-600 hover:bg-red-700 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-fit" 
-                  onClick={() => navigate('/donors')}
-                >
-                  <Users className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
-                  View All Donors
-                  <ArrowRight className="h-4 sm:h-5 w-4 sm:w-5 ml-2" />
-                </Button>
-              </div>
-            </div>
+      
+      <div className="container mx-auto px-4 sm:px-6 py-8 md:py-16">
+        {/* Hero Section */}
+        <div className="text-center mb-12 md:mb-20">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-gray-900 mb-4 md:mb-6">
+            Save Lives with
+            <span className="text-red-600 block sm:inline sm:ml-3">LifeFlow</span>
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 md:mb-12 max-w-3xl mx-auto px-4">
+            Connect blood donors with those in need. A simple, secure platform that helps save lives every day.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md sm:max-w-none mx-auto">
+            <Button 
+              size="lg" 
+              className="bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+              onClick={() => navigate('/register')}
+            >
+              <Heart className="mr-2 h-5 w-5" />
+              Become a Donor
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-red-600 text-red-600 hover:bg-red-50 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+              onClick={() => navigate('/donors')}
+            >
+              <Users className="mr-2 h-5 w-5" />
+              Find Donors
+            </Button>
           </div>
         </div>
 
-        {/* Registration Form Section */}
-        <div className="relative z-10 py-6 sm:py-8">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-5xl mx-auto">
-              <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
-                <CardContent className="p-4 sm:p-6 lg:p-8">
-                  <form onSubmit={handleQuickRegister} className="space-y-6 sm:space-y-8">
-                    {/* Form content remains the same as it's already responsive */}
-                    {/* ... keep existing code (form content) */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                      {/* Column 1 - Full Name */}
-                      <div className="w-full">
-                        <div className="space-y-2 sm:space-y-3">
-                          <Label htmlFor="name" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                            <Users className="h-4 w-4 text-red-600" />
-                            Full Name
-                          </Label>
-                          <Input 
-                            id="name" 
-                            name="name" 
-                            value={formData.name} 
-                            onChange={handleInputChange} 
-                            placeholder="Enter your full name" 
-                            className={cn(
-                              "h-10 sm:h-12 border-2 transition-colors w-full text-sm sm:text-base",
-                              errors.name ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
-                            )} 
-                            required 
-                          />
-                        </div>
-                      </div>
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-24">
+          {stats.map((stat, index) => (
+            <Card key={index} className="text-center border-2 border-red-100 hover:border-red-200 transition-colors">
+              <CardContent className="p-6 md:p-8">
+                <stat.icon className={`h-10 w-10 md:h-12 md:w-12 ${stat.color} mx-auto mb-4`} />
+                <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                <div className="text-sm md:text-base text-gray-600">{stat.label}</div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-                      {/* Column 2 - Blood Type */}
-                      <div className="w-full">
-                        <div className="space-y-2 sm:space-y-3">
-                          <Label htmlFor="bloodType" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                            <Droplets className="h-4 w-4 text-red-600" />
-                            Blood Type
-                          </Label>
-                          <select 
-                            id="bloodType" 
-                            name="bloodType" 
-                            value={formData.bloodType} 
-                            onChange={handleInputChange} 
-                            className={cn(
-                              "flex h-10 sm:h-12 w-full rounded-md bg-background px-3 sm:px-4 pr-8 sm:pr-10 py-2 sm:py-3 text-sm ring-offset-background focus:outline-none transition-colors border-2",
-                              errors.bloodType ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
-                            )} 
-                            required
-                          >
-                            <option value="">Select blood type</option>
-                            {bloodTypes.map(type => <option key={type} value={type}>{type}</option>)}
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Column 3 - Last Donation Date (Desktop only) */}
-                      <div className="w-full flex-col justify-end hidden lg:flex">
-                        <div className="space-y-2 sm:space-y-3">
-                          <Label htmlFor="lastDonationDate" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                            <Calendar className="h-4 w-4 text-red-600" />
-                            Last Donated On
-                          </Label>
-                          <div className="space-y-2">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  disabled={neverDonated}
-                                  className={cn(
-                                    "h-10 sm:h-12 w-full text-sm sm:text-base justify-start text-left font-normal border-2 transition-colors",
-                                    (!lastDonationDate || neverDonated) && "text-muted-foreground",
-                                    neverDonated && "cursor-not-allowed opacity-50",
-                                    errors.lastDonationDate ? "border-red-500 hover:border-red-500 focus:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {neverDonated ? "Never donated" : (lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>)}
-                                </Button>
-                              </PopoverTrigger>
-                              {!neverDonated && (
-                                <PopoverContent className="w-auto p-0" align="start">
-                                  <CalendarComponent
-                                    mode="single"
-                                    selected={lastDonationDate}
-                                    onSelect={handleDateSelect}
-                                    disabled={(date) => date > new Date()}
-                                    initialFocus
-                                    className={cn("p-3 pointer-events-auto")}
-                                  />
-                                </PopoverContent>
-                              )}
-                            </Popover>
-                            <div className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                id="neverDonated"
-                                checked={neverDonated}
-                                onChange={(e) => handleNeverDonatedChange(e.target.checked)}
-                                className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                              />
-                              <label htmlFor="neverDonated" className="text-sm text-gray-600">
-                                Never donated before
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Second Row - Address, Phone Number, Register Button */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                      {/* Column 1 - Address */}
-                      <div className="w-full">
-                        <div className="space-y-2 sm:space-y-3">
-                          <Label htmlFor="address" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                            <MapPin className="h-4 w-4 text-red-600" />
-                            Address
-                          </Label>
-                          <Input 
-                            id="address" 
-                            name="address" 
-                            value={formData.address} 
-                            onChange={handleInputChange} 
-                            placeholder="Your address" 
-                            className={cn(
-                              "h-10 sm:h-12 border-2 transition-colors w-full text-sm sm:text-base",
-                              errors.address ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
-                            )} 
-                            required 
-                          />
-                        </div>
-                      </div>
-
-                      {/* Column 2 - Phone Number */}
-                      <div className="w-full">
-                        <div className="space-y-2 sm:space-y-3">
-                          <Label htmlFor="phone" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                            <Phone className="h-4 w-4 text-red-600" />
-                            Phone Number
-                          </Label>
-                          <Input 
-                            id="phone" 
-                            name="phone" 
-                            value={formData.phone} 
-                            onChange={handleInputChange} 
-                            placeholder="Your phone number" 
-                            className={cn(
-                              "h-10 sm:h-12 border-2 transition-colors w-full text-sm sm:text-base",
-                              errors.phone ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
-                            )} 
-                            required 
-                          />
-                        </div>
-                      </div>
-
-                      {/* Column 3 - Register Button (Desktop only) */}
-                      <div className="w-full flex-col justify-end hidden lg:flex">
-                        <Button type="submit" className="bg-red-600 hover:bg-red-700 font-bold py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-lg h-10 sm:h-12 w-full">
-                          <Heart className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
-                          Register
-                          <ArrowRight className="h-4 sm:h-5 w-4 sm:w-5 ml-2" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Mobile Last Donation Date - Between form rows */}
-                    <div className="lg:hidden w-full">
-                      <div className="space-y-2 sm:space-y-3">
-                        <Label htmlFor="lastDonationDateMobile" className="text-gray-700 font-semibold flex items-center gap-2 text-sm sm:text-base">
-                          <Calendar className="h-4 w-4 text-red-600" />
-                          Last Donated On
-                        </Label>
-                        <div className="space-y-2">
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                disabled={neverDonated}
-                                className={cn(
-                                  "h-10 sm:h-12 w-full text-sm sm:text-base justify-start text-left font-normal border-2 transition-colors",
-                                  (!lastDonationDate || neverDonated) && "text-muted-foreground",
-                                  neverDonated && "cursor-not-allowed opacity-50",
-                                  errors.lastDonationDate ? "border-red-500 hover:border-red-500 focus:border-red-500" : "border-gray-200 hover:border-gray-300 focus:border-red-500"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {neverDonated ? "Never donated" : (lastDonationDate ? format(lastDonationDate, "PPP") : <span>Pick a date</span>)}
-                              </Button>
-                            </PopoverTrigger>
-                            {!neverDonated && (
-                              <PopoverContent className="w-auto p-0" align="start">
-                                <CalendarComponent
-                                  mode="single"
-                                  selected={lastDonationDate}
-                                  onSelect={handleDateSelect}
-                                  disabled={(date) => date > new Date()}
-                                  initialFocus
-                                  className={cn("p-3 pointer-events-auto")}
-                                />
-                              </PopoverContent>
-                            )}
-                          </Popover>
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              id="neverDonatedMobile"
-                              checked={neverDonated}
-                              onChange={(e) => handleNeverDonatedChange(e.target.checked)}
-                              className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                            />
-                            <label htmlFor="neverDonatedMobile" className="text-sm text-gray-600">
-                              Never donated before
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Mobile Register Button - Bottom */}
-                    <div className="lg:hidden w-full">
-                      <Button type="submit" className="bg-red-600 hover:bg-red-700 font-bold py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-lg h-10 sm:h-12 w-full">
-                        <Heart className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
-                        Register
-                        <ArrowRight className="h-4 sm:h-5 w-4 sm:w-5 ml-2" />
-                      </Button>
-                    </div>
-                  </form>
+        {/* Features Section */}
+        <div className="mb-16 md:mb-24">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4 md:mb-6">
+            Why Choose LifeFlow?
+          </h2>
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 text-center mb-12 md:mb-16 max-w-2xl mx-auto px-4">
+            Our platform is designed with both donors and recipients in mind, ensuring a seamless experience for everyone.
+          </p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="text-center p-4 md:p-6 border-2 border-gray-100 hover:border-red-200 transition-colors">
+                <CardContent className="p-4 md:p-6">
+                  <feature.icon className="h-10 w-10 md:h-12 md:w-12 text-red-600 mx-auto mb-4" />
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
                 </CardContent>
               </Card>
-            </div>
+            ))}
           </div>
         </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 bg-white/90 backdrop-blur-sm border-t border-red-100">
-        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <div className="text-center">
-            <p className="text-xs sm:text-sm text-gray-600">
-              © 2024 LifeFlow. Saving lives, one donation at a time.
+        {/* CTA Section */}
+        <Card className="bg-red-600 text-white border-0 p-6 md:p-12">
+          <CardContent className="text-center p-0">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6">Ready to Make a Difference?</h2>
+            <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-10 opacity-90 max-w-2xl mx-auto">
+              Join thousands of heroes who are already saving lives through blood donation.
             </p>
-          </div>
-        </div>
-      </footer>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md sm:max-w-none mx-auto">
+              <Button 
+                size="lg" 
+                variant="secondary"
+                className="bg-white text-red-600 hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+                onClick={() => navigate('/register')}
+              >
+                Register Now
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-red-600 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+                onClick={() => navigate('/dashboard')}
+              >
+                View Dashboard
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
