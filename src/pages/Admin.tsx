@@ -40,6 +40,24 @@ const Admin = () => {
     status: 'active' as 'active' | 'inactive'
   });
 
+  // Check authentication and redirect if needed
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate('/dashboard');
+      return;
+    }
+
+    if (!isAdmin()) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access this page",
+        variant: "destructive",
+      });
+      navigate('/dashboard');
+      return;
+    }
+  }, [isAuthenticated, isAdmin, navigate, toast]);
+
   // Load users from localStorage
   useEffect(() => {
     const savedUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
@@ -229,30 +247,10 @@ const Admin = () => {
     });
   };
 
-  // Redirect if not authenticated or not admin
-  if (!isAuthenticated()) {
-    navigate('/dashboard');
+  // Don't render anything while checking authentication
+  if (!isAuthenticated() || !isAdmin()) {
     return null;
   }
-
-  if (!isAdmin()) {
-    toast({
-      title: "Access Denied",
-      description: "You don't have permission to access this page",
-      variant: "destructive",
-    });
-    navigate('/dashboard');
-    return null;
-  }
-
-  const handleLogout = () => {
-    logout();
-    toast({
-      title: "Logged out",
-      description: "You have been logged out successfully",
-    });
-    navigate('/');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
