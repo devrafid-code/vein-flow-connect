@@ -1,10 +1,13 @@
-
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Heart, Droplets, Phone, MapPin, Calendar, User, Users, Activity, Grid2X2, List, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Users, Heart, Phone, MapPin, Calendar, Filter } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Table as TableComponent, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
 interface Donor {
@@ -17,34 +20,189 @@ interface Donor {
 }
 
 const Donors = () => {
+  const navigate = useNavigate();
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBloodType, setFilterBloodType] = useState('all');
-
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  // Load donors from localStorage
+  // Get blood type colors
+  const getBloodTypeColors = (bloodType: string) => {
+    const colorMap: Record<string, { from: string; to: string }> = {
+      'A+': { from: 'from-emerald-400', to: 'to-emerald-500' },
+      'A-': { from: 'from-emerald-500', to: 'to-emerald-600' },
+      'B+': { from: 'from-blue-400', to: 'to-blue-500' },
+      'B-': { from: 'from-blue-500', to: 'to-blue-600' },
+      'AB+': { from: 'from-purple-400', to: 'to-purple-500' },
+      'AB-': { from: 'from-purple-500', to: 'to-purple-600' },
+      'O+': { from: 'from-orange-400', to: 'to-orange-500' },
+      'O-': { from: 'from-orange-500', to: 'to-orange-600' },
+    };
+    return colorMap[bloodType] || { from: 'from-red-500', to: 'to-red-600' };
+  };
+
+  // Sample donors data
+  const sampleDonors: Donor[] = [{
+    id: '1',
+    name: 'John Smith',
+    phone: '+1-555-0123',
+    bloodType: 'O+',
+    address: '123 Main St, New York, NY',
+    registeredAt: '2024-01-15T10:30:00Z'
+  }, {
+    id: '2',
+    name: 'Sarah Johnson',
+    phone: '+1-555-0234',
+    bloodType: 'A+',
+    address: '456 Oak Ave, Los Angeles, CA',
+    registeredAt: '2024-02-20T14:15:00Z'
+  }, {
+    id: '3',
+    name: 'Michael Brown',
+    phone: '+1-555-0345',
+    bloodType: 'B-',
+    address: '789 Pine Rd, Chicago, IL',
+    registeredAt: '2024-03-10T09:45:00Z'
+  }, {
+    id: '4',
+    name: 'Emily Davis',
+    phone: '+1-555-0456',
+    bloodType: 'AB+',
+    address: '321 Elm St, Houston, TX',
+    registeredAt: '2024-03-25T16:20:00Z'
+  }, {
+    id: '5',
+    name: 'David Wilson',
+    phone: '+1-555-0567',
+    bloodType: 'O-',
+    address: '654 Maple Dr, Phoenix, AZ',
+    registeredAt: '2024-04-05T11:30:00Z'
+  }, {
+    id: '6',
+    name: 'Lisa Anderson',
+    phone: '+1-555-0678',
+    bloodType: 'A-',
+    address: '987 Cedar Ln, Philadelphia, PA',
+    registeredAt: '2024-04-18T13:45:00Z'
+  }, {
+    id: '7',
+    name: 'Robert Taylor',
+    phone: '+1-555-0789',
+    bloodType: 'B+',
+    address: '147 Birch St, San Antonio, TX',
+    registeredAt: '2024-05-02T08:15:00Z'
+  }, {
+    id: '8',
+    name: 'Jennifer White',
+    phone: '+1-555-0890',
+    bloodType: 'AB-',
+    address: '258 Spruce Ave, San Diego, CA',
+    registeredAt: '2024-05-15T15:30:00Z'
+  }, {
+    id: '9',
+    name: 'Christopher Lee',
+    phone: '+1-555-0901',
+    bloodType: 'O+',
+    address: '369 Willow Rd, Dallas, TX',
+    registeredAt: '2024-05-28T12:00:00Z'
+  }, {
+    id: '10',
+    name: 'Amanda Garcia',
+    phone: '+1-555-1012',
+    bloodType: 'A+',
+    address: '741 Ash Dr, San Jose, CA',
+    registeredAt: '2024-06-03T10:45:00Z'
+  }, {
+    id: '11',
+    name: 'Matthew Martinez',
+    phone: '+1-555-1123',
+    bloodType: 'B-',
+    address: '852 Poplar St, Austin, TX',
+    registeredAt: '2024-06-08T14:30:00Z'
+  }, {
+    id: '12',
+    name: 'Jessica Rodriguez',
+    phone: '+1-555-1234',
+    bloodType: 'AB+',
+    address: '963 Hickory Ave, Jacksonville, FL',
+    registeredAt: '2024-06-12T09:20:00Z'
+  }, {
+    id: '13',
+    name: 'Daniel Hernandez',
+    phone: '+1-555-1345',
+    bloodType: 'O-',
+    address: '159 Walnut Ln, Fort Worth, TX',
+    registeredAt: '2024-06-15T16:45:00Z'
+  }, {
+    id: '14',
+    name: 'Ashley Lopez',
+    phone: '+1-555-1456',
+    bloodType: 'A-',
+    address: '753 Chestnut Rd, Columbus, OH',
+    registeredAt: '2024-06-18T11:15:00Z'
+  }, {
+    id: '15',
+    name: 'Kevin Gonzalez',
+    phone: '+1-555-1567',
+    bloodType: 'B+',
+    address: '486 Sycamore Dr, Charlotte, NC',
+    registeredAt: '2024-06-20T13:30:00Z'
+  }, {
+    id: '16',
+    name: 'Stephanie Wilson',
+    phone: '+1-555-1678',
+    bloodType: 'AB-',
+    address: '297 Magnolia St, Seattle, WA',
+    registeredAt: '2024-06-22T08:45:00Z'
+  }, {
+    id: '17',
+    name: 'Brian Anderson',
+    phone: '+1-555-1789',
+    bloodType: 'O+',
+    address: '518 Dogwood Ave, Denver, CO',
+    registeredAt: '2024-06-24T15:20:00Z'
+  }, {
+    id: '18',
+    name: 'Michelle Thomas',
+    phone: '+1-555-1890',
+    bloodType: 'A+',
+    address: '629 Redwood Ln, Boston, MA',
+    registeredAt: '2024-06-26T12:10:00Z'
+  }, {
+    id: '19',
+    name: 'Steven Jackson',
+    phone: '+1-555-1901',
+    bloodType: 'B-',
+    address: '740 Palm Dr, El Paso, TX',
+    registeredAt: '2024-06-28T10:30:00Z'
+  }, {
+    id: '20',
+    name: 'Nicole White',
+    phone: '+1-555-2012',
+    bloodType: 'AB+',
+    address: '851 Cypress Rd, Detroit, MI',
+    registeredAt: '2024-06-30T14:45:00Z'
+  }];
   useEffect(() => {
     const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    setDonors(savedDonors);
+    // Combine saved donors with sample donors, avoiding duplicates
+    const allDonors = [...savedDonors];
+    sampleDonors.forEach(sampleDonor => {
+      if (!allDonors.find(donor => donor.id === sampleDonor.id)) {
+        allDonors.push(sampleDonor);
+      }
+    });
+    setDonors(allDonors);
+    // Save the combined list back to localStorage
+    localStorage.setItem('donors', JSON.stringify(allDonors));
   }, []);
-
-  // Filter donors
   const filteredDonors = donors.filter(donor => {
-    const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         donor.phone.includes(searchTerm) ||
-                         donor.bloodType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         donor.address.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || donor.bloodType.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesBloodType = filterBloodType === 'all' || donor.bloodType === filterBloodType;
     return matchesSearch && matchesBloodType;
   });
-
-  // Get blood type stats
-  const bloodTypeStats = bloodTypes.map(type => ({
-    type,
-    count: donors.filter(donor => donor.bloodType === type).length
-  }));
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -52,186 +210,154 @@ const Donors = () => {
       day: 'numeric'
     });
   };
-
-  // Get blood type color - using consistent color scheme
-  const getBloodTypeColor = (bloodType: string) => {
-    const colors: { [key: string]: string } = {
-      'A+': 'bg-red-100 text-red-800 border-red-200',
-      'A-': 'bg-red-200 text-red-900 border-red-300',
-      'B+': 'bg-blue-100 text-blue-800 border-blue-200',
-      'B-': 'bg-blue-200 text-blue-900 border-blue-300',
-      'AB+': 'bg-purple-100 text-purple-800 border-purple-200',
-      'AB-': 'bg-purple-200 text-purple-900 border-purple-300',
-      'O+': 'bg-green-100 text-green-800 border-green-200',
-      'O-': 'bg-green-200 text-green-900 border-green-300'
-    };
-    return colors[bloodType] || 'bg-gray-100 text-gray-800 border-gray-200';
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
-
+  const renderGridView = () => <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
+      {filteredDonors.map(donor => {
+        const colors = getBloodTypeColors(donor.bloodType);
+        return <Card key={donor.id} className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${hoveredCard && hoveredCard !== donor.id ? 'scale-95 opacity-75' : hoveredCard === donor.id ? 'shadow-2xl scale-105 z-50' : 'hover:shadow-2xl hover:-translate-y-2'} bg-gradient-to-br from-white via-white to-gray-50/30`} onMouseEnter={() => setHoveredCard(donor.id)} onMouseLeave={() => setHoveredCard(null)}>
+          <CardContent className="p-0">
+            {/* Header section with gradient */}
+            <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
+              <div className="flex items-center space-x-4">
+                <div className={`h-14 w-14 rounded-full bg-gradient-to-br ${colors.from} ${colors.to} flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300`}>
+                  {donor.bloodType}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
+                </div>
+              </div>
+            </div>
+            
+            {/* Content section */}
+            <div className="p-6 pt-2">
+              {/* Mobile number prominently displayed */}
+              <div className="flex items-center mb-4">
+                <Phone className="h-5 w-5 text-green-600 mr-3" />
+                <span className="text-lg font-bold text-gray-900">{donor.phone}</span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
+                  <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
+                    <MapPin className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <span className="truncate text-sm font-medium">{donor.address}</span>
+                </div>
+                <div className="flex items-center text-gray-600 group/item hover:text-gray-800 transition-colors duration-200">
+                  <div className="bg-gray-100 group-hover/item:bg-gray-200 rounded-lg p-2 mr-3 transition-colors duration-200">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <span className="text-sm font-medium">Registered {formatDate(donor.registeredAt)}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      })}
+    </div>;
+  const renderTableView = () => <Card className="border-0 shadow-lg bg-white">
+      <CardContent className="p-0">
+        <TableComponent>
+          <TableHeader>
+            <TableRow className="bg-gradient-to-r from-red-50 to-red-25">
+              <TableHead className="font-bold text-gray-900">Name</TableHead>
+              <TableHead className="font-bold text-gray-900">Blood Type</TableHead>
+              <TableHead className="font-bold text-gray-900">Phone</TableHead>
+              <TableHead className="font-bold text-gray-900">Address</TableHead>
+              <TableHead className="font-bold text-gray-900">Registered</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredDonors.map(donor => <TableRow key={donor.id} className="hover:bg-red-50/50 transition-colors duration-200">
+                <TableCell className="font-medium text-gray-900">{donor.name}</TableCell>
+                <TableCell>
+                  <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold">
+                    {donor.bloodType}
+                  </Badge>
+                </TableCell>
+                <TableCell className="font-semibold text-green-700">{donor.phone}</TableCell>
+                <TableCell className="text-gray-600 max-w-xs truncate">{donor.address}</TableCell>
+                <TableCell className="text-gray-600">{formatDate(donor.registeredAt)}</TableCell>
+              </TableRow>)}
+          </TableBody>
+        </TableComponent>
+      </CardContent>
+    </Card>;
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-20 md:pb-0">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30 pb-20 md:pb-0">
       <ResponsiveNav />
-      
-      <div className="container mx-auto px-4 sm:px-6 py-8">
-        {/* Header */}
-        <div className="text-center mb-8 md:mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <div className="bg-red-600 rounded-full p-3">
-              <Users className="h-6 w-6 md:h-8 md:w-8 text-white" />
+
+      {/* Donors List */}
+      <div className="container mx-auto px-6 py-12">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-4">Blood Donors</h1>
+          <p className="text-xl text-gray-600">Our community of heroes who help save lives</p>
+        </div>
+
+        {/* Filters */}
+        <div className="rounded-2xl p-6 mb-8 px-0">
+          <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search by name or blood type..." 
+                value={searchTerm} 
+                onChange={e => setSearchTerm(e.target.value)} 
+                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl h-10 pl-10" 
+              />
+            </div>
+            
+            {/* Vertical separator after search bar */}
+            <div className="hidden lg:block w-px bg-gray-300 mx-2"></div>
+            
+            {/* Blood Type Chips and View Toggle with vertical separators */}
+            <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
+              {/* Blood Type Chips */}
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => setFilterBloodType('all')} className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${filterBloodType === 'all' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                  All
+                </button>
+                {bloodTypes.map(type => <button key={type} onClick={() => setFilterBloodType(type)} className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${filterBloodType === type ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                    {type}
+                  </button>)}
+              </div>
+              
+              {/* Vertical separator */}
+              <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
+              
+              {/* View Toggle */}
+              <div className="bg-red-50 rounded-xl p-1 h-10 flex items-center">
+                <ToggleGroup type="single" value={viewMode} onValueChange={value => value && setViewMode(value as 'grid' | 'table')}>
+                  <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white rounded-xl h-8">
+                    <Grid2X2 className="h-4 w-4" />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="table" aria-label="Table view" className="data-[state=on]:bg-red-500 data-[state=on]:text-white rounded-xl h-8">
+                    <List className="h-4 w-4" />
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Blood Donor Directory
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-            Find registered blood donors in your area. Contact them directly for urgent needs.
-          </p>
         </div>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4 mb-8">
-          {bloodTypeStats.map(stat => (
-            <Card key={stat.type} className="text-center border border-gray-200">
-              <CardContent className="p-3 sm:p-4">
-                <div className={`inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-bold mb-2 border ${getBloodTypeColor(stat.type)}`}>
-                  {stat.type}
-                </div>
-                <div className="text-lg sm:text-xl font-bold text-gray-900">{stat.count}</div>
-                <div className="text-xs sm:text-sm text-gray-600">donors</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Search and Filters */}
-        <Card className="mb-8">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex flex-col space-y-4">
-              {/* Search Bar */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search by name, phone, blood type, or address..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-11 sm:h-12 text-base"
-                />
-              </div>
-
-              {/* Blood Type Filters */}
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  variant={filterBloodType === 'all' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setFilterBloodType('all')}
-                  className={`text-xs sm:text-sm ${filterBloodType === 'all' ? 'bg-red-600 hover:bg-red-700' : 'hover:bg-red-50 hover:text-red-600'}`}
-                >
-                  All Types
-                </Button>
-                {bloodTypes.map(type => (
-                  <Button
-                    key={type}
-                    variant={filterBloodType === type ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setFilterBloodType(type)}
-                    className={`text-xs sm:text-sm ${filterBloodType === type ? 'bg-red-600 hover:bg-red-700' : 'hover:bg-red-50 hover:text-red-600'}`}
-                  >
-                    {type}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Donors List */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between text-lg sm:text-xl">
-              <span>Available Donors ({filteredDonors.length})</span>
-              <Users className="h-5 w-5 text-gray-600" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            {filteredDonors.length === 0 ? (
-              <div className="text-center py-12">
-                <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No donors found</h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  {donors.length === 0 
-                    ? "No donors have registered yet." 
-                    : "No donors match your search criteria. Try adjusting your filters."
-                  }
-                </p>
+        {filteredDonors.length === 0 ? <Card className="text-center py-16 border-0 shadow-xl bg-gradient-to-br from-white to-gray-50/50">
+            <CardContent>
+              <div className="bg-gradient-to-br from-red-100 to-red-200 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <Heart className="h-10 w-10 text-red-600" />
               </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredDonors.map(donor => (
-                  <div key={donor.id} className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {/* Name & Blood Type */}
-                      <div className="flex items-center space-x-3">
-                        <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-sm font-bold border ${getBloodTypeColor(donor.bloodType)}`}>
-                          {donor.bloodType}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-gray-900 text-base sm:text-lg">{donor.name}</h3>
-                        </div>
-                      </div>
-
-                      {/* Phone */}
-                      <div className="flex items-center space-x-2">
-                        <Phone className="h-4 w-4 text-gray-600 flex-shrink-0" />
-                        <span className="text-sm sm:text-base text-gray-900 font-medium">{donor.phone}</span>
-                      </div>
-
-                      {/* Address */}
-                      <div className="flex items-center space-x-2">
-                        <MapPin className="h-4 w-4 text-gray-600 flex-shrink-0" />
-                        <span className="text-sm sm:text-base text-gray-900 font-medium truncate">{donor.address}</span>
-                      </div>
-
-                      {/* Registration Date */}
-                      <div className="flex items-center space-x-2">
-                        <Calendar className="h-4 w-4 text-gray-600 flex-shrink-0" />
-                        <span className="text-sm sm:text-base text-gray-600">
-                          Registered {formatDate(donor.registeredAt)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Contact Button for Mobile */}
-                    <div className="mt-4 sm:hidden">
-                      <Button 
-                        className="w-full bg-red-600 hover:bg-red-700"
-                        onClick={() => window.open(`tel:${donor.phone}`)}
-                      >
-                        <Phone className="h-4 w-4 mr-2" />
-                        Call {donor.name}
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Emergency Notice */}
-        <Card className="mt-8 bg-red-50 border-red-200">
-          <CardContent className="p-4 sm:p-6">
-            <div className="text-center">
-              <Heart className="h-8 w-8 text-red-600 mx-auto mb-3" />
-              <h3 className="text-lg sm:text-xl font-semibold text-red-800 mb-2">Emergency Blood Need?</h3>
-              <p className="text-sm sm:text-base text-red-700 mb-4">
-                Contact donors directly using their phone numbers. Always respect their availability and be polite when requesting donations.
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">No Donors Found</h3>
+              <p className="text-gray-600 mb-8 text-lg">
+                {donors.length === 0 ? "Be the first to register as a blood donor and help save lives!" : "No donors match your current search criteria."}
               </p>
-              <p className="text-xs sm:text-sm text-red-600 font-medium">
-                Remember: Blood donation saves lives. Thank a donor today!
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+              <Button onClick={() => navigate('/register')} className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-3">
+                <Heart className="h-5 w-5 mr-2" />
+                Register as Donor
+              </Button>
+            </CardContent>
+          </Card> : viewMode === 'grid' ? renderGridView() : renderTableView()}
       </div>
     </div>
   );

@@ -1,22 +1,23 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Plus, Edit, Trash2, Search, Users, Shield, UserPlus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Users, Droplets, Heart, Shield, Settings, ArrowLeft, UserCheck, UserX, Phone, MapPin, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { ResponsiveNav } from '@/components/ui/responsive-nav';
-import LoginForm from '@/components/LoginForm';
+import { useAuth } from '@/contexts/AuthContext';
 
-interface Donor {
+interface User {
   id: string;
   name: string;
-  phone: string;
-  bloodType: string;
-  address: string;
-  registeredAt: string;
+  email: string;
+  role: 'admin' | 'user';
+  status: 'active' | 'inactive';
+  createdAt: string;
 }
 
 const Admin = () => {
@@ -24,29 +25,201 @@ const Admin = () => {
   const { toast } = useToast();
   const { currentUser, logout, isAdmin, isAuthenticated } = useAuth();
   
-  const [donors, setDonors] = useState<Donor[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'admin' | 'user' | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'active' | 'inactive' | null>(null);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    role: 'user' as 'admin' | 'user',
+    status: 'active' as 'active' | 'inactive'
+  });
 
-  // Load donors from localStorage
+  // Load users from localStorage
   useEffect(() => {
-    const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    setDonors(savedDonors);
+    const savedUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+    if (savedUsers.length === 0) {
+      // Add default admin user if none exist
+      const defaultUsers: User[] = [
+        {
+          id: '1',
+          name: 'Admin User',
+          email: 'admin@lifeflow.com',
+          role: 'admin',
+          status: 'active',
+          createdAt: new Date().toISOString()
+        }
+      ];
+      setUsers(defaultUsers);
+      localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
+    } else {
+      setUsers(savedUsers);
+    }
   }, []);
 
-  const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+  // Filter users
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesRole = roleFilter ? user.role === roleFilter : true;
+    const matchesStatus = statusFilter ? user.status === statusFilter : true;
+    
+    return matchesSearch && matchesRole && matchesStatus;
+  });
 
-  // Calculate stats
-  const totalDonors = donors.length;
-  const recentDonors = donors.filter(donor => {
-    const registrationDate = new Date(donor.registeredAt);
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    return registrationDate > thirtyDaysAgo;
-  }).length;
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm('');
+    setRoleFilter(null);
+    setStatusFilter(null);
+  };
 
-  const bloodTypeStats = bloodTypes.map(type => ({
-    type,
-    count: donors.filter(donor => donor.bloodType === type).length,
-    percentage: totalDonors > 0 ? ((donors.filter(donor => donor.bloodType === type).length / totalDonors) * 100).toFixed(1) : '0'
-  }));
+  // Reset form
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      email: '',
+      role: 'user',
+      status: 'active'
+    });
+  };
+
+  // Handle add user
+  const handleAddUser = () => {
+    resetForm();
+    setShowAddDialog(true);
+  };
+
+  // Handle save new user
+  const handleSaveUser = () => {
+    // Validate form
+    if (!formData.name || !formData.email) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if email already exists
+    if (users.some(user => user.email === formData.email)) {
+      toast({
+        title: "Error",
+        description: "A user with this email already exists",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newUser: User = {
+      id: Date.now().toString(),
+      ...formData,
+      createdAt: new Date().toISOString()
+    };
+
+    const updatedUsers = [...users, newUser];
+    setUsers(updatedUsers);
+    localStorage.setItem('adminUsers', JSON.stringify(updatedUsers));
+    setShowAddDialog(false);
+    resetForm();
+    
+    toast({
+      title: "Success",
+      description: "User added successfully",
+    });
+  };
+
+  // Handle edit user
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setFormData({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      status: user.status
+    });
+    setShowEditDialog(true);
+  };
+
+  // Handle save edit
+  const handleSaveEdit = () => {
+    if (!selectedUser) return;
+
+    // Validate form
+    if (!formData.name || !formData.email) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if email already exists (excluding current user)
+    if (users.some(user => user.email === formData.email && user.id !== selectedUser.id)) {
+      toast({
+        title: "Error",
+        description: "A user with this email already exists",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const updatedUsers = users.map(user => 
+      user.id === selectedUser.id 
+        ? { ...user, ...formData }
+        : user
+    );
+
+    setUsers(updatedUsers);
+    localStorage.setItem('adminUsers', JSON.stringify(updatedUsers));
+    setShowEditDialog(false);
+    setSelectedUser(null);
+    resetForm();
+    
+    toast({
+      title: "Success",
+      description: "User updated successfully",
+    });
+  };
+
+  // Handle delete user
+  const handleDeleteUser = (user: User) => {
+    setSelectedUser(user);
+    setShowDeleteDialog(true);
+  };
+
+  // Confirm delete
+  const confirmDelete = () => {
+    if (!selectedUser) return;
+
+    const updatedUsers = users.filter(user => user.id !== selectedUser.id);
+    setUsers(updatedUsers);
+    localStorage.setItem('adminUsers', JSON.stringify(updatedUsers));
+    setShowDeleteDialog(false);
+    setSelectedUser(null);
+    
+    toast({
+      title: "Success",
+      description: "User deleted successfully",
+    });
+  };
+
+  const getRoleColor = (role: string) => {
+    return role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800';
+  };
+
+  const getStatusColor = (status: string) => {
+    return status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -56,211 +229,240 @@ const Admin = () => {
     });
   };
 
-  // Get blood type color
-  const getBloodTypeColor = (bloodType: string) => {
-    const colors: { [key: string]: string } = {
-      'A+': 'bg-red-100 text-red-800 border-red-200',
-      'A-': 'bg-red-200 text-red-900 border-red-300',
-      'B+': 'bg-blue-100 text-blue-800 border-blue-200',
-      'B-': 'bg-blue-200 text-blue-900 border-blue-300',
-      'AB+': 'bg-purple-100 text-purple-800 border-purple-200',
-      'AB-': 'bg-purple-200 text-purple-900 border-purple-300',
-      'O+': 'bg-green-100 text-green-800 border-green-200',
-      'O-': 'bg-green-200 text-green-900 border-green-300'
-    };
-    return colors[bloodType] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
+  // Redirect if not authenticated or not admin
+  if (!isAuthenticated()) {
+    navigate('/dashboard');
+    return null;
+  }
 
-  // Clear all donors (admin only)
-  const handleClearAllDonors = () => {
-    if (window.confirm('Are you sure you want to delete all donor records? This action cannot be undone.')) {
-      localStorage.removeItem('donors');
-      setDonors([]);
-      toast({
-        title: "Success",
-        description: "All donor records have been cleared",
-      });
-    }
-  };
-
-  // Show login form if not authenticated or not admin
-  if (!isAuthenticated() || !isAdmin()) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          {!isAuthenticated() ? (
-            <LoginForm />
-          ) : (
-            <Card className="text-center">
-              <CardContent className="p-6">
-                <Shield className="h-12 w-12 text-red-600 mx-auto mb-4" />
-                <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
-                <p className="text-gray-600 mb-4">You don't have admin privileges to access this page.</p>
-                <Button onClick={() => navigate('/dashboard')} className="bg-red-600 hover:bg-red-700">
-                  Go to Dashboard
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
-    );
+  if (!isAdmin()) {
+    toast({
+      title: "Access Denied",
+      description: "You don't have permission to access this page",
+      variant: "destructive",
+    });
+    navigate('/dashboard');
+    return null;
   }
 
   const handleLogout = () => {
     logout();
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully",
+    });
     navigate('/');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-20 md:pb-0">
-      <ResponsiveNav />
-
-      <div className="container mx-auto px-4 sm:px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <div className="flex items-center mb-2">
-                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-red-600 mr-3" />
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Admin Panel</h1>
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
+      {/* Navigation */}
+      <nav className="bg-white/90 backdrop-blur-sm border-b border-red-100">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="bg-red-600 rounded-full p-2">
+                <Shield className="h-6 w-6 text-white" />
               </div>
-              <p className="text-base sm:text-lg md:text-xl text-gray-600">
-                System overview and management tools
-              </p>
+              <span className="text-2xl font-bold text-gray-900">Admin Panel</span>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                Welcome, {currentUser?.name} (Admin)
+                Welcome, {currentUser?.name}
               </span>
               
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => navigate('/dashboard')}
-                  className="border-gray-200 text-gray-600 hover:bg-gray-50"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Dashboard
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleLogout}
-                  className="border-red-200 text-red-600 hover:bg-red-50"
-                >
-                  Logout
-                </Button>
-              </div>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/dashboard')}
+                className="border-gray-200 text-gray-600 hover:bg-gray-50"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Dashboard
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="border-red-200 text-red-600 hover:bg-red-50"
+              >
+                Logout
+              </Button>
             </div>
           </div>
         </div>
+      </nav>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-          <Card className="border-blue-200">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-blue-600">Total Donors</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">{totalDonors}</p>
-                </div>
-                <Users className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-green-200">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-green-600">New This Month</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">{recentDonors}</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-red-200">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-red-600">Blood Types</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">{bloodTypes.length}</p>
-                </div>
-                <Droplets className="h-8 w-8 text-red-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-purple-200">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-purple-600">System Status</p>
-                  <p className="text-lg sm:text-xl font-bold text-green-600">Active</p>
-                </div>
-                <Heart className="h-8 w-8 text-purple-600" />
-              </div>
-            </CardContent>
-          </Card>
+      <div className="container mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">User Management</h1>
+          <p className="text-xl text-gray-600">Manage system users and their permissions</p>
         </div>
 
-        {/* Blood Type Distribution */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Blood Type Distribution</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
-              {bloodTypeStats.map(stat => (
-                <div key={stat.type} className="text-center">
-                  <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full text-sm sm:text-base font-bold mb-2 border ${getBloodTypeColor(stat.type)}`}>
-                    {stat.type}
-                  </div>
-                  <div className="text-lg sm:text-xl font-bold text-gray-900">{stat.count}</div>
-                  <div className="text-xs sm:text-sm text-gray-600">{stat.percentage}%</div>
-                </div>
-              ))}
+        {/* Search and Filters */}
+        <div className="rounded-2xl p-6 mb-8 px-0">
+          <div className="flex flex-col lg:flex-row gap-6 pb-6 border-b border-gray-200">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, email, or role..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full border-gray-200 focus:border-red-300 focus:ring-red-100 rounded-xl h-10 pl-10"
+              />
             </div>
-          </CardContent>
-        </Card>
+            
+            {/* Vertical separator after search bar */}
+            <div className="hidden lg:block w-px bg-gray-300 mx-2"></div>
+            
+            {/* Filter Chips and Clear Button with vertical separators */}
+            <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
+              {/* Filter Chips */}
+              <div className="flex flex-wrap gap-2">
+                {/* Role Filters */}
+                <button
+                  onClick={() => setRoleFilter(roleFilter === 'admin' ? null : 'admin')}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    roleFilter === 'admin' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Admin
+                </button>
+                
+                <button
+                  onClick={() => setRoleFilter(roleFilter === 'user' ? null : 'user')}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    roleFilter === 'user' ? 'bg-blue-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  User
+                </button>
 
-        {/* Recent Donors */}
-        <Card className="mb-8">
+                {/* Status Filters */}
+                <button
+                  onClick={() => setStatusFilter(statusFilter === 'active' ? null : 'active')}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    statusFilter === 'active' ? 'bg-green-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Active
+                </button>
+                
+                <button
+                  onClick={() => setStatusFilter(statusFilter === 'inactive' ? null : 'inactive')}
+                  className={`px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+                    statusFilter === 'inactive' ? 'bg-gray-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Inactive
+                </button>
+              </div>
+              
+              {/* Vertical separator */}
+              {(searchTerm || roleFilter || statusFilter) && (
+                <>
+                  <div className="hidden sm:block w-px bg-gray-300 mx-2"></div>
+                  
+                  {/* Clear Filters */}
+                  <button
+                    onClick={clearFilters}
+                    className="px-6 py-1 rounded-xl text-sm font-medium transition-all duration-200 h-10 bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  >
+                    Clear all
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+          
+          {/* Active Filters Summary */}
+          {(roleFilter || statusFilter) && (
+            <div className="text-sm text-gray-600 mt-4">
+              Showing {filteredUsers.length} of {users.length} users
+              {roleFilter && ` • Role: ${roleFilter}`}
+              {statusFilter && ` • Status: ${statusFilter}`}
+            </div>
+          )}
+        </div>
+
+        {/* Users Table */}
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Recent Registrations</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Users ({filteredUsers.length})</CardTitle>
+              
+              <Button onClick={handleAddUser} className="bg-red-600 hover:bg-red-700">
+                <UserPlus className="h-4 w-4 mr-2" />
+                Add New User
+              </Button>
+            </div>
           </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            {donors.length === 0 ? (
-              <div className="text-center py-8">
-                <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No donors registered</h3>
-                <p className="text-gray-600">The system is ready to accept donor registrations.</p>
+          <CardContent>
+            {filteredUsers.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No users found</h3>
+                <p className="text-gray-600 mb-4">
+                  {users.length === 0 
+                    ? "No users registered yet. Add the first user to get started."
+                    : "No users match your search criteria."
+                  }
+                </p>
+                <Button onClick={handleAddUser} className="bg-red-600 hover:bg-red-700">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Add First User
+                </Button>
               </div>
             ) : (
               <div className="space-y-4">
-                {donors.slice(-5).reverse().map(donor => (
-                  <div key={donor.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 rounded-lg gap-4">
-                    <div className="flex items-center space-x-3">
-                      <div className={`inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold border ${getBloodTypeColor(donor.bloodType)}`}>
-                        {donor.bloodType}
+                {filteredUsers.map(user => (
+                  <div key={user.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                      {/* Name & Email Column */}
+                      <div className="flex flex-col space-y-1">
+                        <h3 className="font-semibold text-gray-900">{user.name}</h3>
+                        <p className="text-sm text-gray-600">{user.email}</p>
                       </div>
+
+                      {/* Role Column */}
                       <div>
-                        <h3 className="font-semibold text-gray-900">{donor.name}</h3>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-gray-600">
-                          <span className="flex items-center"><Phone className="h-3 w-3 mr-1" />{donor.phone}</span>
-                          <span className="flex items-center"><MapPin className="h-3 w-3 mr-1" />{donor.address}</span>
-                        </div>
+                        <Badge className={getRoleColor(user.role)}>
+                          {user.role}
+                        </Badge>
                       </div>
-                    </div>
-                    <div className="text-sm text-gray-600 flex items-center">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {formatDate(donor.registeredAt)}
+
+                      {/* Status Column */}
+                      <div>
+                        <Badge className={getStatusColor(user.status)}>
+                          {user.status}
+                        </Badge>
+                      </div>
+
+                      {/* Created Date Column */}
+                      <div className="text-sm text-gray-600">
+                        {formatDate(user.createdAt)}
+                      </div>
+
+                      {/* Actions Column */}
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditUser(user)}
+                          className="border-gray-200 text-gray-600 hover:bg-gray-50"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteUser(user)}
+                          className="border-red-200 text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -268,42 +470,155 @@ const Admin = () => {
             )}
           </CardContent>
         </Card>
+      </div>
 
-        {/* Admin Actions */}
-        <Card className="border-red-200">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl text-red-800">Admin Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                variant="outline"
-                onClick={() => navigate('/dashboard')}
-                className="border-blue-200 text-blue-600 hover:bg-blue-50"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Manage Donors
-              </Button>
-              
-              <Button
-                variant="outline"
-                onClick={handleClearAllDonors}
-                className="border-red-300 text-red-700 hover:bg-red-50"
-                disabled={donors.length === 0}
-              >
-                <UserX className="h-4 w-4 mr-2" />
-                Clear All Donors
-              </Button>
+      {/* Add User Dialog */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="add-name">Full Name</Label>
+              <Input
+                id="add-name"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
             </div>
             
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm text-yellow-800">
-                <strong>Warning:</strong> Admin actions are permanent and cannot be undone. Use with caution.
-              </p>
+            <div>
+              <Label htmlFor="add-email">Email</Label>
+              <Input
+                id="add-email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            
+            <div>
+              <Label htmlFor="add-role">Role</Label>
+              <select
+                id="add-role"
+                value={formData.role}
+                onChange={(e) => setFormData({...formData, role: e.target.value as 'admin' | 'user'})}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            
+            <div>
+              <Label htmlFor="add-status">Status</Label>
+              <select
+                id="add-status"
+                value={formData.status}
+                onChange={(e) => setFormData({...formData, status: e.target.value as 'active' | 'inactive'})}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveUser} className="bg-red-600 hover:bg-red-700">
+              Add User
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit User Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-name">Full Name</Label>
+              <Input
+                id="edit-name"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="edit-email">Email</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="edit-role">Role</Label>
+              <select
+                id="edit-role"
+                value={formData.role}
+                onChange={(e) => setFormData({...formData, role: e.target.value as 'admin' | 'user'})}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            
+            <div>
+              <Label htmlFor="edit-status">Status</Label>
+              <select
+                id="edit-status"
+                value={formData.status}
+                onChange={(e) => setFormData({...formData, status: e.target.value as 'active' | 'inactive'})}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveEdit} className="bg-red-600 hover:bg-red-700">
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete {selectedUser?.name}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
