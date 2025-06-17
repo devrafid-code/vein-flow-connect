@@ -39,46 +39,60 @@ const Admin = () => {
     role: 'user' as 'admin' | 'user',
     status: 'active' as 'active' | 'inactive'
   });
+  const [authChecked, setAuthChecked] = useState(false);
 
   // Check authentication and redirect if needed
   useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate('/dashboard');
-      return;
-    }
+    const checkAuth = async () => {
+      if (!isAuthenticated()) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to access the admin panel",
+          variant: "destructive",
+        });
+        navigate('/dashboard');
+        return;
+      }
 
-    if (!isAdmin()) {
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access this page",
-        variant: "destructive",
-      });
-      navigate('/dashboard');
-      return;
-    }
+      if (!isAdmin()) {
+        toast({
+          title: "Access Denied",
+          description: "You don't have permission to access this page",
+          variant: "destructive",
+        });
+        navigate('/dashboard');
+        return;
+      }
+
+      setAuthChecked(true);
+    };
+
+    checkAuth();
   }, [isAuthenticated, isAdmin, navigate, toast]);
 
   // Load users from localStorage
   useEffect(() => {
-    const savedUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
-    if (savedUsers.length === 0) {
-      // Add default admin user if none exist
-      const defaultUsers: User[] = [
-        {
-          id: '1',
-          name: 'Admin User',
-          email: 'admin@lifeflow.com',
-          role: 'admin',
-          status: 'active',
-          createdAt: new Date().toISOString()
-        }
-      ];
-      setUsers(defaultUsers);
-      localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
-    } else {
-      setUsers(savedUsers);
+    if (authChecked) {
+      const savedUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+      if (savedUsers.length === 0) {
+        // Add default admin user if none exist
+        const defaultUsers: User[] = [
+          {
+            id: '1',
+            name: 'Admin User',
+            email: 'admin@lifeflow.com',
+            role: 'admin',
+            status: 'active',
+            createdAt: new Date().toISOString()
+          }
+        ];
+        setUsers(defaultUsers);
+        localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
+      } else {
+        setUsers(savedUsers);
+      }
     }
-  }, []);
+  }, [authChecked]);
 
   // Filter users
   const filteredUsers = users.filter(user => {
@@ -248,13 +262,17 @@ const Admin = () => {
   };
 
   // Don't render anything while checking authentication
-  if (!isAuthenticated() || !isAdmin()) {
-    return null;
+  if (!authChecked) {
+    return (
+      <div className="container mx-auto px-6 py-8 text-center">
+        <div className="text-gray-600">Checking authentication...</div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
-      {/* Header */}
+      {/* Header - Always visible */}
       <header className="bg-white/90 backdrop-blur-sm border-b border-red-100">
         <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
@@ -280,6 +298,7 @@ const Admin = () => {
         </div>
       </header>
 
+      {/* Main Content - Conditional based on authentication */}
       <div className="container mx-auto px-6 py-8">
         {/* Page Title */}
         <div className="mb-8">
