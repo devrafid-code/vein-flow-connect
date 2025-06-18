@@ -1,4 +1,5 @@
-import { Heart, Droplets, Users, ArrowLeft } from 'lucide-react';
+
+import { Heart, Droplets, Users, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { BottomNav } from './bottom-nav';
@@ -8,9 +9,9 @@ export function ResponsiveNav() {
 
   const navigationItems = [
     {
-      title: "Back to Home",
-      icon: ArrowLeft,
-      onClick: () => navigate('/'),
+      title: "Dashboard",
+      icon: Settings,
+      onClick: () => navigate('/dashboard'),
       variant: "outline" as const,
       className: "border-gray-600 text-gray-600 hover:bg-gray-50"
     },
