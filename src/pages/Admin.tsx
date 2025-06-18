@@ -10,6 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
 interface User {
   id: string;
@@ -271,34 +272,10 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
-      {/* Header - Always visible */}
-      <header className="bg-white/90 backdrop-blur-sm border-b border-red-100">
-        <div className="container mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="bg-red-600 rounded-full p-2">
-                <Droplets className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl sm:text-2xl font-bold text-gray-900">LifeFlow</span>
-            </div>
-            
-            {/* Back Button */}
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/dashboard')}
-              className="border-gray-200 text-gray-600 hover:bg-gray-50"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-              <span className="sm:hidden">Back</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-20 md:pb-0">
+      <ResponsiveNav />
 
-      {/* Main Content - Conditional based on authentication */}
+      {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
         {/* Page Title */}
         <div className="mb-8">
