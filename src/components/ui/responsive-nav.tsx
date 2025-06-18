@@ -36,7 +36,10 @@ export function ResponsiveNav() {
       <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
         <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <div 
+              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => navigate('/')}
+            >
               <div className="bg-red-600 rounded-full p-2">
                 <Droplets className="h-6 w-6 text-white" />
               </div>
