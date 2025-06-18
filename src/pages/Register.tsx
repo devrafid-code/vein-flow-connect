@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Users, Clock } from 'lucide-react';
@@ -6,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
@@ -16,6 +18,8 @@ interface Donor {
   bloodType: string;
   address: string;
   registeredAt: string;
+  lastDonationDate?: string;
+  neverDonated?: boolean;
 }
 
 const Register = () => {
@@ -26,7 +30,9 @@ const Register = () => {
     name: '',
     phone: '',
     bloodType: '',
-    address: ''
+    address: '',
+    neverDonated: false,
+    lastDonationDate: ''
   });
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -44,11 +50,26 @@ const Register = () => {
       return;
     }
 
+    // Validate donation date if not never donated
+    if (!formData.neverDonated && !formData.lastDonationDate) {
+      toast({
+        title: "Error",
+        description: "Please provide your last donation date or check 'Never donated'",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Create new donor
     const newDonor: Donor = {
       id: Date.now().toString(),
-      ...formData,
-      registeredAt: new Date().toISOString()
+      name: formData.name,
+      phone: formData.phone,
+      bloodType: formData.bloodType,
+      address: formData.address,
+      registeredAt: new Date().toISOString(),
+      neverDonated: formData.neverDonated,
+      lastDonationDate: formData.neverDonated ? undefined : formData.lastDonationDate
     };
 
     // Save to localStorage
@@ -69,6 +90,14 @@ const Register = () => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
+    });
+  };
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData({
+      ...formData,
+      neverDonated: checked,
+      lastDonationDate: checked ? '' : formData.lastDonationDate
     });
   };
 
@@ -141,6 +170,33 @@ const Register = () => {
                     placeholder="Enter your complete address"
                     required
                   />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="neverDonated"
+                      checked={formData.neverDonated}
+                      onCheckedChange={handleCheckboxChange}
+                    />
+                    <Label htmlFor="neverDonated" className="text-sm font-medium">
+                      I have never donated blood before
+                    </Label>
+                  </div>
+
+                  {!formData.neverDonated && (
+                    <div className="space-y-2">
+                      <Label htmlFor="lastDonationDate">Last Donation Date</Label>
+                      <Input
+                        id="lastDonationDate"
+                        name="lastDonationDate"
+                        type="date"
+                        value={formData.lastDonationDate}
+                        onChange={handleInputChange}
+                        placeholder="Select your last donation date"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-lg py-6">
