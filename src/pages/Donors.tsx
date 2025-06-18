@@ -46,7 +46,7 @@ const Donors = () => {
     return colorMap[bloodType] || { from: 'from-red-500', to: 'to-red-600' };
   };
 
-  // Sample donors data with last donation dates
+  // Sample donors data with realistic last donation dates and never donated status
   const sampleDonors: Donor[] = [{
     id: '1',
     name: 'John Smith',
@@ -54,7 +54,7 @@ const Donors = () => {
     bloodType: 'O+',
     address: '123 Main St, New York, NY',
     registeredAt: '2024-01-15T10:30:00Z',
-    lastDonationDate: '2024-05-20T10:30:00Z'
+    lastDonationDate: '2024-11-15T10:30:00Z'
   }, {
     id: '2',
     name: 'Sarah Johnson',
@@ -70,7 +70,7 @@ const Donors = () => {
     bloodType: 'B-',
     address: '789 Pine Rd, Chicago, IL',
     registeredAt: '2024-03-10T09:45:00Z',
-    lastDonationDate: '2024-04-15T09:45:00Z'
+    lastDonationDate: '2024-10-20T09:45:00Z'
   }, {
     id: '4',
     name: 'Emily Davis',
@@ -78,7 +78,7 @@ const Donors = () => {
     bloodType: 'AB+',
     address: '321 Elm St, Houston, TX',
     registeredAt: '2024-03-25T16:20:00Z',
-    lastDonationDate: '2024-06-10T16:20:00Z'
+    lastDonationDate: '2024-12-05T16:20:00Z'
   }, {
     id: '5',
     name: 'David Wilson',
@@ -94,7 +94,7 @@ const Donors = () => {
     bloodType: 'A-',
     address: '987 Cedar Ln, Philadelphia, PA',
     registeredAt: '2024-04-18T13:45:00Z',
-    lastDonationDate: '2024-05-30T13:45:00Z'
+    lastDonationDate: '2024-09-30T13:45:00Z'
   }, {
     id: '7',
     name: 'Robert Taylor',
@@ -102,7 +102,7 @@ const Donors = () => {
     bloodType: 'B+',
     address: '147 Birch St, San Antonio, TX',
     registeredAt: '2024-05-02T08:15:00Z',
-    lastDonationDate: '2024-06-01T08:15:00Z'
+    lastDonationDate: '2024-11-28T08:15:00Z'
   }, {
     id: '8',
     name: 'Jennifer White',
@@ -118,7 +118,7 @@ const Donors = () => {
     bloodType: 'O+',
     address: '369 Willow Rd, Dallas, TX',
     registeredAt: '2024-05-28T12:00:00Z',
-    lastDonationDate: '2024-06-15T12:00:00Z'
+    lastDonationDate: '2024-08-15T12:00:00Z'
   }, {
     id: '10',
     name: 'Amanda Garcia',
@@ -126,7 +126,7 @@ const Donors = () => {
     bloodType: 'A+',
     address: '741 Ash Dr, San Jose, CA',
     registeredAt: '2024-06-03T10:45:00Z',
-    lastDonationDate: '2024-06-20T10:45:00Z'
+    lastDonationDate: '2024-12-10T10:45:00Z'
   }, {
     id: '11',
     name: 'Matthew Martinez',
@@ -142,7 +142,7 @@ const Donors = () => {
     bloodType: 'AB+',
     address: '963 Hickory Ave, Jacksonville, FL',
     registeredAt: '2024-06-12T09:20:00Z',
-    lastDonationDate: '2024-06-25T09:20:00Z'
+    lastDonationDate: '2024-07-25T09:20:00Z'
   }, {
     id: '13',
     name: 'Daniel Hernandez',
@@ -150,7 +150,7 @@ const Donors = () => {
     bloodType: 'O-',
     address: '159 Walnut Ln, Fort Worth, TX',
     registeredAt: '2024-06-15T16:45:00Z',
-    lastDonationDate: '2024-06-28T16:45:00Z'
+    lastDonationDate: '2024-11-02T16:45:00Z'
   }, {
     id: '14',
     name: 'Ashley Lopez',
@@ -166,7 +166,7 @@ const Donors = () => {
     bloodType: 'B+',
     address: '486 Sycamore Dr, Charlotte, NC',
     registeredAt: '2024-06-20T13:30:00Z',
-    lastDonationDate: '2024-06-30T13:30:00Z'
+    lastDonationDate: '2024-12-01T13:30:00Z'
   }, {
     id: '16',
     name: 'Stephanie Wilson',
@@ -182,7 +182,7 @@ const Donors = () => {
     bloodType: 'O+',
     address: '518 Dogwood Ave, Denver, CO',
     registeredAt: '2024-06-24T15:20:00Z',
-    lastDonationDate: '2024-07-01T15:20:00Z'
+    lastDonationDate: '2024-09-15T15:20:00Z'
   }, {
     id: '18',
     name: 'Michelle Thomas',
@@ -190,7 +190,7 @@ const Donors = () => {
     bloodType: 'A+',
     address: '629 Redwood Ln, Boston, MA',
     registeredAt: '2024-06-26T12:10:00Z',
-    lastDonationDate: '2024-07-05T12:10:00Z'
+    lastDonationDate: '2024-10-05T12:10:00Z'
   }, {
     id: '19',
     name: 'Steven Jackson',
@@ -206,7 +206,7 @@ const Donors = () => {
     bloodType: 'AB+',
     address: '851 Cypress Rd, Detroit, MI',
     registeredAt: '2024-06-30T14:45:00Z',
-    lastDonationDate: '2024-07-10T14:45:00Z'
+    lastDonationDate: '2024-11-20T14:45:00Z'
   }];
 
   useEffect(() => {
@@ -239,7 +239,7 @@ const Donors = () => {
 
   const getLastDonationDisplay = (donor: Donor) => {
     if (donor.neverDonated) {
-      return 'Never donated';
+      return 'No donation yet';
     }
     if (donor.lastDonationDate) {
       return formatDate(donor.lastDonationDate);
