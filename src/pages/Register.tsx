@@ -37,6 +37,40 @@ const Register = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+  // Bangladeshi phone number validation
+  const validateBangladeshiPhone = (phone: string): boolean => {
+    // Remove any spaces, dashes, or other non-digit characters
+    const cleanPhone = phone.replace(/\D/g, '');
+    // Check if it's exactly 11 digits and starts with 01
+    return cleanPhone.length === 11 && cleanPhone.startsWith('01');
+  };
+
+  // Check if phone number is already registered
+  const isPhoneAlreadyRegistered = (phone: string): boolean => {
+    const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
+    const cleanPhone = phone.replace(/\D/g, '');
+    return existingDonors.some((donor: any) => {
+      const existingCleanPhone = donor.phone.replace(/\D/g, '');
+      return existingCleanPhone === cleanPhone;
+    });
+  };
+
+  // Format phone number as user types
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, '');
+    
+    // Limit to 11 digits
+    const limitedDigits = digits.slice(0, 11);
+    
+    // Format as 01XXX-XXXXXX
+    if (limitedDigits.length <= 5) {
+      return limitedDigits;
+    } else {
+      return `${limitedDigits.slice(0, 5)}-${limitedDigits.slice(5)}`;
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -45,6 +79,26 @@ const Register = () => {
       toast({
         title: "Error",
         description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate Bangladeshi phone number
+    if (!validateBangladeshiPhone(formData.phone)) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid Bangladeshi phone number (11 digits starting with 01)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check for duplicate phone number
+    if (isPhoneAlreadyRegistered(formData.phone)) {
+      toast({
+        title: "Phone Number Already Registered",
+        description: "This phone number is already registered. Each phone number can only be used once.",
         variant: "destructive",
       });
       return;
@@ -87,9 +141,18 @@ const Register = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    let processedValue = value;
+    
+    // Special handling for phone number
+    if (name === 'phone') {
+      processedValue = formatPhoneNumber(value);
+    }
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: processedValue
     });
   };
 
@@ -138,9 +201,10 @@ const Register = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="Enter your phone number"
+                    placeholder="01XXX-XXXXXX"
                     required
                   />
+                  <p className="text-xs text-gray-500">Enter 11-digit Bangladeshi number starting with 01</p>
                 </div>
 
                 <div className="space-y-2">

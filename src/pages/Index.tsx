@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Heart, Droplets, Calendar, ArrowRight, Users, Settings, Phone, MapPin, CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,40 @@ const Index = () => {
   });
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+  // Bangladeshi phone number validation
+  const validateBangladeshiPhone = (phone: string): boolean => {
+    // Remove any spaces, dashes, or other non-digit characters
+    const cleanPhone = phone.replace(/\D/g, '');
+    // Check if it's exactly 11 digits and starts with 01
+    return cleanPhone.length === 11 && cleanPhone.startsWith('01');
+  };
+
+  // Check if phone number is already registered
+  const isPhoneAlreadyRegistered = (phone: string): boolean => {
+    const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
+    const cleanPhone = phone.replace(/\D/g, '');
+    return existingDonors.some((donor: any) => {
+      const existingCleanPhone = donor.phone.replace(/\D/g, '');
+      return existingCleanPhone === cleanPhone;
+    });
+  };
+
+  // Format phone number as user types
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, '');
+    
+    // Limit to 11 digits
+    const limitedDigits = digits.slice(0, 11);
+    
+    // Format as 01XXX-XXXXXX
+    if (limitedDigits.length <= 5) {
+      return limitedDigits;
+    } else {
+      return `${limitedDigits.slice(0, 5)}-${limitedDigits.slice(5)}`;
+    }
+  };
+
   // Animated counter effect
   useEffect(() => {
     const animateCounter = (target: number, setter: (value: number) => void, duration: number = 2000) => {
@@ -57,6 +92,7 @@ const Index = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, []);
+
   const handleQuickRegister = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -75,6 +111,30 @@ const Index = () => {
     if (!formData.bloodType) newErrors.bloodType = true;
     if (!formData.address) newErrors.address = true;
     if (!neverDonated && !lastDonationDate) newErrors.lastDonationDate = true;
+
+    // Validate Bangladeshi phone number
+    if (formData.phone && !validateBangladeshiPhone(formData.phone)) {
+      newErrors.phone = true;
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid Bangladeshi phone number (11 digits starting with 01)",
+        variant: "destructive"
+      });
+      setErrors(newErrors);
+      return;
+    }
+
+    // Check for duplicate phone number
+    if (formData.phone && isPhoneAlreadyRegistered(formData.phone)) {
+      newErrors.phone = true;
+      toast({
+        title: "Phone Number Already Registered",
+        description: "This phone number is already registered. Each phone number can only be used once.",
+        variant: "destructive"
+      });
+      setErrors(newErrors);
+      return;
+    }
 
     setErrors(newErrors);
 
@@ -132,10 +192,19 @@ const Index = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    let processedValue = value;
+    
+    // Special handling for phone number
+    if (name === 'phone') {
+      processedValue = formatPhoneNumber(value);
+    }
+    
     setFormData({
       ...formData,
-      [name]: value
+      [name]: processedValue
     });
+    
     // Clear error when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors({
@@ -352,13 +421,14 @@ const Index = () => {
                             name="phone" 
                             value={formData.phone} 
                             onChange={handleInputChange} 
-                            placeholder="Your phone number" 
+                            placeholder="01XXX-XXXXXX" 
                             className={cn(
                               "h-10 sm:h-12 border-2 transition-colors w-full text-sm sm:text-base",
                               errors.phone ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-red-500"
                             )} 
                             required 
                           />
+                          <p className="text-xs text-gray-500">Enter 11-digit Bangladeshi number starting with 01</p>
                         </div>
                       </div>
 
@@ -425,7 +495,6 @@ const Index = () => {
                       </div>
                     </div>
 
-                    {/* Mobile Register Button - Bottom */}
                     <div className="lg:hidden w-full">
                       <Button type="submit" className="bg-red-600 hover:bg-red-700 font-bold py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-lg h-10 sm:h-12 w-full">
                         <Heart className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
