@@ -11,24 +11,37 @@ import { useToast } from '@/hooks/use-toast';
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(email, password)) {
-      toast({
-        title: "Success",
-        description: "Logged in successfully"
-      });
-      navigate('/dashboard');
-    } else {
+    setIsLoading(true);
+    
+    try {
+      if (login(email, password)) {
+        toast({
+          title: "Success",
+          description: "Logged in successfully"
+        });
+        navigate('/dashboard');
+      } else {
+        toast({
+          title: "Error",
+          description: "Invalid credentials. Try admin@example.com with admin123 or user@example.com with user123",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
       toast({
         title: "Error",
-        description: "Invalid credentials",
+        description: "Something went wrong. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -37,6 +50,11 @@ const LoginForm = () => {
       <CardHeader className="text-center pb-6">
         <CardTitle className="text-2xl font-bold text-gray-900">Admin Login</CardTitle>
         <p className="text-gray-600 mt-2">Sign in to access the dashboard</p>
+        <div className="text-sm text-gray-500 mt-3 p-3 bg-gray-50 rounded-md">
+          <p className="font-medium mb-1">Demo Credentials:</p>
+          <p>Admin: admin@example.com / admin123</p>
+          <p>User: user@example.com / user123</p>
+        </div>
       </CardHeader>
       <CardContent className="px-6 pb-6">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -50,6 +68,7 @@ const LoginForm = () => {
               placeholder="Enter your email" 
               className="h-11"
               required 
+              disabled={isLoading}
             />
           </div>
           
@@ -63,11 +82,16 @@ const LoginForm = () => {
               placeholder="Enter your password" 
               className="h-11"
               required 
+              disabled={isLoading}
             />
           </div>
           
-          <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 h-11 text-base font-medium mt-6">
-            Login
+          <Button 
+            type="submit" 
+            className="w-full bg-red-600 hover:bg-red-700 h-11 text-base font-medium mt-6"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Logging in...' : 'Login'}
           </Button>
         </form>
       </CardContent>
