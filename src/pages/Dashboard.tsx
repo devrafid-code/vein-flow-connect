@@ -26,7 +26,9 @@ interface Donor {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { currentUser, logout, isAdmin, isAuthenticated } = useAuth();
+  const { currentUser, logout, isAdmin, isAuthenticated, isLoading } = useAuth();
+  
+  console.log('Dashboard rendering with auth state:', { currentUser, isAuthenticated: isAuthenticated(), isLoading });
   
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,8 +53,33 @@ const Dashboard = () => {
   // Load donors from localStorage
   useEffect(() => {
     const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
+    console.log('Loaded donors from localStorage:', savedDonors);
     setDonors(savedDonors);
   }, []);
+
+  // Show loading state while auth is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!isAuthenticated()) {
+    console.log('User not authenticated, showing login form');
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <LoginForm />
+        </div>
+      </div>
+    );
+  }
 
   // Filter donors
   const filteredDonors = donors.filter(donor => {
@@ -143,21 +170,12 @@ const Dashboard = () => {
     });
   };
 
-  // Show login form if not authenticated
-  if (!isAuthenticated()) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <LoginForm />
-        </div>
-      </div>
-    );
-  }
-
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+
+  console.log('Rendering authenticated dashboard for user:', currentUser);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-16 md:pb-0">

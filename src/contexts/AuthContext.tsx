@@ -15,6 +15,7 @@ interface AuthContextType {
   logout: () => void;
   isAdmin: () => boolean;
   isAuthenticated: () => boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,11 +30,15 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log('AuthProvider initializing...');
+    
     // Initialize default admin users if they don't exist
     const existingUsers = localStorage.getItem('adminUsers');
     if (!existingUsers) {
+      console.log('Creating default users...');
       const defaultUsers: User[] = [
         {
           id: '1',
@@ -51,43 +56,77 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       ];
       localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
+      console.log('Default users created:', defaultUsers);
+    } else {
+      console.log('Existing users found:', JSON.parse(existingUsers));
     }
 
     // Check if user is logged in on mount
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+      try {
+        const user = JSON.parse(savedUser);
+        console.log('Restored user from localStorage:', user);
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error parsing saved user:', error);
+        localStorage.removeItem('currentUser');
+      }
     }
+    
+    setIsLoading(false);
+    console.log('AuthProvider initialization complete');
   }, []);
 
   const login = (email: string, password: string): boolean => {
-    // Get users from localStorage
-    const users = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+    console.log('Login attempt:', { email, password });
     
-    // For demo purposes, we'll use simple email/password check
-    // In real app, this would be handled by your auth provider
-    const user = users.find((u: User) => u.email === email && u.status === 'active');
-    
-    if (user && (password === 'admin123' || password === 'user123')) {
-      setCurrentUser(user);
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      return true;
+    try {
+      // Get users from localStorage
+      const usersData = localStorage.getItem('adminUsers');
+      if (!usersData) {
+        console.error('No users data found in localStorage');
+        return false;
+      }
+      
+      const users = JSON.parse(usersData);
+      console.log('Available users:', users);
+      
+      // Find user by email
+      const user = users.find((u: User) => u.email === email && u.status === 'active');
+      console.log('Found user:', user);
+      
+      if (user && (password === 'admin123' || password === 'user123')) {
+        console.log('Login successful for user:', user);
+        setCurrentUser(user);
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        return true;
+      }
+      
+      console.log('Login failed - invalid credentials');
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    
-    return false;
   };
 
   const logout = () => {
+    console.log('Logging out user:', currentUser);
     setCurrentUser(null);
     localStorage.removeItem('currentUser');
   };
 
   const isAdmin = (): boolean => {
-    return currentUser?.role === 'admin';
+    const result = currentUser?.role === 'admin';
+    console.log('isAdmin check:', result, 'for user:', currentUser);
+    return result;
   };
 
   const isAuthenticated = (): boolean => {
-    return currentUser !== null && currentUser.status === 'active';
+    const result = currentUser !== null && currentUser.status === 'active';
+    console.log('isAuthenticated check:', result, 'for user:', currentUser);
+    return result;
   };
 
   const value = {
@@ -96,7 +135,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logout,
     isAdmin,
     isAuthenticated,
+    isLoading,
   };
+
+  console.log('AuthProvider rendering with value:', value);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

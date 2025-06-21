@@ -18,14 +18,19 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login form submitted with:', { email, password });
     setIsLoading(true);
     
     try {
-      if (login(email, password)) {
+      const loginResult = login(email, password);
+      console.log('Login result:', loginResult);
+      
+      if (loginResult) {
         toast({
           title: "Success",
           description: "Logged in successfully"
         });
+        console.log('Navigating to dashboard...');
         navigate('/dashboard');
       } else {
         toast({
@@ -35,6 +40,7 @@ const LoginForm = () => {
         });
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
