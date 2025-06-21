@@ -218,9 +218,15 @@ const Donors = () => {
         allDonors.push(sampleDonor);
       }
     });
-    setDonors(allDonors);
+    
+    // Sort donors by registration date (most recent first)
+    const sortedDonors = allDonors.sort((a, b) => {
+      return new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime();
+    });
+    
+    setDonors(sortedDonors);
     // Save the combined list back to localStorage
-    localStorage.setItem('donors', JSON.stringify(allDonors));
+    localStorage.setItem('donors', JSON.stringify(sortedDonors));
   }, []);
 
   const filteredDonors = donors.filter(donor => {
