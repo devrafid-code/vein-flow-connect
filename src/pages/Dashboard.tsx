@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar, Shield } from 'lucide-react';
@@ -10,9 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useAuth } from '@/contexts/AuthContext';
 import { ResponsiveNav } from '@/components/ui/responsive-nav';
-import LoginForm from '@/components/LoginForm';
 
 interface Donor {
   id: string;
@@ -26,9 +25,6 @@ interface Donor {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { currentUser, logout, isAdmin, isAuthenticated, isLoading } = useAuth();
-  
-  console.log('Dashboard rendering with auth state:', { currentUser, isAuthenticated: isAuthenticated(), isLoading });
   
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,30 +53,6 @@ const Dashboard = () => {
     setDonors(savedDonors);
   }, []);
 
-  // Show loading state while auth is initializing
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show login form if not authenticated
-  if (!isAuthenticated()) {
-    console.log('User not authenticated, showing login form');
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <LoginForm />
-        </div>
-      </div>
-    );
-  }
-
   // Filter donors
   const filteredDonors = donors.filter(donor => {
     const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -90,7 +62,7 @@ const Dashboard = () => {
     return matchesSearch && matchesBloodType;
   });
 
-  // Handle edit donor - both admin and regular users can edit
+  // Handle edit donor
   const handleEditDonor = (donor: Donor) => {
     setSelectedDonor(donor);
     setEditFormData({
@@ -102,7 +74,7 @@ const Dashboard = () => {
     setShowEditDialog(true);
   };
 
-  // Handle save edit - both admin and regular users can save edits
+  // Handle save edit
   const handleSaveEdit = () => {
     if (!selectedDonor) return;
 
@@ -133,13 +105,13 @@ const Dashboard = () => {
     });
   };
 
-  // Handle delete donor - both admin and regular users can delete
+  // Handle delete donor
   const handleDeleteDonor = (donor: Donor) => {
     setSelectedDonor(donor);
     setShowDeleteDialog(true);
   };
 
-  // Confirm delete - both admin and regular users can delete
+  // Confirm delete
   const confirmDelete = () => {
     if (!selectedDonor) return;
 
@@ -155,13 +127,6 @@ const Dashboard = () => {
     });
   };
 
-  // Get stats
-  const totalDonors = donors.length;
-  const bloodTypeStats = bloodTypes.map(type => ({
-    type,
-    count: donors.filter(donor => donor.bloodType === type).length
-  }));
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -170,20 +135,13 @@ const Dashboard = () => {
     });
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  console.log('Rendering authenticated dashboard for user:', currentUser);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-16 md:pb-0">
       {/* Navigation */}
       <ResponsiveNav />
 
       <div className="container mx-auto px-4 sm:px-6 py-8">
-        {/* Header with user info and admin controls */}
+        {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -192,32 +150,15 @@ const Dashboard = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <span className="text-sm text-gray-600">
-                Welcome, {currentUser?.name} ({currentUser?.role})
-              </span>
-              
-              <div className="flex gap-2">
-                {isAdmin() && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => navigate('/admin')}
-                    className="border-gray-200 text-gray-600 hover:bg-gray-50"
-                  >
-                    <Shield className="h-4 w-4 mr-2" />
-                    Admin Panel
-                  </Button>
-                )}
-                
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleLogout}
-                  className="border-red-200 text-red-600 hover:bg-red-50"
-                >
-                  Logout
-                </Button>
-              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/admin')}
+                className="border-gray-200 text-gray-600 hover:bg-gray-50"
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Admin Panel
+              </Button>
             </div>
           </div>
         </div>

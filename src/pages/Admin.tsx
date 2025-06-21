@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
 import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
 interface User {
@@ -24,7 +23,6 @@ interface User {
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { currentUser, logout, isAdmin, isAuthenticated } = useAuth();
   
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,60 +38,28 @@ const Admin = () => {
     role: 'user' as 'admin' | 'user',
     status: 'active' as 'active' | 'inactive'
   });
-  const [authChecked, setAuthChecked] = useState(false);
-
-  // Check authentication and redirect if needed
-  useEffect(() => {
-    const checkAuth = async () => {
-      if (!isAuthenticated()) {
-        toast({
-          title: "Authentication Required",
-          description: "Please log in to access the admin panel",
-          variant: "destructive",
-        });
-        navigate('/dashboard');
-        return;
-      }
-
-      if (!isAdmin()) {
-        toast({
-          title: "Access Denied",
-          description: "You don't have permission to access this page",
-          variant: "destructive",
-        });
-        navigate('/dashboard');
-        return;
-      }
-
-      setAuthChecked(true);
-    };
-
-    checkAuth();
-  }, [isAuthenticated, isAdmin, navigate, toast]);
 
   // Load users from localStorage
   useEffect(() => {
-    if (authChecked) {
-      const savedUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
-      if (savedUsers.length === 0) {
-        // Add default admin user if none exist
-        const defaultUsers: User[] = [
-          {
-            id: '1',
-            name: 'Admin User',
-            email: 'admin@lifeflow.com',
-            role: 'admin',
-            status: 'active',
-            createdAt: new Date().toISOString()
-          }
-        ];
-        setUsers(defaultUsers);
-        localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
-      } else {
-        setUsers(savedUsers);
-      }
+    const savedUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+    if (savedUsers.length === 0) {
+      // Add default admin user if none exist
+      const defaultUsers: User[] = [
+        {
+          id: '1',
+          name: 'Admin User',
+          email: 'admin@lifeflow.com',
+          role: 'admin',
+          status: 'active',
+          createdAt: new Date().toISOString()
+        }
+      ];
+      setUsers(defaultUsers);
+      localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
+    } else {
+      setUsers(savedUsers);
     }
-  }, [authChecked]);
+  }, []);
 
   // Filter users
   const filteredUsers = users.filter(user => {
@@ -261,15 +227,6 @@ const Admin = () => {
       day: 'numeric'
     });
   };
-
-  // Don't render anything while checking authentication
-  if (!authChecked) {
-    return (
-      <div className="container mx-auto px-6 py-8 text-center">
-        <div className="text-gray-600">Checking authentication...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-20 md:pb-0">
