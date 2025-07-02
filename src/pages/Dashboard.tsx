@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar, Shield } from 'lucide-react';
+import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar, LogOut, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,20 +11,23 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ResponsiveNav } from '@/components/ui/responsive-nav';
+import { useAuth } from '@/contexts/AuthContext';
+import LoginForm from '@/components/LoginForm';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Donor {
   id: string;
   name: string;
   phone: string;
-  bloodType: string;
+  blood_type: string;
   address: string;
-  registeredAt: string;
+  registered_at: string;
 }
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentUser, isAuthenticated, isLoading, logout } = useAuth();
   
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,30 +38,109 @@ const Dashboard = () => {
   const [editFormData, setEditFormData] = useState({
     name: '',
     phone: '',
-    bloodType: '',
+    blood_type: '',
     address: ''
   });
+  const [loading, setLoading] = useState(true);
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+  // Show loading screen while auth is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="bg-red-600 rounded-full p-4 mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+            <Droplets className="h-8 w-8 text-white animate-pulse" />
+          </div>
+          <p className="text-lg text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!isAuthenticated()) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div 
+              className="flex items-center justify-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity mb-6"
+              onClick={() => navigate('/')}
+            >
+              <div className="bg-red-600 rounded-full p-3">
+                <Droplets className="h-8 w-8 text-white" />
+              </div>
+              <span className="text-3xl font-bold text-gray-900">LifeFlow</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Dashboard Access</h1>
+            <p className="text-gray-600">Please login to access the donor dashboard</p>
+          </div>
+          
+          <LoginForm />
+          
+          <div className="text-center mt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/')}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <Home className="h-4 w-4 mr-2" />
+              Back to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Get blood type color - using grayish background with black text
   const getBloodTypeColor = (bloodType: string) => {
     return 'bg-gray-200 text-black border-gray-300';
   };
 
-  // Load donors from localStorage
+  // Load donors from Supabase
   useEffect(() => {
-    const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    console.log('Loaded donors from localStorage:', savedDonors);
-    setDonors(savedDonors);
-  }, []);
+    const fetchDonors = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('donors')
+          .select('*')
+          .order('registered_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching donors:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load donors",
+            variant: "destructive",
+          });
+        } else {
+          setDonors(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        toast({
+          title: "Error",
+          description: "Something went wrong while loading donors",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDonors();
+  }, [toast]);
 
   // Filter donors
   const filteredDonors = donors.filter(donor => {
     const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          donor.phone.includes(searchTerm) ||
-                         donor.bloodType.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesBloodType = filterBloodType === 'all' || donor.bloodType === filterBloodType;
+                         donor.blood_type.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesBloodType = filterBloodType === 'all' || donor.blood_type === filterBloodType;
     return matchesSearch && matchesBloodType;
   });
 
@@ -68,18 +150,18 @@ const Dashboard = () => {
     setEditFormData({
       name: donor.name,
       phone: donor.phone,
-      bloodType: donor.bloodType,
+      blood_type: donor.blood_type,
       address: donor.address
     });
     setShowEditDialog(true);
   };
 
   // Handle save edit
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!selectedDonor) return;
 
     // Validate form
-    if (!editFormData.name || !editFormData.phone || !editFormData.bloodType || !editFormData.address) {
+    if (!editFormData.name || !editFormData.phone || !editFormData.blood_type || !editFormData.address) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -88,21 +170,49 @@ const Dashboard = () => {
       return;
     }
 
-    const updatedDonors = donors.map(donor => 
-      donor.id === selectedDonor.id 
-        ? { ...donor, ...editFormData }
-        : donor
-    );
+    try {
+      const { error } = await supabase
+        .from('donors')
+        .update({
+          name: editFormData.name,
+          phone: editFormData.phone,
+          blood_type: editFormData.blood_type,
+          address: editFormData.address,
+        })
+        .eq('id', selectedDonor.id);
 
-    setDonors(updatedDonors);
-    localStorage.setItem('donors', JSON.stringify(updatedDonors));
-    setShowEditDialog(false);
-    setSelectedDonor(null);
-    
-    toast({
-      title: "Success",
-      description: "Donor information updated successfully",
-    });
+      if (error) {
+        console.error('Error updating donor:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update donor information",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update local state
+      const updatedDonors = donors.map(donor => 
+        donor.id === selectedDonor.id 
+          ? { ...donor, ...editFormData }
+          : donor
+      );
+      setDonors(updatedDonors);
+      setShowEditDialog(false);
+      setSelectedDonor(null);
+      
+      toast({
+        title: "Success",
+        description: "Donor information updated successfully",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Something went wrong while updating donor",
+        variant: "destructive",
+      });
+    }
   };
 
   // Handle delete donor
@@ -112,19 +222,53 @@ const Dashboard = () => {
   };
 
   // Confirm delete
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!selectedDonor) return;
 
-    const updatedDonors = donors.filter(donor => donor.id !== selectedDonor.id);
-    setDonors(updatedDonors);
-    localStorage.setItem('donors', JSON.stringify(updatedDonors));
-    setShowDeleteDialog(false);
-    setSelectedDonor(null);
-    
+    try {
+      const { error } = await supabase
+        .from('donors')
+        .delete()
+        .eq('id', selectedDonor.id);
+
+      if (error) {
+        console.error('Error deleting donor:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete donor",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update local state
+      const updatedDonors = donors.filter(donor => donor.id !== selectedDonor.id);
+      setDonors(updatedDonors);
+      setShowDeleteDialog(false);
+      setSelectedDonor(null);
+      
+      toast({
+        title: "Success",
+        description: "Donor deleted successfully",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Something went wrong while deleting donor",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    logout();
     toast({
       title: "Success",
-      description: "Donor deleted successfully",
+      description: "Logged out successfully",
     });
+    navigate('/');
   };
 
   const formatDate = (dateString: string) => {
@@ -138,7 +282,59 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-16 md:pb-0">
       {/* Navigation */}
-      <ResponsiveNav />
+      <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div 
+              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => navigate('/')}
+            >
+              <div className="bg-red-600 rounded-full p-2">
+                <Droplets className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900">LifeFlow</span>
+            </div>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/')}
+                className="border-gray-200 text-gray-600 hover:bg-gray-50"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => navigate('/donors')}
+                className="border-red-600 text-red-600 hover:bg-red-50"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                View Donors
+              </Button>
+              
+              <Button
+                onClick={() => navigate('/register')}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <Heart className="h-4 w-4 mr-2" />
+                Register as Donor
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="border-red-200 text-red-600 hover:bg-red-50"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
 
       <div className="container mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
@@ -146,7 +342,9 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Donor Management</h1>
-              <p className="text-lg sm:text-xl text-gray-600">Manage and monitor your blood donor database</p>
+              <p className="text-lg sm:text-xl text-gray-600">
+                Welcome back, {currentUser?.name || currentUser?.email}! Manage and monitor your blood donor database
+              </p>
             </div>
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -156,7 +354,7 @@ const Dashboard = () => {
                 onClick={() => navigate('/admin')}
                 className="border-gray-200 text-gray-600 hover:bg-gray-50"
               >
-                <Shield className="h-4 w-4 mr-2" />
+                <Users className="h-4 w-4 mr-2" />
                 Admin Panel
               </Button>
             </div>
@@ -219,7 +417,14 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent className="p-4 sm:p-6">
-            {filteredDonors.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="bg-red-600 rounded-full p-4 mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+                  <Droplets className="h-8 w-8 text-white animate-pulse" />
+                </div>
+                <p className="text-lg text-gray-600">Loading donors...</p>
+              </div>
+            ) : filteredDonors.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No donors found</h3>
@@ -242,8 +447,8 @@ const Dashboard = () => {
                       {/* Name & Blood Type Column */}
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2">
-                          <div className={`${getBloodTypeColor(donor.bloodType)} rounded-full p-2 flex items-center justify-center w-10 h-10 border`}>
-                            <span className="font-bold text-sm">{donor.bloodType}</span>
+                          <div className={`${getBloodTypeColor(donor.blood_type)} rounded-full p-2 flex items-center justify-center w-10 h-10 border`}>
+                            <span className="font-bold text-sm">{donor.blood_type}</span>
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">{donor.name}</h3>
@@ -266,7 +471,7 @@ const Dashboard = () => {
                       {/* Registration Date Column */}
                       <div className="flex items-center space-x-2">
                         <Calendar className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm text-black font-medium">{formatDate(donor.registeredAt)}</span>
+                        <span className="text-sm text-black font-medium">{formatDate(donor.registered_at)}</span>
                       </div>
 
                       {/* Actions Column */}
@@ -327,8 +532,8 @@ const Dashboard = () => {
               <Label htmlFor="edit-bloodType">Blood Type</Label>
               <select
                 id="edit-bloodType"
-                value={editFormData.bloodType}
-                onChange={(e) => setEditFormData({...editFormData, bloodType: e.target.value})}
+                value={editFormData.blood_type}
+                onChange={(e) => setEditFormData({...editFormData, blood_type: e.target.value})}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="">Select blood type</option>
@@ -373,7 +578,7 @@ const Dashboard = () => {
             <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
               Delete
             </AlertDialogAction>
-          </AlertDialogFooter>
+            </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
