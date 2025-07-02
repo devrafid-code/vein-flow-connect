@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Heart, Droplets, Calendar, ArrowRight, Users, Settings, Phone, MapPin, CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
   const [donorCount, setDonorCount] = useState(0);
@@ -45,13 +45,20 @@ const Index = () => {
   };
 
   // Check if phone number is already registered
-  const isPhoneAlreadyRegistered = (phone: string): boolean => {
-    const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
+  const isPhoneAlreadyRegistered = async (phone: string): Promise<boolean> => {
     const cleanPhone = phone.replace(/\D/g, '');
-    return existingDonors.some((donor: any) => {
-      const existingCleanPhone = donor.phone.replace(/\D/g, '');
-      return existingCleanPhone === cleanPhone;
-    });
+    const { data, error } = await supabase
+      .from('donors')
+      .select('phone')
+      .eq('phone', phone)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error checking phone:', error);
+      return false;
+    }
+
+    return !!data;
   };
 
   // Format phone number as user types
@@ -72,6 +79,19 @@ const Index = () => {
 
   // Animated counter effect
   useEffect(() => {
+    const fetchDonorCount = async () => {
+      const { count } = await supabase
+        .from('donors')
+        .select('*', { count: 'exact', head: true });
+      
+      const actualCount = count || 0;
+      setDonorCount(actualCount);
+      setLivesCount(actualCount * 3); // Each donor can save up to 3 lives
+      setUnitsCount(actualCount * 2); // Estimated units donated
+    };
+
+    fetchDonorCount();
+
     const animateCounter = (target: number, setter: (value: number) => void, duration: number = 2000) => {
       let start = 0;
       const increment = target / (duration / 16);
@@ -93,7 +113,7 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleQuickRegister = (e: React.FormEvent) => {
+  const handleQuickRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Reset errors
@@ -125,7 +145,7 @@ const Index = () => {
     }
 
     // Check for duplicate phone number
-    if (formData.phone && isPhoneAlreadyRegistered(formData.phone)) {
+    if (formData.phone && await isPhoneAlreadyRegistered(formData.phone)) {
       newErrors.phone = true;
       toast({
         title: "Phone Number Already Registered",
@@ -159,19 +179,35 @@ const Index = () => {
       return;
     }
 
-    const newDonor = {
-      id: Date.now().toString(),
-      ...formData,
-      lastDonationDate: neverDonated ? 'never' : lastDonationDate?.toISOString() || null,
-      registeredAt: new Date().toISOString()
+    // Insert into Supabase
+    const donorData = {
+      name: formData.name,
+      phone: formData.phone,
+      blood_type: formData.bloodType,
+      address: formData.address,
+      never_donated: neverDonated,
+      last_donation_date: neverDonated ? null : lastDonationDate?.toISOString(),
     };
-    const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    existingDonors.push(newDonor);
-    localStorage.setItem('donors', JSON.stringify(existingDonors));
+
+    const { error } = await supabase
+      .from('donors')
+      .insert([donorData]);
+
+    if (error) {
+      console.error('Error inserting donor:', error);
+      toast({
+        title: "Error",
+        description: "Failed to register donor. Please try again.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     toast({
       title: "Success!",
       description: "You've been registered as a blood donor!"
     });
+    
     setFormData({
       name: '',
       phone: '',
@@ -282,8 +318,7 @@ const Index = () => {
               <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-4 sm:p-6 lg:p-8">
                   <form onSubmit={handleQuickRegister} className="space-y-6 sm:space-y-8">
-                    {/* Form content remains the same as it's already responsive */}
-                    {/* ... keep existing code (form content) */}
+                    
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                       {/* Column 1 - Full Name */}
                       <div className="w-full">

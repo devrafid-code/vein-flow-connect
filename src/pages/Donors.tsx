@@ -10,16 +10,17 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Table as TableComponent, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ResponsiveNav } from '@/components/ui/responsive-nav';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Donor {
   id: string;
   name: string;
   phone: string;
-  bloodType: string;
+  blood_type: string;
   address: string;
-  registeredAt: string;
-  lastDonationDate?: string;
-  neverDonated?: boolean;
+  registered_at: string;
+  last_donation_date?: string;
+  never_donated?: boolean;
 }
 
 const Donors = () => {
@@ -29,6 +30,7 @@ const Donors = () => {
   const [filterBloodType, setFilterBloodType] = useState('all');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [loading, setLoading] = useState(true);
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // Get blood type colors
@@ -46,192 +48,33 @@ const Donors = () => {
     return colorMap[bloodType] || { from: 'from-red-500', to: 'to-red-600' };
   };
 
-  // Sample donors data with realistic last donation dates and never donated status
-  const sampleDonors: Donor[] = [{
-    id: '1',
-    name: 'John Smith',
-    phone: '+1-555-0123',
-    bloodType: 'O+',
-    address: '123 Main St, New York, NY',
-    registeredAt: '2024-01-15T10:30:00Z',
-    lastDonationDate: '2024-11-15T10:30:00Z'
-  }, {
-    id: '2',
-    name: 'Sarah Johnson',
-    phone: '+1-555-0234',
-    bloodType: 'A+',
-    address: '456 Oak Ave, Los Angeles, CA',
-    registeredAt: '2024-02-20T14:15:00Z',
-    neverDonated: true
-  }, {
-    id: '3',
-    name: 'Michael Brown',
-    phone: '+1-555-0345',
-    bloodType: 'B-',
-    address: '789 Pine Rd, Chicago, IL',
-    registeredAt: '2024-03-10T09:45:00Z',
-    lastDonationDate: '2024-10-20T09:45:00Z'
-  }, {
-    id: '4',
-    name: 'Emily Davis',
-    phone: '+1-555-0456',
-    bloodType: 'AB+',
-    address: '321 Elm St, Houston, TX',
-    registeredAt: '2024-03-25T16:20:00Z',
-    lastDonationDate: '2024-12-05T16:20:00Z'
-  }, {
-    id: '5',
-    name: 'David Wilson',
-    phone: '+1-555-0567',
-    bloodType: 'O-',
-    address: '654 Maple Dr, Phoenix, AZ',
-    registeredAt: '2024-04-05T11:30:00Z',
-    neverDonated: true
-  }, {
-    id: '6',
-    name: 'Lisa Anderson',
-    phone: '+1-555-0678',
-    bloodType: 'A-',
-    address: '987 Cedar Ln, Philadelphia, PA',
-    registeredAt: '2024-04-18T13:45:00Z',
-    lastDonationDate: '2024-09-30T13:45:00Z'
-  }, {
-    id: '7',
-    name: 'Robert Taylor',
-    phone: '+1-555-0789',
-    bloodType: 'B+',
-    address: '147 Birch St, San Antonio, TX',
-    registeredAt: '2024-05-02T08:15:00Z',
-    lastDonationDate: '2024-11-28T08:15:00Z'
-  }, {
-    id: '8',
-    name: 'Jennifer White',
-    phone: '+1-555-0890',
-    bloodType: 'AB-',
-    address: '258 Spruce Ave, San Diego, CA',
-    registeredAt: '2024-05-15T15:30:00Z',
-    neverDonated: true
-  }, {
-    id: '9',
-    name: 'Christopher Lee',
-    phone: '+1-555-0901',
-    bloodType: 'O+',
-    address: '369 Willow Rd, Dallas, TX',
-    registeredAt: '2024-05-28T12:00:00Z',
-    lastDonationDate: '2024-08-15T12:00:00Z'
-  }, {
-    id: '10',
-    name: 'Amanda Garcia',
-    phone: '+1-555-1012',
-    bloodType: 'A+',
-    address: '741 Ash Dr, San Jose, CA',
-    registeredAt: '2024-06-03T10:45:00Z',
-    lastDonationDate: '2024-12-10T10:45:00Z'
-  }, {
-    id: '11',
-    name: 'Matthew Martinez',
-    phone: '+1-555-1123',
-    bloodType: 'B-',
-    address: '852 Poplar St, Austin, TX',
-    registeredAt: '2024-06-08T14:30:00Z',
-    neverDonated: true
-  }, {
-    id: '12',
-    name: 'Jessica Rodriguez',
-    phone: '+1-555-1234',
-    bloodType: 'AB+',
-    address: '963 Hickory Ave, Jacksonville, FL',
-    registeredAt: '2024-06-12T09:20:00Z',
-    lastDonationDate: '2024-07-25T09:20:00Z'
-  }, {
-    id: '13',
-    name: 'Daniel Hernandez',
-    phone: '+1-555-1345',
-    bloodType: 'O-',
-    address: '159 Walnut Ln, Fort Worth, TX',
-    registeredAt: '2024-06-15T16:45:00Z',
-    lastDonationDate: '2024-11-02T16:45:00Z'
-  }, {
-    id: '14',
-    name: 'Ashley Lopez',
-    phone: '+1-555-1456',
-    bloodType: 'A-',
-    address: '753 Chestnut Rd, Columbus, OH',
-    registeredAt: '2024-06-18T11:15:00Z',
-    neverDonated: true
-  }, {
-    id: '15',
-    name: 'Kevin Gonzalez',
-    phone: '+1-555-1567',
-    bloodType: 'B+',
-    address: '486 Sycamore Dr, Charlotte, NC',
-    registeredAt: '2024-06-20T13:30:00Z',
-    lastDonationDate: '2024-12-01T13:30:00Z'
-  }, {
-    id: '16',
-    name: 'Stephanie Wilson',
-    phone: '+1-555-1678',
-    bloodType: 'AB-',
-    address: '297 Magnolia St, Seattle, WA',
-    registeredAt: '2024-06-22T08:45:00Z',
-    neverDonated: true
-  }, {
-    id: '17',
-    name: 'Brian Anderson',
-    phone: '+1-555-1789',
-    bloodType: 'O+',
-    address: '518 Dogwood Ave, Denver, CO',
-    registeredAt: '2024-06-24T15:20:00Z',
-    lastDonationDate: '2024-09-15T15:20:00Z'
-  }, {
-    id: '18',
-    name: 'Michelle Thomas',
-    phone: '+1-555-1890',
-    bloodType: 'A+',
-    address: '629 Redwood Ln, Boston, MA',
-    registeredAt: '2024-06-26T12:10:00Z',
-    lastDonationDate: '2024-10-05T12:10:00Z'
-  }, {
-    id: '19',
-    name: 'Steven Jackson',
-    phone: '+1-555-1901',
-    bloodType: 'B-',
-    address: '740 Palm Dr, El Paso, TX',
-    registeredAt: '2024-06-28T10:30:00Z',
-    neverDonated: true
-  }, {
-    id: '20',
-    name: 'Nicole White',
-    phone: '+1-555-2012',
-    bloodType: 'AB+',
-    address: '851 Cypress Rd, Detroit, MI',
-    registeredAt: '2024-06-30T14:45:00Z',
-    lastDonationDate: '2024-11-20T14:45:00Z'
-  }];
-
   useEffect(() => {
-    const savedDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    // Combine saved donors with sample donors, avoiding duplicates
-    const allDonors = [...savedDonors];
-    sampleDonors.forEach(sampleDonor => {
-      if (!allDonors.find(donor => donor.id === sampleDonor.id)) {
-        allDonors.push(sampleDonor);
-      }
-    });
-    
-    // Sort donors by registration date (most recent first)
-    const sortedDonors = allDonors.sort((a, b) => {
-      return new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime();
-    });
-    
-    setDonors(sortedDonors);
-    // Save the combined list back to localStorage
-    localStorage.setItem('donors', JSON.stringify(sortedDonors));
+    fetchDonors();
   }, []);
 
+  const fetchDonors = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('donors')
+        .select('*')
+        .order('registered_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching donors:', error);
+        return;
+      }
+
+      setDonors(data || []);
+    } catch (error) {
+      console.error('Error fetching donors:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredDonors = donors.filter(donor => {
-    const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || donor.bloodType.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesBloodType = filterBloodType === 'all' || donor.bloodType === filterBloodType;
+    const matchesSearch = donor.name.toLowerCase().includes(searchTerm.toLowerCase()) || donor.blood_type.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesBloodType = filterBloodType === 'all' || donor.blood_type === filterBloodType;
     return matchesSearch && matchesBloodType;
   });
 
@@ -244,11 +87,11 @@ const Donors = () => {
   };
 
   const getLastDonationDisplay = (donor: Donor) => {
-    if (donor.neverDonated) {
+    if (donor.never_donated) {
       return 'No donation yet';
     }
-    if (donor.lastDonationDate) {
-      return formatDate(donor.lastDonationDate);
+    if (donor.last_donation_date) {
+      return formatDate(donor.last_donation_date);
     }
     return 'No record';
   };
@@ -259,14 +102,14 @@ const Donors = () => {
 
   const renderGridView = () => <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
       {filteredDonors.map(donor => {
-        const colors = getBloodTypeColors(donor.bloodType);
+        const colors = getBloodTypeColors(donor.blood_type);
         return <Card key={donor.id} className={`group transition-all duration-500 border-0 shadow-lg cursor-pointer overflow-hidden relative z-10 ${hoveredCard && hoveredCard !== donor.id ? 'scale-95 opacity-75' : hoveredCard === donor.id ? 'shadow-2xl scale-105 z-50' : 'hover:shadow-2xl hover:-translate-y-2'} bg-gradient-to-br from-white via-white to-gray-50/30`} onMouseEnter={() => setHoveredCard(donor.id)} onMouseLeave={() => setHoveredCard(null)}>
           <CardContent className="p-0">
             {/* Header section with gradient */}
             <div className="bg-gradient-to-r from-red-500/10 via-red-400/5 to-transparent p-6 pb-4">
               <div className="flex items-center space-x-4">
                 <div className={`h-14 w-14 rounded-full bg-gradient-to-br ${colors.from} ${colors.to} flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-white group-hover:scale-105 transition-transform duration-300`}>
-                  {donor.bloodType}
+                  {donor.blood_type}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-bold text-gray-900 truncate mb-2 group-hover:text-red-700 transition-colors duration-200">{donor.name}</h3>
@@ -319,7 +162,7 @@ const Donors = () => {
                 <TableCell className="font-medium text-gray-900">{donor.name}</TableCell>
                 <TableCell>
                   <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold">
-                    {donor.bloodType}
+                    {donor.blood_type}
                   </Badge>
                 </TableCell>
                 <TableCell className="font-semibold text-green-700">{donor.phone}</TableCell>
@@ -330,6 +173,22 @@ const Donors = () => {
         </TableComponent>
       </CardContent>
     </Card>;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30 pb-20 md:pb-0">
+        <ResponsiveNav />
+        <div className="container mx-auto px-6 py-12">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading donors...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50/30 pb-20 md:pb-0">

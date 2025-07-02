@@ -9,7 +9,147 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      blood_requests: {
+        Row: {
+          blood_type: string
+          contact_person: string
+          contact_phone: string
+          created_at: string
+          description: string | null
+          hospital_address: string
+          hospital_name: string
+          id: string
+          needed_by: string
+          patient_name: string
+          status: string
+          units_needed: number
+          updated_at: string
+          urgency_level: string
+        }
+        Insert: {
+          blood_type: string
+          contact_person: string
+          contact_phone: string
+          created_at?: string
+          description?: string | null
+          hospital_address: string
+          hospital_name: string
+          id?: string
+          needed_by: string
+          patient_name: string
+          status?: string
+          units_needed?: number
+          updated_at?: string
+          urgency_level?: string
+        }
+        Update: {
+          blood_type?: string
+          contact_person?: string
+          contact_phone?: string
+          created_at?: string
+          description?: string | null
+          hospital_address?: string
+          hospital_name?: string
+          id?: string
+          needed_by?: string
+          patient_name?: string
+          status?: string
+          units_needed?: number
+          updated_at?: string
+          urgency_level?: string
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          blood_request_id: string | null
+          created_at: string
+          donation_date: string
+          donor_id: string
+          hospital_name: string
+          id: string
+          notes: string | null
+          units_donated: number
+          updated_at: string
+        }
+        Insert: {
+          blood_request_id?: string | null
+          created_at?: string
+          donation_date?: string
+          donor_id: string
+          hospital_name: string
+          id?: string
+          notes?: string | null
+          units_donated?: number
+          updated_at?: string
+        }
+        Update: {
+          blood_request_id?: string | null
+          created_at?: string
+          donation_date?: string
+          donor_id?: string
+          hospital_name?: string
+          id?: string
+          notes?: string | null
+          units_donated?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_blood_request_id_fkey"
+            columns: ["blood_request_id"]
+            isOneToOne: false
+            referencedRelation: "blood_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donations_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "donors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      donors: {
+        Row: {
+          address: string
+          blood_type: string
+          created_at: string
+          id: string
+          last_donation_date: string | null
+          name: string
+          never_donated: boolean
+          phone: string
+          registered_at: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          blood_type: string
+          created_at?: string
+          id?: string
+          last_donation_date?: string | null
+          name: string
+          never_donated?: boolean
+          phone: string
+          registered_at?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          blood_type?: string
+          created_at?: string
+          id?: string
+          last_donation_date?: string | null
+          name?: string
+          never_donated?: boolean
+          phone?: string
+          registered_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

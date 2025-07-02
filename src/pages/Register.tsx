@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Users, Clock } from 'lucide-react';
@@ -10,17 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { ResponsiveNav } from '@/components/ui/responsive-nav';
-
-interface Donor {
-  id: string;
-  name: string;
-  phone: string;
-  bloodType: string;
-  address: string;
-  registeredAt: string;
-  lastDonationDate?: string;
-  neverDonated?: boolean;
-}
+import { supabase } from '@/integrations/supabase/client';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -46,13 +35,19 @@ const Register = () => {
   };
 
   // Check if phone number is already registered
-  const isPhoneAlreadyRegistered = (phone: string): boolean => {
-    const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    const cleanPhone = phone.replace(/\D/g, '');
-    return existingDonors.some((donor: any) => {
-      const existingCleanPhone = donor.phone.replace(/\D/g, '');
-      return existingCleanPhone === cleanPhone;
-    });
+  const isPhoneAlreadyRegistered = async (phone: string): Promise<boolean> => {
+    const { data, error } = await supabase
+      .from('donors')
+      .select('phone')
+      .eq('phone', phone)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error checking phone:', error);
+      return false;
+    }
+
+    return !!data;
   };
 
   // Format phone number as user types
@@ -71,7 +66,7 @@ const Register = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate form
@@ -95,7 +90,7 @@ const Register = () => {
     }
 
     // Check for duplicate phone number
-    if (isPhoneAlreadyRegistered(formData.phone)) {
+    if (await isPhoneAlreadyRegistered(formData.phone)) {
       toast({
         title: "Phone Number Already Registered",
         description: "This phone number is already registered. Each phone number can only be used once.",
@@ -114,22 +109,29 @@ const Register = () => {
       return;
     }
 
-    // Create new donor
-    const newDonor: Donor = {
-      id: Date.now().toString(),
+    // Insert into Supabase
+    const donorData = {
       name: formData.name,
       phone: formData.phone,
-      bloodType: formData.bloodType,
+      blood_type: formData.bloodType,
       address: formData.address,
-      registeredAt: new Date().toISOString(),
-      neverDonated: formData.neverDonated,
-      lastDonationDate: formData.neverDonated ? undefined : formData.lastDonationDate
+      never_donated: formData.neverDonated,
+      last_donation_date: formData.neverDonated ? null : formData.lastDonationDate,
     };
 
-    // Save to localStorage
-    const existingDonors = JSON.parse(localStorage.getItem('donors') || '[]');
-    existingDonors.push(newDonor);
-    localStorage.setItem('donors', JSON.stringify(existingDonors));
+    const { error } = await supabase
+      .from('donors')
+      .insert([donorData]);
+
+    if (error) {
+      console.error('Error inserting donor:', error);
+      toast({
+        title: "Error",
+        description: "Failed to register donor. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     // Show success dialog
     setShowSuccessDialog(true);
