@@ -35,31 +35,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     console.log('AuthProvider initializing...');
     
-    // Initialize default admin users if they don't exist
-    const existingUsers = localStorage.getItem('adminUsers');
-    if (!existingUsers) {
-      console.log('Creating default users...');
-      const defaultUsers: User[] = [
-        {
-          id: '1',
-          name: 'Admin User',
-          email: 'admin@example.com',
-          role: 'admin',
-          status: 'active'
-        },
-        {
-          id: '2',
-          name: 'Test User',
-          email: 'user@example.com',
-          role: 'user',
-          status: 'active'
-        }
-      ];
-      localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
-      console.log('Default users created:', defaultUsers);
-    } else {
-      console.log('Existing users found:', JSON.parse(existingUsers));
-    }
+    // Initialize default admin users with correct credentials
+    const defaultUsers: User[] = [
+      {
+        id: '1',
+        name: 'Admin User',
+        email: 'admin@example.com', // Match the demo credentials
+        role: 'admin',
+        status: 'active'
+      },
+      {
+        id: '2',
+        name: 'Test User',
+        email: 'user@example.com', // Match the demo credentials
+        role: 'user',
+        status: 'active'
+      }
+    ];
+    
+    // Always reset to ensure correct credentials
+    localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
+    console.log('Demo users created with correct credentials:', defaultUsers);
 
     // Check if user is logged in on mount
     const savedUser = localStorage.getItem('currentUser');
