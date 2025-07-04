@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Droplets, Plus, Edit, Trash2, Search, Filter, Users, Activity, Phone, MapPin, Calendar, LogOut, Home } from 'lucide-react';
@@ -314,23 +313,6 @@ const Dashboard = () => {
               >
                 <Home className="h-4 w-4 mr-2" />
                 Back to Home
-              </Button>
-              
-              <Button
-                variant="outline"
-                onClick={() => navigate('/donors')}
-                className="border-red-600 text-red-600 hover:bg-red-50"
-              >
-                <Users className="h-4 w-4 mr-2" />
-                View Donors
-              </Button>
-              
-              <Button
-                onClick={() => navigate('/register')}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                <Heart className="h-4 w-4 mr-2" />
-                Register as Donor
               </Button>
 
               <Button
