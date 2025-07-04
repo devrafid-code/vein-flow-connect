@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Edit, Trash2, Search, Users, Shield, UserPlus, X, Droplets } from 'lucide-react';
+import { ArrowLeft, Plus, Edit, Trash2, Search, Users, Shield, UserPlus, X, Droplets, Home, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ResponsiveNav } from '@/components/ui/responsive-nav';
 
 interface User {
   id: string;
@@ -230,7 +229,43 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-white pb-20 md:pb-0">
-      <ResponsiveNav />
+      {/* Custom Navigation for Admin Page */}
+      <nav className="relative z-20 bg-white/90 backdrop-blur-sm border-b border-red-100">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div 
+              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => navigate('/')}
+            >
+              <div className="bg-red-600 rounded-full p-2">
+                <Droplets className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900">LifeFlow</span>
+            </div>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/')}
+                className="border-gray-600 text-gray-600 hover:bg-gray-50"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => navigate('/dashboard')}
+                className="border-gray-600 text-gray-600 hover:bg-gray-50"
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Dashboard
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
