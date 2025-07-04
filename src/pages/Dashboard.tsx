@@ -29,6 +29,7 @@ const Dashboard = () => {
   const { toast } = useToast();
   const { currentUser, isAuthenticated, isLoading, logout } = useAuth();
   
+  // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY CONDITIONAL RETURNS
   const [donors, setDonors] = useState<Donor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBloodType, setFilterBloodType] = useState('all');
@@ -45,6 +46,50 @@ const Dashboard = () => {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+  // Load donors from Supabase - THIS USEEFFECT MUST BE BEFORE CONDITIONAL RETURNS
+  useEffect(() => {
+    const fetchDonors = async () => {
+      if (!isAuthenticated()) return;
+      
+      console.log('Fetching donors...');
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('donors')
+          .select('*')
+          .order('registered_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching donors:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load donors",
+            variant: "destructive",
+          });
+        } else {
+          console.log('Donors fetched successfully:', data?.length || 0);
+          setDonors(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        toast({
+          title: "Error",
+          description: "Something went wrong while loading donors",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Only fetch when auth is ready and user is authenticated
+    if (!isLoading) {
+      fetchDonors();
+    }
+  }, [isAuthenticated, isLoading, toast]);
+
+  // NOW WE CAN HAVE CONDITIONAL RETURNS AFTER ALL HOOKS
+  
   // Show loading screen while auth is initializing
   if (isLoading) {
     return (
@@ -99,45 +144,6 @@ const Dashboard = () => {
   const getBloodTypeColor = (bloodType: string) => {
     return 'bg-gray-200 text-black border-gray-300';
   };
-
-  // Load donors from Supabase
-  useEffect(() => {
-    const fetchDonors = async () => {
-      console.log('Fetching donors...');
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('donors')
-          .select('*')
-          .order('registered_at', { ascending: false });
-
-        if (error) {
-          console.error('Error fetching donors:', error);
-          toast({
-            title: "Error",
-            description: "Failed to load donors",
-            variant: "destructive",
-          });
-        } else {
-          console.log('Donors fetched successfully:', data?.length || 0);
-          setDonors(data || []);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        toast({
-          title: "Error",
-          description: "Something went wrong while loading donors",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isAuthenticated()) {
-      fetchDonors();
-    }
-  }, [isAuthenticated, toast]);
 
   // Filter donors
   const filteredDonors = donors.filter(donor => {
