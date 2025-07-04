@@ -103,6 +103,7 @@ const Dashboard = () => {
   // Load donors from Supabase
   useEffect(() => {
     const fetchDonors = async () => {
+      console.log('Fetching donors...');
       try {
         setLoading(true);
         const { data, error } = await supabase
@@ -118,6 +119,7 @@ const Dashboard = () => {
             variant: "destructive",
           });
         } else {
+          console.log('Donors fetched successfully:', data?.length || 0);
           setDonors(data || []);
         }
       } catch (error) {
@@ -132,8 +134,10 @@ const Dashboard = () => {
       }
     };
 
-    fetchDonors();
-  }, [toast]);
+    if (isAuthenticated()) {
+      fetchDonors();
+    }
+  }, [isAuthenticated, toast]);
 
   // Filter donors
   const filteredDonors = donors.filter(donor => {
@@ -578,7 +582,7 @@ const Dashboard = () => {
             <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
               Delete
             </AlertDialogAction>
-            </AlertDialogFooter>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
